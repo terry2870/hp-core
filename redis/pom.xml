@@ -8,7 +8,7 @@
 		<artifactId>core-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>redis</artifactId>
+	<artifactId>my-core-redis</artifactId>
 	<name>redis</name>
 	<url>http://maven.apache.org</url>
 	<properties>

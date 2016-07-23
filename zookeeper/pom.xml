@@ -8,7 +8,7 @@
 		<artifactId>core-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>zookeeper</artifactId>
+	<artifactId>my-core-zookeeper</artifactId>
 	<name>zookeeper</name>
 	<url>http://maven.apache.org</url>
 	<properties>

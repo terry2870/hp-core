@@ -1,2 +1,4 @@
 .settings
 /.project
+netty/.classpath
+netty/.project
