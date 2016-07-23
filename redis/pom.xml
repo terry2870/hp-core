@@ -4,11 +4,11 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.my.core</groupId>
+		<groupId>com.hp.core</groupId>
 		<artifactId>core-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>my-core-redis</artifactId>
+	<artifactId>hp-core-redis</artifactId>
 	<name>redis</name>
 	<url>http://maven.apache.org</url>
 	<properties>

@@ -52,7 +52,7 @@ public class TestServer {
 		@Override
 		protected void initChannel(SocketChannel arg0) throws Exception {
 			System.out.println("server initChannel..");
-			arg0.pipeline().addLast(new HelloServerHandler());
+			arg0.pipeline().addLast(new TimeServerHandler());
 		}
 	}
 

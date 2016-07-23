@@ -38,7 +38,7 @@ public class TestClient {
 				@Override
 				protected void initChannel(SocketChannel arg0) throws Exception {
 					System.out.println("client initChannel..");
-					arg0.pipeline().addLast(new HelloClientHandler());
+					arg0.pipeline().addLast(new TimeClientHandler());
 				}
 			});
 			// 发起异步连接操作
@@ -61,11 +61,15 @@ public class TestClient {
 			}
 		}
 		Channel c = new TestClient().connect(port, "127.0.0.1");
-		for (int i = 0; i < 5; i++) {
-			ChannelFuture f = c.writeAndFlush("啊哈哈啊" + i);
-			Object o = f.get();
-			System.out.println(o);
-		}
+//		for (int i = 0; i < 5; i++) {
+//			ChannelFuture f = c.writeAndFlush("啊哈哈啊" + i);
+//			Object o = f.get();
+//			System.out.println(o);
+//		}
+		
+		ChannelFuture f = c.writeAndFlush("啊哈哈啊");
+		Object o = f.get();
+		System.out.println(o);
 		
 	}
 
@@ -123,18 +127,20 @@ public class TestClient {
 			// 与服务端建立连接后
 			System.out.println("client channelActive..");
 			// sendMsg(ctx);
-			ctx.writeAndFlush(firstMessage);
+			//ctx.writeAndFlush(firstMessage);
+			super.channelActive(ctx);
 		}
 
 		@Override
 		public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-			System.out.println("client channelRead..");
-			// 服务端返回消息后
-			ByteBuf buf = (ByteBuf) msg;
-			byte[] req = new byte[buf.readableBytes()];
-			buf.readBytes(req);
-			String body = new String(req, "UTF-8");
-			System.out.println("Now is :" + body);
+//			System.out.println("client channelRead..");
+//			// 服务端返回消息后
+//			ByteBuf buf = (ByteBuf) msg;
+//			byte[] req = new byte[buf.readableBytes()];
+//			buf.readBytes(req);
+//			String body = new String(req, "UTF-8");
+//			System.out.println("Now is :" + body);
+			super.channelRead(ctx, msg);
 		}
 
 		@Override
