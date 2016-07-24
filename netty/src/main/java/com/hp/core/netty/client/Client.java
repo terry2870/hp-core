@@ -17,15 +17,17 @@ public interface Client {
 	 * 连接服务端
 	 * @param host
 	 * @param port
+	 * @throws Exception
 	 */
-	void connect(String host, int port);
+	void connect(String host, int port) throws Exception;
 	
 	/**
 	 * 发送请求
 	 * @param request
 	 * @return
+	 * @throws Exception
 	 */
-	Response<?> send(Request<?> request);
+	Response send(Request request) throws Exception;
 	
 	/**
 	 * 关闭连接

@@ -1,4 +1,4 @@
-package org.test;
+package com.my.core.test.nettyTest;
 
 /**
  * Hello world!

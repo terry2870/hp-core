@@ -3,11 +3,12 @@
  */
 package com.hp.core.netty.client;
 
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Component;
 
 import com.hp.core.netty.bean.Request;
 import com.hp.core.netty.bean.Response;
-import com.miracle.framework.remote.netty.client.ClientCloseException;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -22,13 +23,16 @@ import io.netty.channel.socket.nio.NioSocketChannel;
  */
 @Component
 public class NettyClient implements Client {
+	
+	@Resource
+	NettyClientChannelInitialier nettyClientChannelInitialier;
 
 	private EventLoopGroup workerGroup;
 	private Channel channel;
 	private int workerGroupThreads;
 	
 	@Override
-	public void connect(String host, int port) {
+	public void connect(String host, int port) throws Exception {
 		workerGroup = new NioEventLoopGroup(workerGroupThreads);
 		Bootstrap bootstrap = new Bootstrap();
 		bootstrap
@@ -36,20 +40,20 @@ public class NettyClient implements Client {
 			.channel(NioSocketChannel.class)
 			.option(ChannelOption.SO_KEEPALIVE, true)
 			.option(ChannelOption.TCP_NODELAY, true)
-			.handler(applicationContext.getBean(serializeType.getClientChannelInitializer()));
-		channel = bootstrap.connect(host, port).syncUninterruptibly().channel();
+			.handler(nettyClientChannelInitialier);
+		channel = bootstrap.connect(host, port).sync().channel();
 	}
 
 	@Override
-	public Response<?> send(Request<?> request) {
-		channel.writeAndFlush(request);
-		return applicationContext.getBean(serializeType.getClientChannelInitializer()).getResponse(request.getMessageId());
+	public Response send(Request request) throws Exception {
+		channel.writeAndFlush(request.toString());
+		return nettyClientChannelInitialier.getResponse(request.getMessageId());
 	}
 
 	@Override
 	public void close() {
 		if (null == channel) {
-			throw new ClientCloseException();
+			return;
 		}
 		workerGroup.shutdownGracefully();
 		channel.closeFuture().syncUninterruptibly();
