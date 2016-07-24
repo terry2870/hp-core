@@ -8,23 +8,13 @@
 		<artifactId>core-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>hp-core-netty</artifactId>
-	<name>netty</name>
+	<artifactId>hp-core-api</artifactId>
+	<name>api</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<netty.version>4.1.3.Final</netty.version>
 	</properties>
 	<dependencies>
-		<!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-codec-http</artifactId>
-			<version>${netty.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.hp.core</groupId>
-			<artifactId>hp-core-api</artifactId>
-		</dependency>
+		
 	</dependencies>
 </project>
