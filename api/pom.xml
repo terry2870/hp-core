@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.hp.core</groupId>
-		<artifactId>core-parent</artifactId>
+		<artifactId>hp-core</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>hp-core-api</artifactId>
