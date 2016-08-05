@@ -28,7 +28,7 @@ public class NettyServerTest {
 	Server server;
 	
 	@Test
-	public void testClient() {
+	public void testServer() {
 		log.info("server");
 		
 		try {

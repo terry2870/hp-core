@@ -39,7 +39,7 @@ public class NettyClient implements Client {
 			.group(workerGroup)
 			.channel(NioSocketChannel.class)
 			.option(ChannelOption.SO_KEEPALIVE, true)
-			.option(ChannelOption.TCP_NODELAY, true)
+			//.option(ChannelOption.TCP_NODELAY, true)
 			.handler(nettyClientChannelInitialier);
 		channel = bootstrap.connect(host, port).sync().channel();
 	}

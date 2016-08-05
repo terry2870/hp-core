@@ -34,11 +34,36 @@ public class NettyClientTest {
 		
 		try {
 			client.connect("127.0.0.1", 9999);
-			client.send(new Request("123456", String.class));
+			client.send(new Request<User>("123456", new User(1, "name1"), User.class));
 			Thread.sleep(10000);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+	public static class User {
+		/**
+		 * @param id
+		 * @param name
+		 */
+		public User(int id, String name) {
+			super();
+			this.id = id;
+			this.name = name;
+		}
+		private int id;
+		private String name;
+		public int getId() {
+			return id;
+		}
+		public void setId(int id) {
+			this.id = id;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+	}
 }
