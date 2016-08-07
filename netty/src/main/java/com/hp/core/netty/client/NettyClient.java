@@ -3,12 +3,17 @@
  */
 package com.hp.core.netty.client;
 
+import java.util.concurrent.ArrayBlockingQueue;
+
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.hp.core.netty.bean.Request;
 import com.hp.core.netty.bean.Response;
+import com.hp.core.netty.constants.NettyConstants;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -23,6 +28,8 @@ import io.netty.channel.socket.nio.NioSocketChannel;
  */
 @Component
 public class NettyClient implements Client {
+	
+	static Logger log = LoggerFactory.getLogger(NettyClient.class);
 	
 	@Resource
 	NettyClientChannelInitialier nettyClientChannelInitialier;
@@ -46,6 +53,8 @@ public class NettyClient implements Client {
 
 	@Override
 	public Response send(Request request) throws Exception {
+		log.info("send:" + request);
+		NettyConstants.responseMap.put(request.getMessageId(), new ArrayBlockingQueue<Response>(1));
 		channel.writeAndFlush(request.toString());
 		return nettyClientChannelInitialier.getResponse(request.getMessageId());
 	}

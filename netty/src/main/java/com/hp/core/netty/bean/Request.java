@@ -9,7 +9,7 @@ import com.hp.core.api.bean.BaseBean;
  * @author huangping
  * 2016年7月24日 上午1:32:11
  */
-public class Request<T> extends BaseBean {
+public class Request extends BaseBean {
 
 	private static final long serialVersionUID = 1103241642485266988L;
 
@@ -21,9 +21,9 @@ public class Request<T> extends BaseBean {
 	/**
 	 * 请求的对象
 	 */
-	private Class<T> className;
+	private Class<?> className;
 	
-	private T data;
+	private Object data;
 
 	/**
 	 * 
@@ -32,7 +32,7 @@ public class Request<T> extends BaseBean {
 	}
 
 	
-	public Request(String messageId, T data, Class<T> className) {
+	public Request(String messageId, Object data, Class<?> className) {
 		this.messageId = messageId;
 		this.data = data;
 		this.className = className;
@@ -46,19 +46,19 @@ public class Request<T> extends BaseBean {
 		this.messageId = messageId;
 	}
 
-	public Class<T> getClassName() {
+	public Class<?> getClassName() {
 		return className;
 	}
 
-	public void setClassName(Class<T> className) {
+	public void setClassName(Class<?> className) {
 		this.className = className;
 	}
 	
-	public T getData() {
+	public Object getData() {
 		return data;
 	}
 
-	public void setData(T data) {
+	public void setData(Object data) {
 		this.data = data;
 	}
 }

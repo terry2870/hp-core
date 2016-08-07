@@ -4,8 +4,6 @@
 package com.hp.core.netty.client;
 
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.hp.core.netty.bean.Response;
+import com.hp.core.netty.constants.NettyConstants;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
@@ -55,17 +54,12 @@ public class NettyClientChannelInitialier extends ChannelInitializer<SocketChann
 	}
 	
 	public class NettyClientDispatchHandler extends SimpleChannelInboundHandler<String> {
-		
-		/**
-		 * 用来存放服务端返回的数据
-		 */
-		private ConcurrentHashMap<String, BlockingQueue<Response>> responseMap = new ConcurrentHashMap<String, BlockingQueue<Response>>();
 
 		@Override
 		protected void channelRead0(ChannelHandlerContext ctx, String responseMsg) throws Exception {
 			log.info("客户端收到返回消息。 responseMsg={}", responseMsg);
 			Response resp = JSON.parseObject(responseMsg, Response.class);
-			responseMap.get(resp.getMessageId()).put(resp);
+			NettyConstants.responseMap.get(resp.getMessageId()).put(resp);
 		}
 		
 		
@@ -78,13 +72,12 @@ public class NettyClientChannelInitialier extends ChannelInitializer<SocketChann
 		 */
 		public Response getResponse(String messageId) throws Exception {
 			Response result = null;
-			responseMap.put(messageId, new ArrayBlockingQueue<Response>(1));
 			try {
-				result = responseMap.get(messageId).take();
+				result = NettyConstants.responseMap.get(messageId).take();
 			} catch (InterruptedException e) {
 				throw e;
 			} finally {
-				responseMap.remove(messageId);
+				NettyConstants.responseMap.remove(messageId);
 			}
 			return result;
 		}

@@ -3,6 +3,9 @@
  */
 package com.my.core.test.nettyTest;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import javax.annotation.Resource;
 
 import org.junit.Test;
@@ -13,7 +16,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.hp.core.netty.bean.Request;
+import com.hp.core.netty.bean.Response;
 import com.hp.core.netty.client.Client;
+import com.my.tools.common.utils.DateUtil;
+import com.my.tools.common.utils.RandomUtil;
 
 /**
  * @author huangping
@@ -31,14 +37,39 @@ public class NettyClientTest {
 	@Test
 	public void testClient() {
 		log.info("client");
-		
+		ExecutorService exe = Executors.newFixedThreadPool(10);
 		try {
 			client.connect("127.0.0.1", 9999);
-			client.send(new Request<User>("123456", new User(1, "name1"), User.class));
-			Thread.sleep(10000);
+			for (int i = 0; i < 1; i++) {
+				exe.execute(new Run(new User(i, "name" + i)));
+			}
+			
+			Thread.sleep(100000);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public class Run implements Runnable {
+
+		private User user;
+		
+		public Run(User user) {
+			this.user = user;
+		}
+
+		@Override
+		public void run() {
+			Request req = new Request(DateUtil.getCurrentTimeSeconds() + "_" + RandomUtil.getRandom(5), user, User.class);
+			try {
+				log.info("客户端发送消息：" + req);
+				Response resp = client.send(req);
+				log.info("客户端收到返回：" + resp);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
 	}
 	
 	public static class User {

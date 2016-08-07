@@ -26,5 +26,10 @@
 			<groupId>com.hp.core</groupId>
 			<artifactId>hp-core-api</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.hp.tools</groupId>
+			<artifactId>my-tools-common</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>
