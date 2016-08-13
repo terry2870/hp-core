@@ -30,7 +30,7 @@ public class NettyServerTest {
 	@Test
 	public void testServer() {
 		log.info("server");
-		
+		System.out.println("===== " + System.getProperty("line.separator"));
 		try {
 			server.start(9999);
 			Thread.sleep(10000000);

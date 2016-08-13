@@ -16,6 +16,8 @@ import com.hp.core.netty.bean.Response;
 import com.hp.core.netty.constants.NettyConstants;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -55,8 +57,29 @@ public class NettyClient implements Client {
 	public Response send(Request request) throws Exception {
 		log.info("send:" + request);
 		NettyConstants.responseMap.put(request.getMessageId(), new ArrayBlockingQueue<Response>(1));
-		channel.writeAndFlush(request.toString());
-		return nettyClientChannelInitialier.getResponse(request.getMessageId());
+		byte[] bytes = (request.toString() + System.getProperty("line.separator")).getBytes();
+		ByteBuf message = Unpooled.buffer(bytes.length);
+		message.writeBytes(bytes);
+		channel.writeAndFlush(message);
+		return getResponse(request.getMessageId());
+	}
+	
+	/**
+	 * 获取服务端返回的值
+	 * @param messageId
+	 * @return
+	 * @throws Exception
+	 */
+	public Response getResponse(String messageId) throws Exception {
+		Response result = null;
+		try {
+			result = NettyConstants.responseMap.get(messageId).take();
+		} catch (InterruptedException e) {
+			throw e;
+		} finally {
+			NettyConstants.responseMap.remove(messageId);
+		}
+		return result;
 	}
 
 	@Override

@@ -40,7 +40,7 @@ public class NettyClientTest {
 		ExecutorService exe = Executors.newFixedThreadPool(10);
 		try {
 			client.connect("127.0.0.1", 9999);
-			for (int i = 0; i < 1; i++) {
+			for (int i = 0; i < 10; i++) {
 				exe.execute(new Run(new User(i, "name" + i)));
 			}
 			
