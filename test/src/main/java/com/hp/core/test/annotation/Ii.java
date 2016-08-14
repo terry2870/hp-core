@@ -7,7 +7,7 @@ package com.hp.core.test.annotation;
  * @author huangping
  * 2016年8月14日 上午2:12:02
  */
-@HelloWorld(name = " 小明 ")
+@HelloWorld(name = " 小明啊发送到 ")
 public interface Ii {
 
 	public String str(String s);

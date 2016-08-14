@@ -18,8 +18,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.hp.core.netty.bean.Request;
 import com.hp.core.netty.bean.Response;
 import com.hp.core.netty.client.Client;
-import com.my.tools.common.utils.DateUtil;
-import com.my.tools.common.utils.RandomUtil;
+import com.hp.tools.common.utils.DateUtil;
+import com.hp.tools.common.utils.RandomUtil;
 
 /**
  * @author huangping

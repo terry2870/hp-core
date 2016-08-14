@@ -3,10 +3,12 @@
  */
 package com.hp.core.test.annotation;
 
+import org.springframework.stereotype.Component;
+
 /**
  * @author huangping 2016年8月14日 上午2:09:08
  */
-@HelloWorld(name = " 小明 ")
+@Component
 public class SayHello {
 
 	

@@ -4,7 +4,7 @@
 	
 	<parent>
 		<groupId>com.hp.tools</groupId>
-		<artifactId>my-tools</artifactId>
+		<artifactId>hp-tools</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	
@@ -104,6 +104,11 @@
 			<artifactId>fastjson</artifactId>
 			<version>${fastjson.version}</version>
 		</dependency> -->
+		
+		<dependency>
+			<groupId>com.hp.tools</groupId>
+			<artifactId>hp-tools-common</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
