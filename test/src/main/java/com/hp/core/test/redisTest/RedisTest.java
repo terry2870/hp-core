@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.my.core.test.redisTest;
+package com.hp.core.test.redisTest;
 
 /**
  * @author huangping

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.my.core.test.nettyTest;
+package com.hp.core.test.nettyTest;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

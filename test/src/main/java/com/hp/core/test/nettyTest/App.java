@@ -1,4 +1,4 @@
-package com.my.core.test.nettyTest;
+package com.hp.core.test.nettyTest;
 
 /**
  * Hello world!

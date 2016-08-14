@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.my.core.test.annotation;
+package com.hp.core.test.annotation;
 
 /**
  * @author huangping 2016年8月14日 上午2:09:08

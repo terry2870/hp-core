@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.my.core.test.nettyTest;
+package com.hp.core.test.nettyTest;
 
 import javax.annotation.Resource;
 
