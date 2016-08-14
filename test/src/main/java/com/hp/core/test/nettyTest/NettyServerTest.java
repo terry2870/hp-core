@@ -33,7 +33,7 @@ public class NettyServerTest {
 		System.out.println("===== " + System.getProperty("line.separator"));
 		try {
 			server.start(9999);
-			Thread.sleep(10000000);
+			System.in.read();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -44,9 +44,6 @@ public class NettyClientChannelInitialier extends ChannelInitializer<SocketChann
 	
 	@Component
 	public class NettyClientDispatchHandler extends SimpleChannelInboundHandler<String> {
-
-		int count = 0;
-		
 		@Override
 		protected void channelRead0(ChannelHandlerContext ctx, String responseMsg) throws Exception {
 			log.info("客户端收到返回消息。 responseMsg={}", responseMsg);
