@@ -3,8 +3,8 @@
  */
 package com.hp.core.netty.client;
 
-import com.hp.core.netty.bean.Request;
-import com.hp.core.netty.bean.Response;
+import com.hp.core.netty.bean.NettyRequest;
+import com.hp.core.netty.bean.NettyResponse;
 
 /**
  * 客户端接口
@@ -27,7 +27,7 @@ public interface Client {
 	 * @return
 	 * @throws Exception
 	 */
-	Response send(Request request) throws Exception;
+	NettyResponse send(NettyRequest request) throws Exception;
 	
 	/**
 	 * 关闭连接

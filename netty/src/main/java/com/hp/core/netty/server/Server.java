@@ -11,8 +11,9 @@ public interface Server {
 	/**
 	 * 启动监听
 	 * @param port
+	 * @throws Exception
 	 */
-	void start(int port) throws InterruptedException;
+	void start(int port) throws Exception;
 
 	
 	/**

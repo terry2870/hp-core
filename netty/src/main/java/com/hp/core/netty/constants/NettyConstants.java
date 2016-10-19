@@ -6,7 +6,7 @@ package com.hp.core.netty.constants;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.hp.core.netty.bean.Response;
+import com.hp.core.netty.bean.NettyResponse;
 
 /**
  * @author huangping
@@ -18,5 +18,5 @@ public class NettyConstants {
 	/**
 	 * 用来存放服务端返回的数据
 	 */
-	public static ConcurrentHashMap<String, BlockingQueue<Response>> responseMap = new ConcurrentHashMap<String, BlockingQueue<Response>>();
+	public static ConcurrentHashMap<String, BlockingQueue<NettyResponse>> responseMap = new ConcurrentHashMap<String, BlockingQueue<NettyResponse>>();
 }

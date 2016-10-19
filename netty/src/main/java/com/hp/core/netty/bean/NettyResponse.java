@@ -9,7 +9,7 @@ import com.hp.core.api.bean.BaseBean;
  * @author huangping
  * 2016年7月24日 上午1:17:52
  */
-public class Response extends BaseBean {
+public class NettyResponse extends BaseBean {
 
 	private static final long serialVersionUID = -110311144131171151L;
 
@@ -31,7 +31,7 @@ public class Response extends BaseBean {
 	/**
 	 * 
 	 */
-	public Response() {
+	public NettyResponse() {
 	}
 
 	/**
@@ -39,7 +39,7 @@ public class Response extends BaseBean {
 	 * @param returnValue
 	 * @param exception
 	 */
-	public Response(String messageId, Object returnValue, Throwable exception) {
+	public NettyResponse(String messageId, Object returnValue, Throwable exception) {
 		this.messageId = messageId;
 		this.returnValue = returnValue;
 		this.exception = exception;
@@ -49,7 +49,7 @@ public class Response extends BaseBean {
 	 * @param messageId
 	 * @param returnValue
 	 */
-	public Response(String messageId, Object returnValue) {
+	public NettyResponse(String messageId, Object returnValue) {
 		this.messageId = messageId;
 		this.returnValue = returnValue;
 	}

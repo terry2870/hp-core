@@ -3,15 +3,14 @@
  */
 package com.hp.core.netty.server;
 
-import javax.annotation.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSON;
-import com.hp.core.netty.bean.Request;
-import com.hp.core.netty.bean.Response;
+import com.hp.core.common.enums.SerializationTypeEnum;
+import com.hp.core.netty.bean.NettyRequest;
+import com.hp.core.netty.bean.NettyResponse;
+import com.hp.core.netty.serialize.protostuff.ProtostuffDecoder;
+import com.hp.core.netty.serialize.protostuff.ProtostuffEncoder;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -28,38 +27,61 @@ import io.netty.util.CharsetUtil;
  * @author huangping
  * 2016年7月24日 下午1:51:49
  */
-@Component
 public class NettyServerChannelInitialier extends ChannelInitializer<SocketChannel> {
 
-	static Logger log = LoggerFactory.getLogger(NettyServerChannelInitialier.class);
-
-	@Resource
-	NettyServerDispatchHandler nettyServerDispatchHandler;
+	private static Logger log = LoggerFactory.getLogger(NettyServerChannelInitialier.class);
 	
+	private SerializationTypeEnum serializationTypeEnum;
+	
+	/**
+	 * @param serializationTypeEnum
+	 */
+	public NettyServerChannelInitialier(SerializationTypeEnum serializationTypeEnum) {
+		this.serializationTypeEnum = serializationTypeEnum;
+	}
+
 	@Override
 	protected void initChannel(SocketChannel ch) throws Exception {
-		log.info("已经启动监听");
+		log.info("初始化开始");
 		ChannelPipeline pipeline = ch.pipeline();
-		pipeline.addLast(new LineBasedFrameDecoder(1024));
-		pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
-		pipeline.addLast(nettyServerDispatchHandler);
+		switch (serializationTypeEnum) {
+		case PROTOSTUFF:
+			pipeline.addLast(new ProtostuffDecoder(NettyRequest.class));
+			pipeline.addLast(new ProtostuffEncoder(NettyResponse.class));
+			break;
+		case LINEBASED:
+			pipeline.addLast(new LineBasedFrameDecoder(1024));
+			pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
+			break;
+		default:
+			pipeline.addLast(new ProtostuffDecoder(NettyRequest.class));
+			pipeline.addLast(new ProtostuffEncoder(NettyResponse.class));
+			break;
+		}
+		
+		pipeline.addLast(new NettyServerDispatchHandler());
 	}
 	
-	@Component
-	public class NettyServerDispatchHandler extends SimpleChannelInboundHandler<String> {
+	public class NettyServerDispatchHandler extends SimpleChannelInboundHandler<NettyRequest> {
 
-		int counter = 0;
 
 		@Override
-		protected void channelRead0(ChannelHandlerContext ctx, String requestMsg) throws Exception {
-			log.info("服务端收到消息。 requestMsg={}", requestMsg);
-			Request request = JSON.parseObject(requestMsg, Request.class);
-			Response response = new Response(request.getMessageId(), "收到请求："+ request.getData());
+		protected void channelRead0(ChannelHandlerContext ctx, NettyRequest request) throws Exception {
+			log.info("服务端收到消息。 request={}", request);
+			NettyResponse response = new NettyResponse(request.getMessageId(), "收到请求："+ request.getData());
 			ByteBuf resp = Unpooled.copiedBuffer((response.toString() + System.getProperty("line.separator")).getBytes());
 			ctx.writeAndFlush(resp);
 		}
 		
 
+	}
+
+	public SerializationTypeEnum getSerializationTypeEnum() {
+		return serializationTypeEnum;
+	}
+
+	public void setSerializationTypeEnum(SerializationTypeEnum serializationTypeEnum) {
+		this.serializationTypeEnum = serializationTypeEnum;
 	}
 
 }

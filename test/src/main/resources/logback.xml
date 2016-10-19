@@ -9,7 +9,7 @@
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
 	
 	<!-- 日志总级别-->
-	<property name="logs.level" value="debug"/>
+	<property name="logs.level" value="info"/>
 	
 	<!-- 日志最大的历史 7天 -->
 	<property name="maxHistory" value="7"/>

@@ -9,7 +9,7 @@ import com.hp.core.api.bean.BaseBean;
  * @author huangping
  * 2016年7月24日 上午1:32:11
  */
-public class Request extends BaseBean {
+public class NettyRequest extends BaseBean {
 
 	private static final long serialVersionUID = 1103241642485266988L;
 
@@ -28,11 +28,11 @@ public class Request extends BaseBean {
 	/**
 	 * 
 	 */
-	public Request() {
+	public NettyRequest() {
 	}
 
 	
-	public Request(String messageId, Object data, Class<?> className) {
+	public NettyRequest(String messageId, Object data, Class<?> className) {
 		this.messageId = messageId;
 		this.data = data;
 		this.className = className;
