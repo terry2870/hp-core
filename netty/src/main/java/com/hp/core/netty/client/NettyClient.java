@@ -8,18 +8,24 @@ import java.util.concurrent.ArrayBlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.core.common.enums.SerializationTypeEnum;
 import com.hp.core.netty.bean.NettyRequest;
 import com.hp.core.netty.bean.NettyResponse;
 import com.hp.core.netty.constants.NettyConstants;
+import com.hp.core.netty.serialize.protostuff.ProtostuffDecoder;
+import com.hp.core.netty.serialize.protostuff.ProtostuffEncoder;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LineBasedFrameDecoder;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.util.CharsetUtil;
 
 /**
  * @author huangping
@@ -37,6 +43,8 @@ public class NettyClient implements Client {
 	private String host;
 	private int port;
 	
+	private SerializationTypeEnum serializationTypeEnum = SerializationTypeEnum.PROTOSTUFF; // 序列化方法
+	
 	public NettyClient() {
 	}
 
@@ -47,6 +55,30 @@ public class NettyClient implements Client {
 	public NettyClient(String host, int port) {
 		this.host = host;
 		this.port = port;
+	}
+
+	/**
+	 * @param host
+	 * @param port
+	 * @param serializationTypeEnum
+	 */
+	public NettyClient(String host, int port, SerializationTypeEnum serializationTypeEnum) {
+		super();
+		this.host = host;
+		this.port = port;
+		this.serializationTypeEnum = serializationTypeEnum;
+	}
+	
+	/**
+	 * @param host
+	 * @param port
+	 * @param serializationTypeEnum
+	 */
+	public NettyClient(String host, int port, String serializationTypeEnumName) {
+		super();
+		this.host = host;
+		this.port = port;
+		this.serializationTypeEnum = SerializationTypeEnum.getEnumByName(serializationTypeEnumName);
 	}
 
 	public void connect() throws Exception {
@@ -62,7 +94,29 @@ public class NettyClient implements Client {
 			.group(workerGroup)
 			.channel(NioSocketChannel.class)
 			.option(ChannelOption.SO_KEEPALIVE, true)
-			.handler(new NettyClientChannelInitialier());
+			.handler(new ChannelInitializer<Channel>() {
+
+				@Override
+				protected void initChannel(Channel ch) throws Exception {
+					log.info("客户端初始化开始");
+					ChannelPipeline pipeline = ch.pipeline();
+					switch (serializationTypeEnum) {
+					case PROTOSTUFF:
+						pipeline.addLast(new ProtostuffEncoder(NettyRequest.class));
+						pipeline.addLast(new ProtostuffDecoder(NettyResponse.class));
+						break;
+					case LINEBASED:
+						pipeline.addLast(new LineBasedFrameDecoder(1024));
+						pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
+						break;
+					default:
+						pipeline.addLast(new ProtostuffEncoder(NettyRequest.class));
+						pipeline.addLast(new ProtostuffDecoder(NettyResponse.class));
+						break;
+					}
+					pipeline.addLast(new NettyClientChannelInboundHandler());
+				}
+			});
 		channel = bootstrap.connect(host, port).sync().channel();
 		log.info("connect server success host={}, port={}", host, port);
 	}
@@ -71,10 +125,10 @@ public class NettyClient implements Client {
 	public NettyResponse send(NettyRequest request) throws Exception {
 		log.debug("send message with request={}", request);
 		NettyConstants.responseMap.put(request.getMessageId(), new ArrayBlockingQueue<NettyResponse>(1));
-		byte[] bytes = (request.toString() + System.getProperty("line.separator")).getBytes();
-		ByteBuf message = Unpooled.buffer(bytes.length);
-		message.writeBytes(bytes);
-		channel.writeAndFlush(message);
+//		byte[] bytes = (request.toString() + System.getProperty("line.separator")).getBytes();
+//		ByteBuf message = Unpooled.buffer(bytes.length);
+//		message.writeBytes(bytes);
+		channel.writeAndFlush(request);
 		return getResponse(request.getMessageId());
 	}
 	
@@ -85,16 +139,20 @@ public class NettyClient implements Client {
 	 * @throws Exception
 	 */
 	public NettyResponse getResponse(String messageId) throws Exception {
-		NettyResponse result = null;
+		NettyResponse response = null;
 		try {
-			result = NettyConstants.responseMap.get(messageId).take();
+			response = NettyConstants.responseMap.get(messageId).take();
+			if (response.getException() != null) {
+				log.error("getResponse error. with messageId={}", messageId, response.getException());
+				throw new Exception(response.getException());
+			}
 		} catch (InterruptedException e) {
-			log.error("", e);
+			log.error("getResponse error. with messageId={}", messageId, e);
 			throw e;
 		} finally {
 			NettyConstants.responseMap.remove(messageId);
 		}
-		return result;
+		return response;
 	}
 
 	@Override
@@ -126,6 +184,14 @@ public class NettyClient implements Client {
 
 	public void setPort(int port) {
 		this.port = port;
+	}
+
+	public SerializationTypeEnum getSerializationTypeEnum() {
+		return serializationTypeEnum;
+	}
+
+	public void setSerializationTypeEnum(SerializationTypeEnum serializationTypeEnum) {
+		this.serializationTypeEnum = serializationTypeEnum;
 	}
 
 }

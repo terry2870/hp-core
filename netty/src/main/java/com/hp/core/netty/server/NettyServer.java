@@ -7,13 +7,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.core.common.enums.SerializationTypeEnum;
+import com.hp.core.netty.bean.NettyRequest;
+import com.hp.core.netty.bean.NettyResponse;
+import com.hp.core.netty.serialize.protostuff.ProtostuffDecoder;
+import com.hp.core.netty.serialize.protostuff.ProtostuffEncoder;
+import com.hp.core.netty.server.NettyServerChannelInboundHandler.NettyProcess;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LineBasedFrameDecoder;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.util.CharsetUtil;
 
 /**
  * @author huangping 2016年7月24日 下午10:07:12
@@ -30,7 +41,8 @@ public class NettyServer implements Server {
 	
 	private SerializationTypeEnum serializationTypeEnum = SerializationTypeEnum.PROTOSTUFF; // 序列化方式
 	
-	//private 
+	// 服务端处理的具体方法
+	private NettyProcess nettyProcess;
 	
 	public NettyServer() {}
 	
@@ -43,18 +55,33 @@ public class NettyServer implements Server {
 
 	/**
 	 * @param port
-	 * @param serializationTypeEnum
+	 * @param nettyProcess
 	 */
-	public NettyServer(int port, SerializationTypeEnum serializationTypeEnum) {
-		this.serializationTypeEnum = serializationTypeEnum;
+	public NettyServer(int port, NettyProcess nettyProcess) {
+		this.nettyProcess = nettyProcess;
 		this.port = port;
 	}
 	
 	/**
+	 * @param port
+	 * @param nettyProcess
 	 * @param serializationTypeEnum
 	 */
-	public NettyServer(SerializationTypeEnum serializationTypeEnum) {
+	public NettyServer(int port, NettyProcess nettyProcess, SerializationTypeEnum serializationTypeEnum) {
 		this.serializationTypeEnum = serializationTypeEnum;
+		this.nettyProcess = nettyProcess;
+		this.port = port;
+	}
+	
+	/**
+	 * @param port
+	 * @param nettyProcess
+	 * @param serializationTypeEnum
+	 */
+	public NettyServer(int port, NettyProcess nettyProcess, String serializationTypeEnumName) {
+		this.serializationTypeEnum = SerializationTypeEnum.getEnumByName(serializationTypeEnumName);
+		this.nettyProcess = nettyProcess;
+		this.port = port;
 	}
 	
 	public void start() throws Exception {
@@ -71,7 +98,30 @@ public class NettyServer implements Server {
 			.channel(NioServerSocketChannel.class)
 			.option(ChannelOption.SO_BACKLOG, 1024)
 			.childOption(ChannelOption.SO_KEEPALIVE, true)
-			.childHandler(new NettyServerChannelInitialier(serializationTypeEnum));
+			.childHandler(new ChannelInitializer<SocketChannel>() {
+
+				@Override
+				protected void initChannel(SocketChannel ch) throws Exception {
+					log.info("服务端初始化开始");
+					ChannelPipeline pipeline = ch.pipeline();
+					switch (serializationTypeEnum) {
+					case PROTOSTUFF:
+						pipeline.addLast(new ProtostuffDecoder(NettyRequest.class));
+						pipeline.addLast(new ProtostuffEncoder(NettyResponse.class));
+						break;
+					case LINEBASED:
+						pipeline.addLast(new LineBasedFrameDecoder(1024));
+						pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
+						break;
+					default:
+						pipeline.addLast(new ProtostuffDecoder(NettyRequest.class));
+						pipeline.addLast(new ProtostuffEncoder(NettyResponse.class));
+						break;
+					}
+					
+					pipeline.addLast(new NettyServerChannelInboundHandler(nettyProcess));
+				}
+			});
 		serverBootstrap.bind(port).sync();
 		log.info("监听端口【{}】完成", port);
 	}
@@ -106,6 +156,14 @@ public class NettyServer implements Server {
 
 	public void setPort(int port) {
 		this.port = port;
+	}
+
+	public NettyProcess getNettyProcess() {
+		return nettyProcess;
+	}
+
+	public void setNettyProcess(NettyProcess nettyProcess) {
+		this.nettyProcess = nettyProcess;
 	}
 
 }

@@ -22,6 +22,12 @@ public interface Client {
 	void connect(String host, int port) throws Exception;
 	
 	/**
+	 * 连接服务端
+	 * @throws Exception
+	 */
+	void connect() throws Exception;
+	
+	/**
 	 * 发送请求
 	 * @param request
 	 * @return

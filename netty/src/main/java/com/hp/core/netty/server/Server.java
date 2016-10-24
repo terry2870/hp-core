@@ -14,7 +14,6 @@ public interface Server {
 	 * @throws Exception
 	 */
 	void start(int port) throws Exception;
-
 	
 	/**
 	 * 停止监听
