@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.hp.core.netty.bean.NettyRequest;
 import com.hp.core.netty.bean.NettyResponse;
 import com.hp.core.netty.client.Client;
+import com.hp.core.netty.client.NettyClient;
 import com.hp.tools.common.utils.DateUtil;
 import com.hp.tools.common.utils.RandomUtil;
 
@@ -25,21 +26,21 @@ import com.hp.tools.common.utils.RandomUtil;
  * @author huangping
  * 2016年7月24日 下午3:11:25
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/spring*.xml"})
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(locations = {"classpath*:META-INF/spring/spring*.xml"})
 public class NettyClientTest {
 
 	static Logger log = LoggerFactory.getLogger(NettyClientTest.class);
 	
-	@Resource
-	Client client;
+	Client client = new NettyClient("127.0.0.1", 9999);
 	
 	@Test
 	public void testClient() {
 		log.info("client");
 		ExecutorService exe = Executors.newFixedThreadPool(10);
+		
 		try {
-			client.connect("127.0.0.1", 9999);
+			client.connect();
 			for (int i = 0; i < 2; i++) {
 				String name = "";
 				while (name.length() < 2000) {
@@ -65,7 +66,7 @@ public class NettyClientTest {
 
 		@Override
 		public void run() {
-			NettyRequest req = new NettyRequest(DateUtil.getCurrentTimeSeconds() + "_" + RandomUtil.getRandom(5), user, User.class);
+			NettyRequest req = new NettyRequest(user, User.class);
 			try {
 				log.info("客户端发送消息：" + req);
 				NettyResponse resp = client.send(req);

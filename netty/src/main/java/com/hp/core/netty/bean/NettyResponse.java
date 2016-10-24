@@ -21,7 +21,9 @@ public class NettyResponse extends BaseBean {
 	/**
 	 * 返回值
 	 */
-	private Object returnValue;
+	private Object data;
+	
+	private Class<?> className = Object.class;
 	
 	/**
 	 * 抛出的异常
@@ -36,12 +38,12 @@ public class NettyResponse extends BaseBean {
 
 	/**
 	 * @param messageId
-	 * @param returnValue
+	 * @param data
 	 * @param exception
 	 */
-	public NettyResponse(String messageId, Object returnValue, Throwable exception) {
+	public NettyResponse(String messageId, Object data, Throwable exception) {
 		this.messageId = messageId;
-		this.returnValue = returnValue;
+		this.data = data;
 		this.exception = exception;
 	}
 	
@@ -49,11 +51,22 @@ public class NettyResponse extends BaseBean {
 	 * @param messageId
 	 * @param returnValue
 	 */
-	public NettyResponse(String messageId, Object returnValue) {
+	public NettyResponse(String messageId, Object data) {
 		this.messageId = messageId;
-		this.returnValue = returnValue;
+		this.data = data;
 	}
-	
+
+	/**
+	 * @param messageId
+	 * @param data
+	 * @param responseClass
+	 */
+	public NettyResponse(String messageId, Object data, Class<?> className) {
+		super();
+		this.messageId = messageId;
+		this.data = data;
+		this.className = className;
+	}
 
 	public String getMessageId() {
 		return messageId;
@@ -63,19 +76,27 @@ public class NettyResponse extends BaseBean {
 		this.messageId = messageId;
 	}
 
-	public Object getReturnValue() {
-		return returnValue;
-	}
-
-	public void setReturnValue(Object returnValue) {
-		this.returnValue = returnValue;
-	}
-
 	public Throwable getException() {
 		return exception;
 	}
 
 	public void setException(Throwable exception) {
 		this.exception = exception;
+	}
+
+	public Object getData() {
+		return data;
+	}
+
+	public void setData(Object data) {
+		this.data = data;
+	}
+
+	public Class<?> getClassName() {
+		return className;
+	}
+
+	public void setClassName(Class<?> className) {
+		this.className = className;
 	}
 }

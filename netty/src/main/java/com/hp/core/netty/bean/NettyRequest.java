@@ -3,6 +3,8 @@
  */
 package com.hp.core.netty.bean;
 
+import java.util.UUID;
+
 import com.hp.core.api.bean.BaseBean;
 
 /**
@@ -16,7 +18,7 @@ public class NettyRequest extends BaseBean {
 	/**
 	 * 请求唯一标识
 	 */
-	private String messageId;
+	private String messageId = UUID.randomUUID().toString();
 	
 	/**
 	 * 请求的对象
@@ -31,6 +33,10 @@ public class NettyRequest extends BaseBean {
 	public NettyRequest() {
 	}
 
+	public NettyRequest(Object data, Class<?> className) {
+		this.data = data;
+		this.className = className;
+	}
 	
 	public NettyRequest(String messageId, Object data, Class<?> className) {
 		this.messageId = messageId;

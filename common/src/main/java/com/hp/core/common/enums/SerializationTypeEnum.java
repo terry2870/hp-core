@@ -3,6 +3,8 @@
  */
 package com.hp.core.common.enums;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * @author ping.huang
  * 2016年10月15日
@@ -26,5 +28,36 @@ public enum SerializationTypeEnum {
 	}
 	public String getName() {
 		return name;
+	}
+	
+	/**
+	 * 根据type，获取枚举
+	 * @param type
+	 * @return
+	 */
+	public static SerializationTypeEnum getEnumByType(int type) {
+		for (SerializationTypeEnum e : values()) {
+			if (e.getType() == type) {
+				return e;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 根据name，获取枚举
+	 * @param type
+	 * @return
+	 */
+	public static SerializationTypeEnum getEnumByName(String name) {
+		if (StringUtils.isEmpty(name)) {
+			return null;
+		}
+		for (SerializationTypeEnum e : values()) {
+			if (name.equalsIgnoreCase(e.getName())) {
+				return e;
+			}
+		}
+		return null;
 	}
 }
