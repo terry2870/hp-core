@@ -56,7 +56,7 @@ public class NettyServerChannelInboundHandler extends SimpleChannelInboundHandle
 	 * @author ping.huang
 	 * 2016年10月24日
 	 */
-	public static interface NettyProcess {
+	public interface NettyProcess {
 		
 		/**
 		 * 服务端处理具体的逻辑

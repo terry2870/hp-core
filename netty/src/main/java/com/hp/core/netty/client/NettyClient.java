@@ -146,7 +146,7 @@ public class NettyClient implements Client {
 				log.error("getResponse error. with messageId={}", messageId, response.getException());
 				throw new Exception(response.getException());
 			}
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
 			log.error("getResponse error. with messageId={}", messageId, e);
 			throw e;
 		} finally {
