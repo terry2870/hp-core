@@ -21,15 +21,13 @@ public class NettyServerTest {
 
 	public static void main(String[] args) {
 		log.info("server");
-		System.out.println("===== " + System.getProperty("line.separator"));
+		log.info("===== " + System.getProperty("line.separator"));
 		try {
 			new NettyServer(9999, new NettyProcess() {
-				
 				@Override
-				public String process(NettyRequest request) {
+				public String process(NettyRequest request) throws Exception {
 					log.info("服务端收到请求：{}", request);
-					String str = null;
-					str.length();
+					Thread.sleep(20000);
 					return "收到了【"+ request.getData() +"】";
 				}
 			}).start();

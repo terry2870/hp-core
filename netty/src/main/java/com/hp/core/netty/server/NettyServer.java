@@ -3,6 +3,8 @@
  */
 package com.hp.core.netty.server;
 
+import java.util.concurrent.TimeUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,12 +93,13 @@ public class NettyServer implements Server {
 	@Override
 	public void start(int port) throws Exception {
 		log.info("开始监听端口：{}", port);
-		bossGroup = new NioEventLoopGroup();
-		workerGroup = new NioEventLoopGroup(10);
+		bossGroup = new NioEventLoopGroup(); //接收消息循环队列
+		workerGroup = new NioEventLoopGroup();//发送消息循环队列
 		ServerBootstrap serverBootstrap = new ServerBootstrap();
 		serverBootstrap.group(bossGroup, workerGroup)
 			.channel(NioServerSocketChannel.class)
 			.option(ChannelOption.SO_BACKLOG, 1024)
+			.option(ChannelOption.TCP_NODELAY, true)
 			.childOption(ChannelOption.SO_KEEPALIVE, true)
 			.childHandler(new ChannelInitializer<SocketChannel>() {
 
@@ -118,11 +121,10 @@ public class NettyServer implements Server {
 						pipeline.addLast(new ProtostuffEncoder(NettyResponse.class));
 						break;
 					}
-					
 					pipeline.addLast(new NettyServerChannelInboundHandler(nettyProcess));
 				}
 			});
-		serverBootstrap.bind(port).sync();
+		serverBootstrap.bind(port).sync().channel().closeFuture().sync();
 		log.info("监听端口【{}】完成", port);
 	}
 

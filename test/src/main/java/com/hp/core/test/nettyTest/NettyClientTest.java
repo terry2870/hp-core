@@ -33,7 +33,7 @@ public class NettyClientTest {
 		
 		try {
 			client.connect();
-			for (int i = 0; i < 2; i++) {
+			for (int i = 0; i < 3; i++) {
 				String name = "";
 				name += DateUtil.getCurrentTimeSeconds();
 				name += "_" + i;
