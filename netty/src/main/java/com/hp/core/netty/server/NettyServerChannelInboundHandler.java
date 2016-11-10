@@ -3,6 +3,9 @@
  */
 package com.hp.core.netty.server;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,22 +35,32 @@ public class NettyServerChannelInboundHandler extends SimpleChannelInboundHandle
 
 	static Logger log = LoggerFactory.getLogger(NettyServerChannelInboundHandler.class);
 	
+	ExecutorService exe = Executors.newFixedThreadPool(3);
+	
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, NettyRequest request) throws Exception {
-		log.debug("服务端收到消息。 request={}", request);
-		NettyResponse response = new NettyResponse();
-		response.setMessageId(request.getMessageId());
-		try {
-			Object data = nettyProcess.process(request);
-			response.setData(data);
-			response.setClassName(data.getClass());
-		} catch (Exception e) {
-			log.error("channelRead0 error. with messageId={}", request.getMessageId(), e);
-			response.setException(e);
-		}
+		exe.execute(new Runnable() {
+			
+			@Override
+			public void run() {
+				log.debug("服务端收到消息。 request={}", request);
+				NettyResponse response = new NettyResponse();
+				response.setMessageId(request.getMessageId());
+				try {
+					Object data = nettyProcess.process(request);
+					response.setData(data);
+					response.setClassName(data.getClass());
+				} catch (Exception e) {
+					log.error("channelRead0 error. with messageId={}", request.getMessageId(), e);
+					response.setException(e);
+				}
+				
+				//ByteBuf resp = Unpooled.copiedBuffer((response.toString() + System.getProperty("line.separator")).getBytes());
+				ctx.writeAndFlush(response);
+			}
+		});
 		
-		//ByteBuf resp = Unpooled.copiedBuffer((response.toString() + System.getProperty("line.separator")).getBytes());
-		ctx.writeAndFlush(response);
+		
 	}
 	
 	
