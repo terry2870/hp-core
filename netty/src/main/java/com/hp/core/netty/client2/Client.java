@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.hp.core.netty.client;
+package com.hp.core.netty.client2;
 
 import com.hp.core.netty.bean.NettyRequest;
 import com.hp.core.netty.bean.NettyResponse;
@@ -30,5 +30,5 @@ public interface Client {
 	/**
 	 * 关闭连接
 	 */
-	void close();
+	void close() throws Exception;
 }

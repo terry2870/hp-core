@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.hp.core.netty.server;
+package com.hp.core.netty.server2;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

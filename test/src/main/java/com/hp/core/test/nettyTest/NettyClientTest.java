@@ -6,14 +6,14 @@ package com.hp.core.test.nettyTest;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.core.netty.bean.NettyRequest;
 import com.hp.core.netty.bean.NettyResponse;
-import com.hp.core.netty.client.Client;
-import com.hp.core.netty.client.NettyClient;
+import com.hp.core.netty.client2.Client;
+import com.hp.core.netty.client2.NettyClient;
+import com.hp.tools.common.beans.BaseBean;
 import com.hp.tools.common.utils.DateUtil;
 
 /**
@@ -24,16 +24,15 @@ public class NettyClientTest {
 
 	static Logger log = LoggerFactory.getLogger(NettyClientTest.class);
 	
-	Client client = new NettyClient("127.0.0.1", 9999);
+	static Client client = new NettyClient("127.0.0.1", 9999);
 	
-	@Test
-	public void testClient() {
+	public static void main(String[] args) {
 		log.info("client");
-		ExecutorService exe = Executors.newFixedThreadPool(10);
+		ExecutorService exe = Executors.newFixedThreadPool(4);
 		
 		try {
-			client.connect();
-			for (int i = 0; i < 5; i++) {
+			client.init();
+			for (int i = 0; i < 10; i++) {
 				String name = "";
 				name += DateUtil.getCurrentTimeSeconds();
 				name += "_" + i;
@@ -47,7 +46,7 @@ public class NettyClientTest {
 		}
 	}
 	
-	public class Run implements Runnable {
+	public static class Run implements Runnable {
 
 		private User user;
 		
@@ -69,7 +68,11 @@ public class NettyClientTest {
 		
 	}
 	
-	public static class User {
+	public static class User extends BaseBean {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1229273332105532364L;
 		/**
 		 * @param id
 		 * @param name

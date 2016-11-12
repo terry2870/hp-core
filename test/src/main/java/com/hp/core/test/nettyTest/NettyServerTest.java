@@ -7,8 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.core.netty.bean.NettyRequest;
-import com.hp.core.netty.server.NettyServer;
-import com.hp.core.netty.server.NettyServerChannelInboundHandler.NettyProcess;
+import com.hp.core.netty.server2.NettyServer;
+import com.hp.core.netty.server2.NettyServerChannelInboundHandler.NettyProcess;
 
 /**
  * @author huangping
@@ -27,10 +27,10 @@ public class NettyServerTest {
 				@Override
 				public String process(NettyRequest request) throws Exception {
 					log.info("服务端收到请求：{}", request);
-					Thread.sleep(20000);
+					Thread.sleep(10000);
 					return "收到了【"+ request.getData() +"】";
 				}
-			}).start();
+			}).init();
 			System.in.read();
 		} catch (Exception e) {
 			e.printStackTrace();
