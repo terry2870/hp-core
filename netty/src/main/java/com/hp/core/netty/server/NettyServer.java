@@ -37,6 +37,7 @@ public class NettyServer implements Server {
 	private EventLoopGroup bossGroup;
 	private EventLoopGroup workerGroup;
 	private ServerBootstrap serverBootstrap;
+	private int threadSize = Runtime.getRuntime().availableProcessors() * 2; // 服务端处理的线程数。默认为cpu核数 * 2
 	
 	private int port; // 端口
 	
@@ -59,37 +60,46 @@ public class NettyServer implements Server {
 	 * @param nettyProcess
 	 */
 	public NettyServer(int port, NettyProcess nettyProcess) {
+		this(port);
 		this.nettyProcess = nettyProcess;
-		this.port = port;
+	}
+	
+	/**
+	 * 
+	 * @param port
+	 * @param nettyProcess
+	 * @param queueSize
+	 */
+	public NettyServer(int port, NettyProcess nettyProcess, int threadSize) {
+		this(port, nettyProcess);
+		this.threadSize = threadSize;
 	}
 	
 	/**
 	 * @param port
 	 * @param nettyProcess
 	 * @param serializationTypeEnum
-	 */
-	public NettyServer(int port, NettyProcess nettyProcess, SerializationTypeEnum serializationTypeEnum) {
+	 *//*
+	public NettyServer(int port, NettyProcess nettyProcess, int queueSize, SerializationTypeEnum serializationTypeEnum) {
+		this(port, nettyProcess, queueSize);
 		this.serializationTypeEnum = serializationTypeEnum;
-		this.nettyProcess = nettyProcess;
-		this.port = port;
 	}
 	
-	/**
+	*//**
 	 * @param port
 	 * @param nettyProcess
 	 * @param serializationTypeEnum
-	 */
-	public NettyServer(int port, NettyProcess nettyProcess, String serializationTypeEnumName) {
-		this.serializationTypeEnum = SerializationTypeEnum.getEnumByName(serializationTypeEnumName);
-		this.nettyProcess = nettyProcess;
-		this.port = port;
-	}
+	 *//*
+	public NettyServer(int port, NettyProcess nettyProcess, int queueSize, String serializationTypeEnumName) {
+		this(port, nettyProcess, queueSize, SerializationTypeEnum.getEnumByName(serializationTypeEnumName));
+	}*/
 	
 	@Override
-	public void init() throws Exception {
+	public Server start() throws Exception {
 		log.info("init server start with port={}", port);
 		initServerBootstrap();
 		log.info("init server success with port={}", port);
+		return this;
 	}
 
 	/**
@@ -98,8 +108,8 @@ public class NettyServer implements Server {
 	 */
 	private void initServerBootstrap() throws Exception {
 		log.info("initServerBootstrap server start with port={}", port);
-		bossGroup = new NioEventLoopGroup(3); //接收消息循环队列
-		workerGroup = new NioEventLoopGroup(5);//发送消息循环队列
+		bossGroup = new NioEventLoopGroup(threadSize); //接收消息循环队列
+		workerGroup = new NioEventLoopGroup(threadSize);//发送消息循环队列
 		serverBootstrap = new ServerBootstrap();
 		serverBootstrap.group(bossGroup, workerGroup)
 			.channel(NioServerSocketChannel.class)
@@ -122,8 +132,8 @@ public class NettyServer implements Server {
 						pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
 						break;
 					default:
-						pipeline.addLast(new ProtostuffDecoder(NettyRequest.class));
-						pipeline.addLast(new ProtostuffEncoder(NettyResponse.class));
+						pipeline.addLast(new ProtostuffEncoder(NettyRequest.class));
+						pipeline.addLast(new ProtostuffDecoder(NettyResponse.class));
 						break;
 					}
 					pipeline.addLast(new NettyServerChannelInboundHandler(nettyProcess));
@@ -135,7 +145,7 @@ public class NettyServer implements Server {
 	}
 
 	@Override
-	public void stop() {
+	public Server stop() {
 		if (bossGroup != null) {
 			bossGroup.shutdownGracefully();
 		}
@@ -148,6 +158,7 @@ public class NettyServer implements Server {
 		bossGroup = null;
 		workerGroup = null;
 		channel = null;
+		return this;
 	}
 
 	public SerializationTypeEnum getSerializationTypeEnum() {
@@ -172,6 +183,14 @@ public class NettyServer implements Server {
 
 	public void setNettyProcess(NettyProcess nettyProcess) {
 		this.nettyProcess = nettyProcess;
+	}
+
+	public int getThreadSize() {
+		return threadSize;
+	}
+
+	public void setThreadSize(int threadSize) {
+		this.threadSize = threadSize;
 	}
 
 }

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.hp.core.netty.server2;
+package com.hp.core.netty.server3;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +11,7 @@ import com.hp.core.netty.bean.NettyRequest;
 import com.hp.core.netty.bean.NettyResponse;
 import com.hp.core.netty.serialize.protostuff.ProtostuffDecoder;
 import com.hp.core.netty.serialize.protostuff.ProtostuffEncoder;
-import com.hp.core.netty.server2.NettyServerChannelInboundHandler.NettyProcess;
+import com.hp.core.netty.server3.NettyServerChannelInboundHandler.NettyProcess;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -98,8 +98,8 @@ public class NettyServer implements Server {
 	 */
 	private void initServerBootstrap() throws Exception {
 		log.info("initServerBootstrap server start with port={}", port);
-		bossGroup = new NioEventLoopGroup(); //接收消息循环队列
-		workerGroup = new NioEventLoopGroup();//发送消息循环队列
+		bossGroup = new NioEventLoopGroup(3); //接收消息循环队列
+		workerGroup = new NioEventLoopGroup(5);//发送消息循环队列
 		serverBootstrap = new ServerBootstrap();
 		serverBootstrap.group(bossGroup, workerGroup)
 			.channel(NioServerSocketChannel.class)

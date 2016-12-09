@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.hp.core.netty.client2;
+package com.hp.core.netty.client3;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

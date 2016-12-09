@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.core.netty.bean.NettyRequest;
 import com.hp.core.netty.bean.NettyResponse;
-import com.hp.core.netty.client2.Client;
-import com.hp.core.netty.client2.NettyClient;
+import com.hp.core.netty.client.Client;
+import com.hp.core.netty.client.NettyClient;
 import com.hp.tools.common.beans.BaseBean;
 import com.hp.tools.common.utils.DateUtil;
 
@@ -24,11 +24,11 @@ public class NettyClientTest {
 
 	static Logger log = LoggerFactory.getLogger(NettyClientTest.class);
 	
-	static Client client = new NettyClient("127.0.0.1", 9999);
+	static Client client = new NettyClient("127.0.0.1", 9999, 2);
 	
 	public static void main(String[] args) {
 		log.info("client");
-		ExecutorService exe = Executors.newFixedThreadPool(4);
+		ExecutorService exe = Executors.newFixedThreadPool(100);
 		
 		try {
 			client.init();

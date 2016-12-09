@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.hp.core.netty.server2;
+package com.hp.core.netty.server3;
 
 /**
  * @author huangping 2016年7月24日 下午10:02:59

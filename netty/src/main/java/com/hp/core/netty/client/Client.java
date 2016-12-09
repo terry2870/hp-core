@@ -17,7 +17,7 @@ public interface Client {
 	 * 初始化客户端
 	 * @throws Exception
 	 */
-	void init() throws Exception;
+	Client init() throws Exception;
 	
 	/**
 	 * 发送请求
@@ -30,5 +30,5 @@ public interface Client {
 	/**
 	 * 关闭连接
 	 */
-	void close();
+	Client close() throws Exception;
 }

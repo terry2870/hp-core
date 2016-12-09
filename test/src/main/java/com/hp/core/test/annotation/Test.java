@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.hp.core.netty.server.NettyServer;
+import com.hp.core.netty.server3.NettyServer;
 import com.hp.tools.common.utils.SpringContextUtil;
 
 /**

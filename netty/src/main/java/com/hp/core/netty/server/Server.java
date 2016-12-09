@@ -9,13 +9,13 @@ package com.hp.core.netty.server;
 public interface Server {
 
 	/**
-	 * 初始化
+	 * 启动
 	 * @throws Exception
 	 */
-	void init() throws Exception;
+	Server start() throws Exception;
 	
 	/**
 	 * 停止监听
 	 */
-	void stop();
+	Server stop();
 }

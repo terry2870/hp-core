@@ -90,7 +90,7 @@ public class NettyServerChannelInboundHandler extends SimpleChannelInboundHandle
 		 * @return
 		 * @throws Exception
 		 */
-		public Object process(NettyRequest request) throws Exception;
+		public NettyResponse process(NettyRequest request) throws Exception;
 	}
 
 	public NettyProcess getNettyProcess() {
