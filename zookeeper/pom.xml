@@ -13,7 +13,9 @@
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<zk.version>3.4.8</zk.version>
+		<zk.version>3.4.9</zk.version>
+		<curator.framework.version>2.9.1</curator.framework.version>
+		<curator-x-discovery.version>2.9.1</curator-x-discovery.version>
 	</properties>
 	<dependencies>
 
@@ -35,6 +37,17 @@
 					<artifactId>netty</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-framework</artifactId>
+			<version>${curator.framework.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-x-discovery</artifactId>
+			<version>${curator-x-discovery.version}</version>
 		</dependency>
 
 

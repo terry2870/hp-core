@@ -64,7 +64,7 @@ public class ZookeeperHelper {
 			zk.create(path, data.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, createMode);
 		} else {
 			//节点已存在，则直接设置值
-			zk.setData(path, data.getBytes(), stat.getVersion() + 1);
+			//zk.setData(path, data.getBytes(), stat.getVersion() + 1);
 		}
 		
 		log.info("create zookeeper node ({} => {})", path, data);
