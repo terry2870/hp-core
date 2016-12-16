@@ -14,12 +14,11 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.InitializingBean;
 
 /**
  * @author ping.huang 2016年12月11日
  */
-public class CuratorFrameworkFactoryBean implements FactoryBean<CuratorFramework>, InitializingBean, Closeable {
+public class CuratorFrameworkFactoryBean implements FactoryBean<CuratorFramework>, Closeable {
 
 	static Logger log = LoggerFactory.getLogger(CuratorFrameworkFactoryBean.class);
 	
@@ -31,8 +30,7 @@ public class CuratorFrameworkFactoryBean implements FactoryBean<CuratorFramework
 	private int connectionTimeoutMs;
 	private String namespace;
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void init() throws Exception {
 		if (StringUtils.isBlank(connectString)) {
 			return;
 		}
@@ -79,6 +77,38 @@ public class CuratorFrameworkFactoryBean implements FactoryBean<CuratorFramework
 		if (curator != null) {
 			curator.close();
 		}
+	}
+
+	public String getConnectString() {
+		return connectString;
+	}
+
+	public void setConnectString(String connectString) {
+		this.connectString = connectString;
+	}
+
+	public int getSessionTimeoutMs() {
+		return sessionTimeoutMs;
+	}
+
+	public void setSessionTimeoutMs(int sessionTimeoutMs) {
+		this.sessionTimeoutMs = sessionTimeoutMs;
+	}
+
+	public int getConnectionTimeoutMs() {
+		return connectionTimeoutMs;
+	}
+
+	public void setConnectionTimeoutMs(int connectionTimeoutMs) {
+		this.connectionTimeoutMs = connectionTimeoutMs;
+	}
+
+	public String getNamespace() {
+		return namespace;
+	}
+
+	public void setNamespace(String namespace) {
+		this.namespace = namespace;
 	}
 
 }

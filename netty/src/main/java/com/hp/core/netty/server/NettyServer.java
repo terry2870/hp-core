@@ -97,11 +97,13 @@ public class NettyServer implements Server {
 	@Override
 	public Server start() throws Exception {
 		log.info("init server start with port={}", port);
+		
 		initServerBootstrap();
+		
 		log.info("init server success with port={}", port);
 		return this;
 	}
-
+	
 	/**
 	 * 初始化serverBootstrap
 	 * @throws Exception
@@ -140,7 +142,7 @@ public class NettyServer implements Server {
 				}
 			});
 		channel = serverBootstrap.bind(port).sync().channel();
-		channel.closeFuture().sync();
+		//channel.closeFuture().sync();
 		log.info("initServerBootstrap server end with port={}", port);
 	}
 
