@@ -14,6 +14,15 @@
 	http://www.springframework.org/schema/aop/spring-aop.xsd">
 	
 	
+	<bean id="serviceDiscoveryFactoryBean" class="com.hp.core.zookeeper.discovery.ServiceDiscoveryFactoryBean" init-method="init" destroy-method="close">
+		<property name="basePath" value="${zk.basePath:/yh/rpcservice}" />
+		<property name="curator" ref="curatorFrameworkFactory" />
+	</bean>
+	
+	<bean id="serviceDiscoveryFactory" class="com.hp.core.zookeeper.discovery.ServiceDiscoveryFactory" destroy-method="close">
+		<property name="serviceDiscovery" ref="serviceDiscoveryFactoryBean" />
+	</bean>
+	
 	<bean id="curatorFrameworkFactory" class="com.hp.core.zookeeper.curator.CuratorFrameworkFactoryBean" init-method="init" destroy-method="close">
 		<property name="connectString" value="${zk.connectString:127.0.0.1:2181}" />
 		<property name="sessionTimeoutMs" value="${zk.sessionTimeoutMs:60000}" />

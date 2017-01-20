@@ -25,14 +25,14 @@ public class NettyServerTest {
 		log.info("===== " + System.getProperty("line.separator"));
 		Server server = null;
 		try {
-			server = new NettyServer(9999, new NettyProcess() {
+			/*server = new NettyServer(9999, new NettyProcess() {
 				@Override
 				public String process(NettyRequest request) throws Exception {
 					log.info("服务端收到请求：{}", request);
 					Thread.sleep(10000);
 					return "收到了【"+ request.getData() +"】";
 				}
-			}, 5).init();
+			}, 5).init();*/
 			System.in.read();
 		} catch (Exception e) {
 			e.printStackTrace();
