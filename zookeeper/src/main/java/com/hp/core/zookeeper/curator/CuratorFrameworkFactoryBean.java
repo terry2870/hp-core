@@ -31,6 +31,7 @@ public class CuratorFrameworkFactoryBean implements FactoryBean<CuratorFramework
 	private String namespace;
 
 	public void init() throws Exception {
+		log.info("namespace= " + namespace);
 		if (StringUtils.isBlank(connectString)) {
 			return;
 		}
