@@ -82,6 +82,7 @@ public class ServiceDiscoveryFactory implements Closeable {
 
 	@Override
 	public synchronized void close() {
+		log.info("close ServiceProvider");
 		for (Closeable closeable : closeableList) {
 			CloseableUtils.closeQuietly(closeable);
 		}
