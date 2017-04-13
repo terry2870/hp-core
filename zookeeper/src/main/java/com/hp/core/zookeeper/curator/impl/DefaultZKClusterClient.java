@@ -42,13 +42,13 @@ public class DefaultZKClusterClient implements ZKClusterClient {
 
 	@Override
 	public void createNode(String path, String value, CreateMode createMode) {
-		log.debug("createNode with path={}, value={}, createMode={}", path, value, createMode);
+		log.info("createNode with path={}, value={}, createMode={}", path, value, createMode);
 		Preconditions.checkNotNull(path, "path can't be null");
 		Preconditions.checkNotNull(value, "value can't be null");
 		checkConnection();
 		try {
 			client.create().creatingParentsIfNeeded().withMode(createMode).forPath(path, value.getBytes(charset));
-			log.debug("createNode success with path={}, value={}, createMode={}", path, value, createMode);
+			log.info("createNode success with path={}, value={}, createMode={}", path, value, createMode);
 		} catch (Exception e) {
 			log.error("create path failed:{},value:{}", path, value, e);
 			throw new ZKOperateException("create path failed:" + path, e);
@@ -57,12 +57,12 @@ public class DefaultZKClusterClient implements ZKClusterClient {
 
 	@Override
 	public String getNodeValue(String path) {
-		log.debug("getNodeValue with path={}", path);
+		log.info("getNodeValue with path={}", path);
 		Preconditions.checkNotNull(path, "path can't be null");
 		checkConnection();
 		try {
 			byte[] bytes = client.getData().forPath(path);
-			log.debug("getNodeValue success with path={}", path);
+			log.info("getNodeValue success with path={}", path);
 			return new String(bytes, charset);
 		} catch (Exception e) {
 			log.error("getNodeValue path failed:{}", path, e);
@@ -72,7 +72,7 @@ public class DefaultZKClusterClient implements ZKClusterClient {
 
 	@Override
 	public List<ZKNode> getChildNodes(String path) {
-		log.debug("getChildNodes with path={}", path);
+		log.info("getChildNodes with path={}", path);
 		Preconditions.checkNotNull(path, "path can't be null");
 		checkConnection();
 		try {
@@ -86,7 +86,7 @@ public class DefaultZKClusterClient implements ZKClusterClient {
 				ZKNode node = new ZKNode(vpath, new String(bytes, charset), 0);
 				nodes.add(node);
 			}
-			log.debug("getChildNodes success with path={}", path);
+			log.info("getChildNodes success with path={}", path);
 			return nodes;
 		} catch (Exception e) {
 			log.error("getChildNodes path failed:{}", path, e);
@@ -96,12 +96,12 @@ public class DefaultZKClusterClient implements ZKClusterClient {
 
 	@Override
 	public void deleteNode(String path) {
-		log.debug("deleteNode with path={}", path);
+		log.info("deleteNode with path={}", path);
 		Preconditions.checkNotNull(path, "path can't be null");
 		checkConnection();
 		try {
 			client.delete().deletingChildrenIfNeeded().inBackground().forPath(path);
-			log.debug("deleteNode success with path={}", path);
+			log.info("deleteNode success with path={}", path);
 		} catch (Exception e) {
 			log.error("deleteNode path failed:{}", path, e);
 			throw new ZKOperateException("deleteNode path failed:" + path, e);
@@ -110,13 +110,13 @@ public class DefaultZKClusterClient implements ZKClusterClient {
 
 	@Override
 	public void setNodeValue(String path, String value) {
-		log.debug("setNodeValue with path={}, value={}", path, value);
+		log.info("setNodeValue with path={}, value={}", path, value);
 		Preconditions.checkNotNull(path, "path can't be null");
 		Preconditions.checkNotNull(value, "value can't be null");
 		checkConnection();
 		try {
 			client.setData().forPath(path, value.getBytes(charset));
-			log.debug("setNodeValue success with path={}, value={}", path, value);
+			log.info("setNodeValue success with path={}, value={}", path, value);
 		} catch (Exception e) {
 			log.error("setNodeValue path failed:{},value:{}", path, value, e);
 			throw new ZKOperateException("setNodeValue path failed:" + path, e);
@@ -125,13 +125,13 @@ public class DefaultZKClusterClient implements ZKClusterClient {
 
 	@Override
 	public boolean isExsit(String path) {
-		log.debug("check isExsit with path={}", path);
+		log.info("check isExsit with path={}", path);
 		Preconditions.checkNotNull(path, "path can't be null");
 		checkConnection();
 		Stat stat = null;
 		try {
 			stat = client.checkExists().forPath(path);
-			log.debug("check isExsit success with path={}", path);
+			log.info("check isExsit success with path={}", path);
 			return null != stat;
 		} catch (Exception e) {
 			log.error("isExsit path failed:{},value:{}", path, e);

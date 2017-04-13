@@ -38,7 +38,7 @@ public class ServiceDiscoveryFactory implements Closeable {
 	 * @param detail
 	 */
 	public void registerService(RegisterInstanceDetail detail) {
-		log.debug("registerService start with detail={}", detail);
+		log.info("registerService start with serviceName={}. detail={}", detail.getServiceName(), detail);
 		try {
 			ServiceInstance<RegisterInstanceDetail> instance1 = ServiceInstance.<RegisterInstanceDetail> builder()
 					.name(detail.getServiceName())
@@ -47,7 +47,7 @@ public class ServiceDiscoveryFactory implements Closeable {
 					.payload(detail)
 					.build();
 			serviceDiscovery.registerService(instance1);
-			log.debug("registerService success with detail={}", detail);
+			log.info("registerService success with serviceName={}. detail={}", detail.getServiceName(), detail);
 		} catch (Exception e) {
 			log.error("registerService error. with detail={}", detail, e);
 		}
@@ -60,7 +60,7 @@ public class ServiceDiscoveryFactory implements Closeable {
 	 * @throws Exception
 	 */
 	public ServiceInstance<RegisterInstanceDetail> discoveryService(String serviceName) throws Exception {
-		log.debug("discoveryService start with serviceName={}", serviceName);
+		log.info("discoveryService start with serviceName={}", serviceName);
 		ServiceProvider<RegisterInstanceDetail> provider = providers.get(serviceName);
 		if (provider == null) {
 			synchronized (lock) {
@@ -76,7 +76,7 @@ public class ServiceDiscoveryFactory implements Closeable {
 				}
 			}
 		}
-		log.debug("discoveryService success with serviceName={}", serviceName);
+		log.info("discoveryService success with serviceName={}", serviceName);
 		return provider.getInstance();
 	}
 

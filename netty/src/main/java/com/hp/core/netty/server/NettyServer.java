@@ -52,7 +52,7 @@ public class NettyServer implements Server {
 	 * @param port
 	 */
 	public NettyServer(int port) {
-		this.port = port;
+		setPort(port);
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class NettyServer implements Server {
 	 */
 	public NettyServer(int port, NettyProcess nettyProcess) {
 		this(port);
-		this.nettyProcess = nettyProcess;
+		setNettyProcess(nettyProcess);
 	}
 	
 	/**
@@ -72,7 +72,7 @@ public class NettyServer implements Server {
 	 */
 	public NettyServer(int port, NettyProcess nettyProcess, int threadSize) {
 		this(port, nettyProcess);
-		this.threadSize = threadSize;
+		setThreadSize(threadSize);
 	}
 	
 	/**
@@ -192,6 +192,9 @@ public class NettyServer implements Server {
 	}
 
 	public void setThreadSize(int threadSize) {
+		if (threadSize == 0) {
+			return;
+		}
 		this.threadSize = threadSize;
 	}
 
