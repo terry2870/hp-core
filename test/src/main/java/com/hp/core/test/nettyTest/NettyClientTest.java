@@ -56,14 +56,14 @@ public class NettyClientTest {
 
 		@Override
 		public void run() {
-			NettyRequest req = new NettyRequest(user, User.class);
+			/*NettyRequest req = new NettyRequest(user, User.class);
 			try {
 				log.info("客户端发送消息：" + req);
 				NettyResponse resp = client.send(req);
 				log.info("客户端收到返回：" + resp);
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
+			}*/
 		}
 		
 	}

@@ -1,4 +1,4 @@
-package org.redis;
+package com.hp.core.redis;
 
 /**
  * Hello world!

@@ -76,7 +76,6 @@ public class NettyServerChannelInboundHandler extends SimpleChannelInboundHandle
 		ctx.writeAndFlush(response);
 	}
 	
-	
 	/**
 	 * 处理方法
 	 * @author ping.huang
@@ -90,7 +89,7 @@ public class NettyServerChannelInboundHandler extends SimpleChannelInboundHandle
 		 * @return
 		 * @throws Exception
 		 */
-		public NettyResponse process(NettyRequest request) throws Exception;
+		public Object process(NettyRequest request) throws Exception;
 	}
 
 	public NettyProcess getNettyProcess() {

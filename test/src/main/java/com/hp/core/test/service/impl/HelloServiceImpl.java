@@ -3,6 +3,9 @@
  */
 package com.hp.core.test.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hp.core.test.annotation.RpcService;
 import com.hp.core.test.service.HelloService;
 
@@ -13,8 +16,12 @@ import com.hp.core.test.service.HelloService;
 @RpcService(HelloService.class) // 指定远程接口
 public class HelloServiceImpl implements HelloService {
 
+	static Logger log = LoggerFactory.getLogger(HelloServiceImpl.class);
+	
 	@Override
 	public String hello(String name) {
+		log.info("get receive with name={}", name);
+
 		return "Hello! " + name;
 	}
 

@@ -53,6 +53,16 @@
 				<artifactId>hp-core-task</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.hp.core</groupId>
+				<artifactId>hp-core-limiter</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.hp.core</groupId>
+				<artifactId>hp-core-plugins</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -132,5 +142,7 @@
 		<module>api</module>
 		<module>test</module>
 		<module>task</module>
+		<module>limiter</module>
+    <module>plugins</module>
   </modules>
 </project>

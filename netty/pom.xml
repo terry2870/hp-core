@@ -42,5 +42,7 @@
 			<artifactId>protostuff-runtime</artifactId>
 			<version>${protostuff.version}</version>
 		</dependency>
+		
+		
 	</dependencies>
 </project>

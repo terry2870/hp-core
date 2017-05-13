@@ -8,24 +8,20 @@
 		<artifactId>hp-core</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>hp-core-redis</artifactId>
-	<name>hp-core-redis</name>
+	<artifactId>hp-core-plugins</artifactId>
+	<name>hp-core-plugins</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<spring.data.redis.version>1.8.3.RELEASE</spring.data.redis.version>
-		<jedis.version>2.9.0</jedis.version>
 	</properties>
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-redis</artifactId>
-			<version>${spring.data.redis.version}</version>
+			<groupId>com.hp.core</groupId>
+			<artifactId>hp-core-limiter</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>redis.clients</groupId>
-			<artifactId>jedis</artifactId>
-			<version>${jedis.version}</version>
+			<groupId>com.hp.core</groupId>
+			<artifactId>hp-core-redis</artifactId>
 		</dependency>
 	</dependencies>
 </project>

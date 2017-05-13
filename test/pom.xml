@@ -35,5 +35,13 @@
 			<groupId>com.hp.core</groupId>
 			<artifactId>hp-core-zookeeper</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.hp.core</groupId>
+			<artifactId>hp-core-limiter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.hp.core</groupId>
+			<artifactId>hp-core-plugins</artifactId>
+		</dependency>
 	</dependencies>
 </project>

@@ -19,5 +19,15 @@
 	
 	<!-- <bean class="com.hp.core.test.annotation.HelloWorldContext" init-method="init" /> -->
 
+	<bean id="LimiterIntercept" class="com.hp.core.plugins.intercept.LimiterIntercept" init-method="init">
+		<property name="permitsPerSecond" value="2" />
+	</bean>
+
+	<aop:config>
+		<aop:aspect ref="LimiterIntercept">
+			<aop:around method="around" pointcut="execution(* com.hp.core.test.service.HelloService.hello(..))"/>
+		</aop:aspect>
+	</aop:config>
+
 </beans>
 
