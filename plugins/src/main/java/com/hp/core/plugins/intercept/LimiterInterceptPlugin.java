@@ -5,7 +5,6 @@ package com.hp.core.plugins.intercept;
 
 import java.util.concurrent.TimeUnit;
 
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,14 +17,14 @@ import com.hp.tools.common.exceptions.TryAcquireErrorException;
  * @author ping.huang
  * 2017年5月11日
  */
-public class LimiterIntercept {
+public class LimiterInterceptPlugin implements AroundInterceptHandle {
 
-	static Logger log = LoggerFactory.getLogger(LimiterIntercept.class);
+	static Logger log = LoggerFactory.getLogger(LimiterInterceptPlugin.class);
 	
 	private static final int DEFAULT_MAX_SIZE = 1000;
 	
 	private LimiterService limiterService;
-	
+		
 	/**
 	 * 限流实现类
 	 * 1-令牌桶算法
@@ -71,13 +70,8 @@ public class LimiterIntercept {
 		log.info("init LimiterIntercept success");
 	}
 	
-	/**
-	 * 环绕方法拦截
-	 * @param join
-	 * @return
-	 * @throws Throwable
-	 */
-	public Object around(ProceedingJoinPoint join) throws Throwable {
+	@Override
+	public boolean onBefore(Object target, String methodName, Object[] args) {
 		try {
 			//获取许可
 			if (blocking) {
@@ -89,58 +83,40 @@ public class LimiterIntercept {
 					throw new TryAcquireErrorException("tryAcquire timeout. with timeout=" + timeout);
 				}
 			}
-			
-			//执行方法
-			Object obj = join.proceed();
-			return obj;
-		} finally {
-			//回收资源
-			limiterService.release();
+			log.debug("get acquire with target={}, methodName={}", target, methodName);
+			return true;
+		} catch (Exception e) {
+			log.error("onBefore error. with target={}, methodName={}", target, methodName);
 		}
+		return false;
+	}
+	
+	@Override
+	public void onAfter(Object target, String methodName, Object[] args, Object result) {
+		//回收资源
+		limiterService.release();
+		log.debug("release with target={}, methodName={}", target, methodName);
 	}
 
-	public byte getLimitType() {
-		return limitType;
-	}
 
 	public void setLimitType(byte limitType) {
 		this.limitType = limitType;
-	}
-
-	public double getPermitsPerSecond() {
-		return permitsPerSecond;
 	}
 
 	public void setPermitsPerSecond(double permitsPerSecond) {
 		this.permitsPerSecond = permitsPerSecond;
 	}
 
-	public long getWarmupPeriod() {
-		return warmupPeriod;
-	}
-
 	public void setWarmupPeriod(long warmupPeriod) {
 		this.warmupPeriod = warmupPeriod;
-	}
-
-	public int getPermits() {
-		return permits;
 	}
 
 	public void setPermits(int permits) {
 		this.permits = permits;
 	}
 
-	public boolean isBlocking() {
-		return blocking;
-	}
-
 	public void setBlocking(boolean blocking) {
 		this.blocking = blocking;
-	}
-
-	public long getTimeout() {
-		return timeout;
 	}
 
 	public void setTimeout(long timeout) {

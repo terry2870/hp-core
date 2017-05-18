@@ -13,7 +13,7 @@
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<guava.version>22.0-rc1</guava.version>
+		<guava.version>16.0</guava.version>
 		<aopalliance.version>1.0</aopalliance.version>
 		<aspectj.version>1.8.10</aspectj.version>
 	</properties>

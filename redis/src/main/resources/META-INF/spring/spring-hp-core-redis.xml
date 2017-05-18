@@ -26,9 +26,9 @@
 	<bean id="hpJedisConnectionFactoryReadOnly" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
 		<property name="poolConfig" ref="jedisPoolConfig" />
 		<property name="timeout" value="${redis.timeout:200}" />
-		<property name="hostName" value="{redis.proxy.address}" />
-		<property name="port" value="${redis.proxy.port:6379}" />
-		<property name="password" value="${redis.proxy.auth}" />
+		<property name="hostName" value="${redis.proxy.readonly.address}" />
+		<property name="port" value="${redis.proxy.readonly.port:6379}" />
+		<property name="password" value="${redis.proxy.readonly.auth:}" />
 		<property name="database" value="${redis.proxy.database:0}" />
 	</bean>
 	<bean id="hpRedisTemplateReadOnly" class="com.hp.core.redis.HPRedisTemplate">
@@ -39,16 +39,39 @@
 	<bean id="hpJedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
 		<property name="poolConfig" ref="jedisPoolConfig" />
 		<property name="timeout" value="${redis.timeout:200}" />
-		<property name="hostName" value="{redis.proxy.address}" />
+		<property name="hostName" value="${redis.proxy.address}" />
 		<property name="port" value="${redis.proxy.port:6379}" />
-		<property name="password" value="${redis.proxy.auth}" />
+		<property name="password" value="${redis.proxy.auth:}" />
 		<property name="database" value="${redis.proxy.database:0}" />
 	</bean>
 	<bean id="hpRedisTemplate" class="com.hp.core.redis.HPRedisTemplate">
 		<property name="connectionFactory" ref="hpJedisConnectionFactory" />
 	</bean>
 
-
+	<bean id="HPValueOperations" class="com.hp.core.redis.HPValueOperations">
+		<property name="hpRedisTemplate" ref="hpRedisTemplate" />
+		<property name="valueOperations" ref="hpRedisTemplate" />
+		<property name="valueOperationsReadOnly" ref="hpRedisTemplateReadOnly" />
+	</bean>
+	<bean id="HPListOperations" class="com.hp.core.redis.HPListOperations">
+		<property name="listOperations" ref="hpRedisTemplate" />
+		<property name="listOperationsReadOnly" ref="hpRedisTemplateReadOnly" />
+	</bean>
+	<bean id="HPHashOperations" class="com.hp.core.redis.HPHashOperations">
+		<property name="hpRedisTemplate" ref="hpRedisTemplate" />
+		<property name="hashOperations" ref="hpRedisTemplate" />
+		<property name="hashOperationsReadOnly" ref="hpRedisTemplateReadOnly" />
+	</bean>
+	<bean id="HPSetOperations" class="com.hp.core.redis.HPSetOperations">
+		<property name="hpRedisTemplate" ref="hpRedisTemplate" />
+		<property name="setOperations" ref="hpRedisTemplate" />
+		<property name="setOperationsReadOnly" ref="hpRedisTemplateReadOnly" />
+	</bean>
+	<bean id="HPZSetOperations" class="com.hp.core.redis.HPZSetOperations">
+		<property name="hpRedisTemplate" ref="hpRedisTemplate" />
+		<property name="zSetOperations" ref="hpRedisTemplate" />
+		<property name="zSetOperationsReadOnly" ref="hpRedisTemplateReadOnly" />
+	</bean>
 
 </beans>
 

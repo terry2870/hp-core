@@ -3,7 +3,7 @@
  */
 package com.hp.core.netty.bean;
 
-import com.hp.core.api.bean.BaseBean;
+import com.hp.tools.common.beans.BaseBean;
 
 /**
  * @author huangping

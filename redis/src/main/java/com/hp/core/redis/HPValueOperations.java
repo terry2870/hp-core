@@ -3,181 +3,345 @@
  */
 package com.hp.core.redis;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.data.redis.core.RedisOperations;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.ValueOperations;
+
+import com.alibaba.fastjson.JSON;
+import com.hp.core.redis.utils.RedisUtil;
+
 
 /**
  * @author ping.huang
  * 2017年5月12日
  */
-public class HPValueOperations<V> implements ValueOperations<String, V> {
+public class HPValueOperations {
 
-	private HPRedisTemplate hpRedisTemplate;
+	static Logger log = LoggerFactory.getLogger(HPValueOperations.class);
 	
-	private HPRedisTemplate hpRedisTemplateReadOnly;
+	private HPRedisTemplate hpRedisTemplate;
 	
 	private ValueOperations<String, String> valueOperations;
 
 	private ValueOperations<String, String> valueOperationsReadOnly;
 
-	/* (non-Javadoc)
-	 * @see org.springframework.data.redis.core.ValueOperations#set(java.lang.Object, java.lang.Object)
-	 */
-	@Override
-	public void set(String key, V value) {
+	
+	// 读写----------------------------开始
+	
+	public void set(String key, Object value) {
 		// TODO Auto-generated method stub
-		
 	}
 
-	/* (non-Javadoc)
-	 * @see org.springframework.data.redis.core.ValueOperations#set(java.lang.Object, java.lang.Object, long, java.util.concurrent.TimeUnit)
+	/**
+	 * 设置，并且设置超时
+	 * @param key
+	 * @param value
+	 * @param timeout
+	 * @param unit
 	 */
-	@Override
-	public void set(String key, V value, long timeout, TimeUnit unit) {
-		// TODO Auto-generated method stub
-		
+	public void set(String key, Object value, long timeout, TimeUnit unit) {
+		String v = RedisUtil.value2String(value);
+		if (v == null) {
+			log.warn("HPValueOperations set redis error. with key={}, value={}", key, value);
+			return;
+		}
+        try {
+        	valueOperations.set(key, v, timeout, unit);
+        } catch (Exception e) {
+        	log.error("HPValueOperations set redis error. with key={}, value={}", key, value, e);
+        }
 	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.data.redis.core.ValueOperations#setIfAbsent(java.lang.Object, java.lang.Object)
+	
+	/**
+	 * 设置
+	 * @param key
+	 * @param value
+	 * @param offset
+	 * @param timeout
+	 * @param unit
 	 */
-	@Override
-	public Boolean setIfAbsent(String key, V value) {
-		// TODO Auto-generated method stub
-		return null;
+	public void set(String key, Object value, long offset, long timeout, TimeUnit unit) {
+		String v = RedisUtil.value2String(value);
+		if (v == null) {
+			log.warn("HPValueOperations set redis error. with key={}, value={}, offset={}", key, value, offset);
+			return;
+		}
+        try {
+        	valueOperations.set(key, v, offset);
+        	hpRedisTemplate.expire(key, timeout, unit);
+        } catch (Exception e) {
+        	log.error("HPValueOperations set redis error. with key={}, value={}", key, value, e);
+        	//删除key
+        	hpRedisTemplate.delete(key);
+        }
 	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.data.redis.core.ValueOperations#multiSet(java.util.Map)
+	
+	/**
+	 * 设置值
+	 * @param key
+	 * @param value
+	 * @param timeout
+	 * @param unit
+	 * @return
 	 */
-	@Override
-	public void multiSet(Map<? extends String, ? extends V> map) {
-		// TODO Auto-generated method stub
-		
+	public Boolean setIfAbsent(String key, Object value, long timeout, TimeUnit unit) {
+		String v = RedisUtil.value2String(value);
+		if (v == null) {
+			log.warn("HPValueOperations setIfAbsent redis error with key={}, value={}", key, value);
+			return Boolean.FALSE;
+		}
+		Boolean result = Boolean.FALSE;
+        try {
+        	//设置
+        	result = valueOperations.setIfAbsent(key, v);
+        	if (result) {
+        		//设置成功，设置超时
+        		hpRedisTemplate.expire(key, timeout, unit);
+        	}
+        } catch (Exception e) {
+        	log.error("HPValueOperations setIfAbsent redis error. with key={}, value={}", key, value, e);
+        	//删除key
+        	hpRedisTemplate.delete(key);
+        }
+        return result;
 	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.data.redis.core.ValueOperations#multiSetIfAbsent(java.util.Map)
+	
+	/**
+	 * 批量设置，并且设置超时
+	 * @param map
+	 * @param timeout
+	 * @param unit
 	 */
-	@Override
-	public Boolean multiSetIfAbsent(Map<? extends String, ? extends V> map) {
-		// TODO Auto-generated method stub
-		return null;
+	public void multiSet(Map<String, Object> map, long timeout, TimeUnit unit) {
+		if (MapUtils.isEmpty(map)) {
+			log.warn("HPValueOperations multiSet redis error with map is empty.");
+			return;
+		}
+		Map<String, String> cacheMap = new HashMap<String, String>(map.size());
+		for (Entry<? extends String, Object> entry : map.entrySet()) {
+			Object value = entry.getValue();
+			String key = entry.getKey();
+			if (value instanceof String) {
+				cacheMap.put(key, (String) value);
+			} else if (value instanceof Integer) {
+				cacheMap.put(key, String.valueOf(value));
+			} else {
+				cacheMap.put(key, JSON.toJSONString(value));
+			}
+		}
+		try {
+			hpRedisTemplate.executePipelined(new RedisCallback<Object>() {
+				@Override
+				public Object doInRedis(RedisConnection connection) throws DataAccessException {
+					connection.openPipeline();
+					for (Entry<String, String> item : cacheMap.entrySet()) {
+						connection.setEx(item.getKey().getBytes(StandardCharsets.UTF_8), timeout, null == item.getValue() ? null : item.getValue().getBytes(StandardCharsets.UTF_8));
+					}
+					// 无需返回是否缓存成功
+					return null;
+				}
+			});
+		} catch (Exception e) {
+			log.error("HPValueOperations multiSet redis error. with key.size={}", map.size(), e);
+			hpRedisTemplate.delete(map.keySet());
+		}
 	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.data.redis.core.ValueOperations#get(java.lang.Object)
+	
+	/**
+	 * 设置或者获取
+	 * @param key
+	 * @param value
+	 * @param timeout
+	 * @param unit
+	 * @param clazz
+	 * @return
 	 */
-	@Override
-	public V get(Object key) {
-		// TODO Auto-generated method stub
-		return null;
+	public <V> V getAndSet(String key, Object value, long timeout, TimeUnit unit, Class<V> clazz) {
+		String v = RedisUtil.value2String(value);
+		if (v == null) {
+			log.warn("HPValueOperations getAndSet redis error with key={}, value={}", key, value);
+			return null;
+		}
+		String result = null;
+        try {
+        	result = valueOperations.getAndSet(key, v);
+        	//设置超时
+        	hpRedisTemplate.expire(key, timeout, unit);
+        	return RedisUtil.string2Value(result, clazz);
+        } catch (Exception e) {
+        	log.error("HPValueOperations getAndSet redis error. with key={}, value={}", key, value, e);
+        	//删除key
+        	hpRedisTemplate.delete(key);
+        }
+        return null;
 	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.data.redis.core.ValueOperations#getAndSet(java.lang.Object, java.lang.Object)
+	
+	/**
+	 * 自增
+	 * @param key
+	 * @param delta
+	 * @return
 	 */
-	@Override
-	public V getAndSet(String key, V value) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.data.redis.core.ValueOperations#multiGet(java.util.Collection)
-	 */
-	@Override
-	public List<V> multiGet(Collection<String> keys) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.data.redis.core.ValueOperations#increment(java.lang.Object, long)
-	 */
-	@Override
 	public Long increment(String key, long delta) {
-		// TODO Auto-generated method stub
-		return null;
+		return valueOperations.increment(key, delta);
 	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.data.redis.core.ValueOperations#increment(java.lang.Object, double)
+	
+	/**
+	 * 自增
+	 * @param key
+	 * @param delta
+	 * @return
 	 */
-	@Override
 	public Double increment(String key, double delta) {
-		// TODO Auto-generated method stub
-		return null;
+		return valueOperations.increment(key, delta);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.springframework.data.redis.core.ValueOperations#append(java.lang.Object, java.lang.String)
+	/**
+	 * 追加
+	 * @param key
+	 * @param value
+	 * @return
 	 */
-	@Override
 	public Integer append(String key, String value) {
-		// TODO Auto-generated method stub
-		return null;
+		return valueOperations.append(key, value);
 	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.data.redis.core.ValueOperations#get(java.lang.Object, long, long)
+	
+	/**
+	 * setBit
+	 * @param key
+	 * @param offset
+	 * @param value
+	 * @return
 	 */
-	@Override
-	public String get(String key, long start, long end) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.data.redis.core.ValueOperations#set(java.lang.Object, java.lang.Object, long)
-	 */
-	@Override
-	public void set(String key, V value, long offset) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.data.redis.core.ValueOperations#size(java.lang.Object)
-	 */
-	@Override
-	public Long size(String key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.data.redis.core.ValueOperations#setBit(java.lang.Object, long, boolean)
-	 */
-	@Override
 	public Boolean setBit(String key, long offset, boolean value) {
-		// TODO Auto-generated method stub
-		return null;
+		return valueOperations.setBit(key, offset, value);
 	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.data.redis.core.ValueOperations#getBit(java.lang.Object, long)
+	
+	// 读写----------------------------结束
+	
+	
+	
+	// 只读----------------------------开始
+	
+	/**
+	 * 获取值
+	 * @param key
+	 * @param clazz
+	 * @return
 	 */
-	@Override
-	public Boolean getBit(String key, long offset) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.data.redis.core.ValueOperations#getOperations()
-	 */
-	@Override
-	public RedisOperations<String, V> getOperations() {
-		// TODO Auto-generated method stub
+	public <V> V get(Object key, Class<V> clazz) {
+		String v = null;
+		try {
+			v = valueOperationsReadOnly.get(key);
+			if (v == null) {
+				log.warn("HPValueOperations get redis error key={}", key);
+				return null;
+			}
+			return RedisUtil.string2Value(v, clazz);
+		} catch (Exception e) {
+			log.error("HPValueOperations get error. with key={}", key, e);
+		}
 		return null;
 	}
 	
+	/**
+	 * 部分获取
+	 * @param key
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public String get(String key, long start, long end) {
+		return valueOperationsReadOnly.get(key, start, end);
+	}
+	
+	/**
+	 * 批量获取
+	 * @param keys
+	 * @param clazz
+	 * @return
+	 */
+	public <V> List<V> multiGet(Collection<String> keys, Class<V> clazz) {
+		if (CollectionUtils.isEmpty(keys)) {
+			log.warn("HPValueOperations multiGet error. keys={}", keys);
+			return null;
+		}
+		List<String> list = null;
+		try {
+			list = valueOperationsReadOnly.multiGet(keys);
+			if (CollectionUtils.isEmpty(list)) {
+				log.warn("HPValueOperations multiGet error. keys={}", keys);
+				return null;
+			}
+			List<V> l = new ArrayList<V>(list.size());
+			for (String str : list) {
+				l.add(RedisUtil.string2Value(str, clazz));
+			}
+			return l;
+		} catch (Exception e) {
+			log.error("HPValueOperations multiGet error. ", e);
+		}
+		return null;
+	}
+	
+	/**
+	 * 大小
+	 * @param key
+	 * @return
+	 */
+	public Long size(String key) {
+		return valueOperationsReadOnly.size(key);
+	}
+	
+	/**
+	 * getBit
+	 * @param key
+	 * @param offset
+	 * @return
+	 */
+	public Boolean getBit(String key, long offset) {
+		return valueOperationsReadOnly.getBit(key, offset);
+	}
+	
+	
+	// 只读----------------------------
 
 
+	public ValueOperations<String, String> getValueOperations() {
+		return valueOperations;
+	}
+
+	public void setValueOperations(ValueOperations<String, String> valueOperations) {
+		this.valueOperations = valueOperations;
+	}
+
+	public ValueOperations<String, String> getValueOperationsReadOnly() {
+		return valueOperationsReadOnly;
+	}
+
+	public void setValueOperationsReadOnly(ValueOperations<String, String> valueOperationsReadOnly) {
+		this.valueOperationsReadOnly = valueOperationsReadOnly;
+	}
+
+	public HPRedisTemplate getHpRedisTemplate() {
+		return hpRedisTemplate;
+	}
+
+	public void setHpRedisTemplate(HPRedisTemplate hpRedisTemplate) {
+		this.hpRedisTemplate = hpRedisTemplate;
+	}
 }
