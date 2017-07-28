@@ -37,6 +37,8 @@ public class RedisUtil {
 		try {
 			if (value instanceof String) {
 				v = (String) value;
+			} else if (value instanceof Number) {
+				v = value.toString();
 			} else {
 				v = JSON.toJSONString(value);
 			}

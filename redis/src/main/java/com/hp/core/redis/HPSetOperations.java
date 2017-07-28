@@ -60,7 +60,31 @@ public class HPSetOperations {
 		}
 		return null;
 	}
+	
+	/**
+	 * 添加值
+	 * @param key
+	 * @param values
+	 * @return
+	 */
+	public Long add(String key, Collection<Object> values) {
+		return add(key, values.toArray(new Object[] {}));
+	}
 
+	/**
+	 * 移除值
+	 * @param key
+	 * @param values
+	 * @return
+	 */
+	public Long remove(String key, Collection<?> values) {
+		if (CollectionUtils.isEmpty(values)) {
+			log.warn("remove values error. with values is empty with key={}", key);
+			return 0L;
+		}
+		return remove(key, values.toArray(new Object[] {}));
+	}
+	
 	/**
 	 * 删除
 	 * @param key
@@ -73,8 +97,12 @@ public class HPSetOperations {
 			log.warn("remove values error. with values is empty with key={}", key);
 			return null;
 		}
+		Object[] arr = new String[values.length];
+		for (int i = 0; i < arr.length; i++) {
+			arr[i] = RedisUtil.value2String(values[i]);
+		}
 		try {
-			return setOperations.remove(key, values);
+			return setOperations.remove(key, arr);
 		} catch (Exception e) {
 			log.error("remove error. with exception. with key={}", key, e);
 		}

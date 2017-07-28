@@ -26,7 +26,7 @@
 	<bean id="hpJedisConnectionFactoryReadOnly" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
 		<property name="poolConfig" ref="jedisPoolConfig" />
 		<property name="timeout" value="${redis.timeout:200}" />
-		<property name="hostName" value="${redis.proxy.readonly.address}" />
+		<property name="hostName" value="${redis.proxy.readonly.address:127.0.0.1}" />
 		<property name="port" value="${redis.proxy.readonly.port:6379}" />
 		<property name="password" value="${redis.proxy.readonly.auth:}" />
 		<property name="database" value="${redis.proxy.database:0}" />
@@ -39,7 +39,7 @@
 	<bean id="hpJedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
 		<property name="poolConfig" ref="jedisPoolConfig" />
 		<property name="timeout" value="${redis.timeout:200}" />
-		<property name="hostName" value="${redis.proxy.address}" />
+		<property name="hostName" value="${redis.proxy.address:127.0.0.1}" />
 		<property name="port" value="${redis.proxy.port:6379}" />
 		<property name="password" value="${redis.proxy.auth:}" />
 		<property name="database" value="${redis.proxy.database:0}" />

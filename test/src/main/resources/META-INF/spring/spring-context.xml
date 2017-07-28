@@ -22,7 +22,7 @@
 	
 	<!-- <bean class="com.hp.core.test.annotation.HelloWorldContext" init-method="init" /> -->
 
-	<!-- <bean id="LimiterInterceptPlugin" class="com.hp.core.plugins.intercept.LimiterInterceptPlugin" init-method="init">
+	<bean id="LimiterInterceptPlugin" class="com.hp.core.plugins.intercept.LimiterInterceptPlugin" init-method="init">
 		<property name="permitsPerSecond" value="2" />
 		<property name="limitType" value="2" />
 		<property name="permits" value="5" />
@@ -33,7 +33,7 @@
 			<aop:pointcut expression="execution(* com.hp.core.test.service.HelloService.*(..))" id="LimiterInterceptPointcut"/>
 			<aop:around method="around" pointcut-ref="LimiterInterceptPointcut" />
 		</aop:aspect>
-	</aop:config> -->
+	</aop:config>
 	
 	<bean id="RedisInterceptPlugin" class="com.hp.core.plugins.intercept.RedisInterceptPlugin">
 		<property name="keyPrefix" value="YH:MARSTEST:" />

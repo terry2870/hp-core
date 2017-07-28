@@ -80,7 +80,7 @@ public class AOPTest {
 				log.info("helloService12121= " + s);*/
 				UserBean u = new UserBean();
 				u.setId(i);
-				u.setName("hp" + 1);
+				u.setName("hp" + i);
 				UserBean user = helloService.getUser(u);
 				System.out.println(user);
 			} catch (Exception e) {
