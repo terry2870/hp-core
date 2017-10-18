@@ -205,7 +205,7 @@ public class HPHashOperations {
 		} catch (Exception e) {
 			log.error("putAll error. with key={}", key, e);
 			//设置失败，删除key
-			//delete(key);
+			delete(key);
 		}
 	}
 
