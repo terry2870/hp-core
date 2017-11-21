@@ -45,6 +45,7 @@ public class NettyClient implements Client {
 	private String host;
 	private int port;
 	private int chanelSize = Runtime.getRuntime().availableProcessors() * 2; // 连接服务端，使用最大channel个数。默认为cpu核数 * 2
+	//private int chanelSize = 1; // 连接服务端，使用最大channel个数。默认为cpu核数 * 2
 	
 	private SerializationTypeEnum serializationTypeEnum = SerializationTypeEnum.PROTOSTUFF; // 序列化方法
 	
