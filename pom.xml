@@ -137,6 +137,6 @@
 		<module>test</module>
 		<module>task</module>
 		<module>limiter</module>
-    <module>plugins</module>
+    		<module>plugins</module>
   </modules>
 </project>
