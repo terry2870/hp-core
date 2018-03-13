@@ -63,6 +63,11 @@
 				<artifactId>hp-core-plugins</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.hp.core</groupId>
+				<artifactId>hp-core-mybatis</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -120,11 +125,6 @@
 			<groupId>com.hp.tools</groupId>
 			<artifactId>hp-tools-common</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.34</version>
-		</dependency>
 
 	</dependencies>
 
@@ -138,5 +138,6 @@
 		<module>task</module>
 		<module>limiter</module>
     		<module>plugins</module>
+    <module>mybatis</module>
   </modules>
 </project>

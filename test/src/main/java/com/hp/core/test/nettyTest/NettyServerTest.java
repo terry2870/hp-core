@@ -6,10 +6,7 @@ package com.hp.core.test.nettyTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.core.netty.bean.NettyRequest;
-import com.hp.core.netty.server.NettyServerImpl;
 import com.hp.core.netty.server.NettyServer;
-import com.hp.core.netty.server.NettyServerChannelInboundHandler.NettyProcess;
 
 /**
  * @author huangping
