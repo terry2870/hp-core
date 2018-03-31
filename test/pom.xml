@@ -43,5 +43,9 @@
 			<groupId>com.hp.core</groupId>
 			<artifactId>hp-core-plugins</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.hp.core</groupId>
+			<artifactId>hp-core-mybatis</artifactId>
+		</dependency>
 	</dependencies>
 </project>

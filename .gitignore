@@ -4,3 +4,4 @@ netty/.classpath
 netty/.project
 *.classpath
 *.project
+*.gitignore

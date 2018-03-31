@@ -137,7 +137,7 @@
 		<module>test</module>
 		<module>task</module>
 		<module>limiter</module>
-    		<module>plugins</module>
-    <module>mybatis</module>
-  </modules>
+		<module>plugins</module>
+		<module>mybatis</module>
+	</modules>
 </project>
