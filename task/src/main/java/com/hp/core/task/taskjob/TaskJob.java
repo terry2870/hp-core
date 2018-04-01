@@ -5,11 +5,10 @@ package com.hp.core.task.taskjob;
 
 import java.util.concurrent.ScheduledFuture;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
@@ -26,7 +25,7 @@ public class TaskJob {
 
 	static Logger log = LoggerFactory.getLogger(TaskJob.class);
 	
-	@Resource(name = "push-scheduler")
+	@Autowired
 	TaskScheduler scheduler;
 	
 	/**

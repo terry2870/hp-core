@@ -19,5 +19,10 @@ public class Test extends BaseJUnitTest {
 	@org.junit.Test
 	public void test() {
 		System.out.println(1);
+		try {
+			Thread.sleep(50000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -5,6 +5,7 @@
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="
 	http://www.springframework.org/schema/beans 
 	http://www.springframework.org/schema/beans/spring-beans.xsd 
@@ -13,13 +14,12 @@
 	http://www.springframework.org/schema/mvc 
 	http://www.springframework.org/schema/mvc/spring-mvc.xsd
 	http://www.springframework.org/schema/aop
-	http://www.springframework.org/schema/aop/spring-aop.xsd">
-
-	<bean id="databaseConfig" class="org.springframework.beans.factory.config.YamlMapFactoryBean">
-		<property name="resources" value="classpath*:database.yml" />
-	</bean>
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/task
+	http://www.springframework.org/schema/task/spring-task.xsd
+	">
 	
-	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+	<!-- <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="${jdbc.driverClassName}" />
 		<property name="url" value="${jdbc.url}" />
 		<property name="username" value="${jdbc.username}" />
@@ -32,10 +32,10 @@
 		<property name="testWhileIdle" value="true" />
 		<property name="numTestsPerEvictionRun" value="1" />
 		<property name="validationQuery" value="select 1" />
-	</bean>
+	</bean> -->
 	
-	<bean id="dynamicDatasource" class="com.hp.core.mybatis.datasource.DynamicDatasource">
-		<property name="configMap" ref="databaseConfig" />
+	<bean id="dynamicDatasource" class="com.hp.core.mybatis.datasource.DynamicDatasource" depends-on="SpringContextUtil">
+		<property name="resources" value="classpath*:database.json" />
 	</bean>
 	
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">

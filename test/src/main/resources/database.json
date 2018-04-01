@@ -1,0 +1,16 @@
+[{
+	"alias" : "database1",
+	"databaseName" : "eie",
+	"masterUrls" : [
+		"masterUrl1",
+		"masterUrl2"
+	],
+	"slaveUrls" : [
+		"slaveUrl1",
+		"slaveUrl2"
+	],
+	"defaultDatabase" : true,
+	"daos" : [
+		"1", "2", "3"
+	]
+}]
