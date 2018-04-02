@@ -9,9 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -19,7 +18,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 import com.alibaba.fastjson.JSON;
-import com.hp.core.mybatis.bean.DatasourceBean;
+import com.hp.core.mybatis.bean.DatasourceConfigBean;
+import com.hp.core.mybatis.bean.DynamicDatasourceBean;
+import com.hp.core.mybatis.enums.PoolConnectionFactoryEnum;
 
 /**
  * @author huangping
@@ -29,7 +30,13 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 
 	
 	private static Logger log = LoggerFactory.getLogger(DynamicDatasource.class);
-	private Map<String, Object> configMap;
+	
+	//存放所有的数据源的动态数据源的key
+	private static Map<String, List<String>> datasourceKey = new HashMap<>();
+	
+	private static final String MASTER_DS_KEY_PREX = "master_";
+	private static final String SLAVE_DS_KEY_PREX = "slave_";
+	
 	private Resource[] resources = new Resource[0];
 
 	@Override
@@ -46,10 +53,27 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 			return;
 		}
 		try {
-			List<String> datasourceStrList = IOUtils.readLines(this.resources[0].getInputStream(), "UTF-8");
-			List<DatasourceBean> datasourceList = JSON.parseArray(StringUtils.join(datasourceStrList, ""), DatasourceBean.class);
+			//解析文件，设置db
+			String jsonTxt = FileUtils.readFileToString(this.resources[0].getFile(), "UTF-8");
+			List<DatasourceConfigBean> datasourceList = JSON.parseArray(jsonTxt, DatasourceConfigBean.class);
 			Map<Object, Object> targetDataSources = new HashMap<>();
 			
+			DynamicDatasourceBean dynamicDatasourceBean = null;
+			for (DatasourceConfigBean b : datasourceList) {
+				dynamicDatasourceBean = PoolConnectionFactoryEnum.getPoolConnectionFactory(b.getPoolName()).getDatasource(b);
+				
+				//设置master
+				for (int i = 0; i < dynamicDatasourceBean.getMasterDatasource().size(); i++) {
+					targetDataSources.put(MASTER_DS_KEY_PREX + b.getDatabaseName() + "_" + i, dynamicDatasourceBean.getMasterDatasource().get(i));
+				}
+				
+				//设置slave
+				if (CollectionUtils.isNotEmpty(dynamicDatasourceBean.getSlaveDatasource())) {
+					for (int i = 0; i < dynamicDatasourceBean.getSlaveDatasource().size(); i++) {
+						targetDataSources.put(SLAVE_DS_KEY_PREX + b.getDatabaseName() + "_" + i, dynamicDatasourceBean.getSlaveDatasource().get(i));
+					}
+				}
+			}
 			
 			
 			
@@ -62,10 +86,7 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 		
 		
 	}
-	
-	public void setConfigMap(Map<String, Object> configMap) {
-		this.configMap = configMap;
-	}
+
 
 	public void setResources(Resource... resources) {
 		this.resources = resources;
