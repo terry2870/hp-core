@@ -10,7 +10,7 @@ package com.hp.core.mybatis.datasource;
 import com.hp.core.mybatis.bean.DatasourceConfigBean;
 import com.hp.core.mybatis.bean.DynamicDatasourceBean;
 
-public interface AbstPoolConnectionFactory {
+public interface AbstConnectionPoolFactory {
 
 	/**
 	 * 获取连接池对象

@@ -18,9 +18,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 import com.alibaba.fastjson.JSON;
+import com.hp.core.mybatis.bean.DAOInterfaceInfoBean;
 import com.hp.core.mybatis.bean.DatasourceConfigBean;
 import com.hp.core.mybatis.bean.DynamicDatasourceBean;
-import com.hp.core.mybatis.enums.PoolConnectionFactoryEnum;
+import com.hp.core.mybatis.enums.ConnectionPoolFactoryEnum;
 
 /**
  * @author huangping
@@ -31,8 +32,12 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 	
 	private static Logger log = LoggerFactory.getLogger(DynamicDatasource.class);
 	
-	//存放所有的数据源的动态数据源的key
-	private static Map<String, List<String>> datasourceKey = new HashMap<>();
+	//存放所有的dao对应的数据源的key
+	// key=dao名称，value=databaseName
+	private static Map<String, String> datasourceKey = new HashMap<>();
+	
+	//默认的数据源名称
+	private static String DEFAULT_DATABASE_NAME = "";
 	
 	private static final String MASTER_DS_KEY_PREX = "master_";
 	private static final String SLAVE_DS_KEY_PREX = "slave_";
@@ -41,7 +46,13 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 
 	@Override
 	protected Object determineCurrentLookupKey() {
-		// TODO Auto-generated method stub
+		//根据用户
+		DAOInterfaceInfoBean daoInfo = DynamicDataSourceHolder.getRouteDAOInfo();
+		if (datasourceKey == null) {
+			log.warn("determineCurrentLookupKey error. with daoInfo is empty.");
+			return null;
+		}
+		
 		return null;
 	}
 
@@ -59,34 +70,59 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 			Map<Object, Object> targetDataSources = new HashMap<>();
 			
 			DynamicDatasourceBean dynamicDatasourceBean = null;
+			AbstConnectionPoolFactory connectionPool = null;
 			for (DatasourceConfigBean b : datasourceList) {
-				dynamicDatasourceBean = PoolConnectionFactoryEnum.getPoolConnectionFactory(b.getPoolName()).getDatasource(b);
+				connectionPool = ConnectionPoolFactoryEnum.getConnectionPoolFactory(b.getPoolName());
+				dynamicDatasourceBean = connectionPool.getDatasource(b);
 				
 				//设置master
-				for (int i = 0; i < dynamicDatasourceBean.getMasterDatasource().size(); i++) {
-					targetDataSources.put(MASTER_DS_KEY_PREX + b.getDatabaseName() + "_" + i, dynamicDatasourceBean.getMasterDatasource().get(i));
-				}
+				targetDataSources.put(buildMasterDatasourceKey(b), dynamicDatasourceBean.getMasterDatasource());
 				
 				//设置slave
-				if (CollectionUtils.isNotEmpty(dynamicDatasourceBean.getSlaveDatasource())) {
-					for (int i = 0; i < dynamicDatasourceBean.getSlaveDatasource().size(); i++) {
-						targetDataSources.put(SLAVE_DS_KEY_PREX + b.getDatabaseName() + "_" + i, dynamicDatasourceBean.getSlaveDatasource().get(i));
-					}
+				if (dynamicDatasourceBean.getSlaveDatasource() != null) {
+					targetDataSources.put(buildSlaveDatasourceKey(b), dynamicDatasourceBean.getSlaveDatasource());
 				}
+				
+				//处理dao
+				dealDAOS(b);
 			}
-			
-			
-			
 			super.setTargetDataSources(targetDataSources);
 			super.afterPropertiesSet();
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("deal DynamicDatasource error.", e);
 		}
-		
-		
-		
+	}
+	
+	/**
+	 * 处理dao
+	 * @param bean
+	 */
+	private void dealDAOS(DatasourceConfigBean bean) {
+		if (CollectionUtils.isEmpty(bean.getDaos())) {
+			return;
+		}
+		for (String dao : bean.getDaos()) {
+			datasourceKey.put(dao, bean.getDatabaseName());
+		}
 	}
 
+	/**
+	 * 获取主数据源的key
+	 * @param bean
+	 * @return
+	 */
+	private String buildMasterDatasourceKey(DatasourceConfigBean bean) {
+		return MASTER_DS_KEY_PREX + bean.getDatabaseName();
+	}
+	
+	/**
+	 * 获取从数据源的key
+	 * @param bean
+	 * @return
+	 */
+	private String buildSlaveDatasourceKey(DatasourceConfigBean bean) {
+		return SLAVE_DS_KEY_PREX + bean.getDatabaseName();
+	}
 
 	public void setResources(Resource... resources) {
 		this.resources = resources;

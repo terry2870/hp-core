@@ -3,19 +3,15 @@
  */
 package com.hp.core.mybatis.datasource.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.sql.DataSource;
-
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.core.mybatis.bean.DatasourceConfigBean;
 import com.hp.core.mybatis.bean.DynamicDatasourceBean;
-import com.hp.core.mybatis.datasource.AbstPoolConnectionFactory;
+import com.hp.core.mybatis.datasource.AbstConnectionPoolFactory;
+import com.hp.core.mybatis.datasource.AbstDatabase;
 import com.hp.core.mybatis.enums.DatabaseEnum;
 import com.hp.core.mybatis.exceptions.MasterUrlNotFoundException;
 
@@ -23,35 +19,32 @@ import com.hp.core.mybatis.exceptions.MasterUrlNotFoundException;
  * @author huangping
  * 2018年4月2日
  */
-public class DBCPPoolConnectionFactoryImpl implements AbstPoolConnectionFactory {
+public class DBCPConnectionPoolFactoryImpl implements AbstConnectionPoolFactory {
 
-	private static Logger log = LoggerFactory.getLogger(DBCPPoolConnectionFactoryImpl.class);
+	private static Logger log = LoggerFactory.getLogger(DBCPConnectionPoolFactoryImpl.class);
 	
 	@Override
 	public DynamicDatasourceBean getDatasource(DatasourceConfigBean bean) {
-		if (bean == null || CollectionUtils.isEmpty(bean.getMasterIpPort())) {
+		if (bean == null || StringUtils.isEmpty(bean.getMasterIpPort())) {
 			log.error("getDatasource error. with masterIpPort is empty");
 			throw new MasterUrlNotFoundException("master url is not find from bean");
 		}
 		
 		DynamicDatasourceBean result = new DynamicDatasourceBean();
 		BasicDataSource ds = null;
-		List<DataSource> masterDatasource = new ArrayList<>(bean.getMasterIpPort().size());
-		for (String ipPort : bean.getMasterIpPort()) {
-			ds = getDs(bean);
-			ds.setUrl(DatabaseEnum.getConnectionUrlByDatabaseType(bean.getDatabaseType()).getConnectionUrl(ipPort, bean.getDatabaseName(), bean.getConnectionParam()));
-			masterDatasource.add(ds);
-		}
-		result.setMasterDatasource(masterDatasource);
+		AbstDatabase database = DatabaseEnum.getConnectionUrlByDatabaseType(bean.getDatabaseType());
 		
-		if (CollectionUtils.isNotEmpty(bean.getSlaveIpPort())) {
-			List<DataSource> slaveDatasource = new ArrayList<>(bean.getSlaveIpPort().size());
-			for (String ipPort : bean.getSlaveIpPort()) {
-				ds = getDs(bean);
-				ds.setUrl(DatabaseEnum.getConnectionUrlByDatabaseType(bean.getDatabaseType()).getConnectionUrl(ipPort, bean.getDatabaseName(), bean.getConnectionParam()));
-				slaveDatasource.add(ds);
-			}
-			result.setSlaveDatasource(slaveDatasource);
+		//处理master的数据源
+		ds = getDs(bean);
+		ds.setUrl(database.getConnectionUrl(bean.getMasterIpPort(), bean.getDatabaseName(), bean.getConnectionParam()));
+		ds.setDriverClassName(database.getDriverClassName(bean));
+		result.setMasterDatasource(ds);
+		
+		//处理slave数据源
+		if (StringUtils.isNotEmpty(bean.getSlaveIpPort())) {
+			ds.setUrl(database.getConnectionUrl(bean.getSlaveIpPort(), bean.getDatabaseName(), bean.getConnectionParam()));
+			ds.setDriverClassName(database.getDriverClassName(bean));
+			result.setSlaveDatasource(ds);
 		}
 		return result;
 	}
@@ -63,7 +56,6 @@ public class DBCPPoolConnectionFactoryImpl implements AbstPoolConnectionFactory 
 	 */
 	private BasicDataSource getDs(DatasourceConfigBean bean) {
 		BasicDataSource ds = new BasicDataSource();
-		ds.setDriverClassName(bean.getDriverClassName());
 		ds.setUsername(bean.getUsername());
 		ds.setPassword(bean.getPassword());
 		ds.setMaxTotal(bean.getMaxTotal());
@@ -76,5 +68,6 @@ public class DBCPPoolConnectionFactoryImpl implements AbstPoolConnectionFactory 
 		ds.setValidationQuery(bean.getValidationQuery());
 		return ds;
 	}
+	
 
 }

@@ -6,6 +6,7 @@ package com.hp.core.mybatis.datasource.impl;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.hp.core.mybatis.bean.DatasourceConfigBean;
 import com.hp.core.mybatis.datasource.AbstDatabase;
 
 /**
@@ -21,6 +22,14 @@ public class MysqlDatabaseImpl implements AbstDatabase {
 			url = "?" + params[0];
 		}
 		return url;
+	}
+
+	@Override
+	public String getDriverClassName(DatasourceConfigBean bean) {
+		if (StringUtils.isNotEmpty(bean.getDriverClassName())) {
+			return bean.getDriverClassName();
+		}
+		return "com.mysql.cj.jdbc.Driver";
 	}
 
 }

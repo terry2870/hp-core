@@ -3,8 +3,6 @@
  */
 package com.hp.core.mybatis.bean;
 
-import java.util.List;
-
 import javax.sql.DataSource;
 
 import com.hp.tools.common.beans.BaseBean;
@@ -21,18 +19,30 @@ public class DynamicDatasourceBean extends BaseBean {
 	private static final long serialVersionUID = -2845239041470232775L;
 
 	
-	private List<DataSource> masterDatasource;
-	private List<DataSource> slaveDatasource;
-	public List<DataSource> getMasterDatasource() {
-		return masterDatasource;
-	}
-	public void setMasterDatasource(List<DataSource> masterDatasource) {
+	private DataSource masterDatasource;
+	private DataSource slaveDatasource;
+	
+	public DynamicDatasourceBean() {}
+
+	public DynamicDatasourceBean(DataSource masterDatasource) {
 		this.masterDatasource = masterDatasource;
 	}
-	public List<DataSource> getSlaveDatasource() {
-		return slaveDatasource;
-	}
-	public void setSlaveDatasource(List<DataSource> slaveDatasource) {
+	
+	public DynamicDatasourceBean(DataSource masterDatasource, DataSource slaveDatasource) {
+		this(masterDatasource);
 		this.slaveDatasource = slaveDatasource;
 	}
+	public DataSource getMasterDatasource() {
+		return masterDatasource;
+	}
+	public void setMasterDatasource(DataSource masterDatasource) {
+		this.masterDatasource = masterDatasource;
+	}
+	public DataSource getSlaveDatasource() {
+		return slaveDatasource;
+	}
+	public void setSlaveDatasource(DataSource slaveDatasource) {
+		this.slaveDatasource = slaveDatasource;
+	}
+	
 }

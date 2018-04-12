@@ -6,7 +6,7 @@ package com.hp.core.mybatis.bean;
 import java.util.List;
 
 import com.hp.core.mybatis.enums.DatabaseEnum;
-import com.hp.core.mybatis.enums.PoolConnectionFactoryEnum;
+import com.hp.core.mybatis.enums.ConnectionPoolFactoryEnum;
 import com.hp.tools.common.beans.BaseBean;
 
 /**
@@ -18,19 +18,40 @@ public class DatasourceConfigBean extends BaseBean {
 
 	private static final long serialVersionUID = 381003465978823718L;
 
-	private String poolName = PoolConnectionFactoryEnum.DBCP.name();
+	private String poolName = ConnectionPoolFactoryEnum.DBCP.name();
 	
+	//数据库类型
 	private String databaseType = DatabaseEnum.MYSQL.name();
+	
+	//别名（暂时用不到）
 	private String alias;
-	private String databaseName;
-	private List<String> masterIpPort;
-	private List<String> slaveIpPort;
-	private String username;
-	private String password;
-	private boolean defaultDatabase = false;
-	private List<String> daos;
+	
+	//数据库驱动
 	private String driverClassName;
+	
+	//数据库连接串
 	private String connectionParam = "useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC";
+	
+	//数据库名称
+	private String databaseName;
+	
+	//主数据库的ip端口号
+	private String masterIpPort;
+	
+	//从数据库的ip端口号
+	private String slaveIpPort;
+	
+	//数据库用户名
+	private String username;
+	
+	//数据库密码
+	private String password;
+	
+	//是否是默认
+	private boolean defaultDatabase = false;
+	
+	//对应的dao
+	private List<String> daos;
 	
 	private int maxTotal = 50;
 	private int maxIdle = 5;
@@ -142,18 +163,6 @@ public class DatasourceConfigBean extends BaseBean {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	public List<String> getMasterIpPort() {
-		return masterIpPort;
-	}
-	public void setMasterIpPort(List<String> masterIpPort) {
-		this.masterIpPort = masterIpPort;
-	}
-	public List<String> getSlaveIpPort() {
-		return slaveIpPort;
-	}
-	public void setSlaveIpPort(List<String> slaveIpPort) {
-		this.slaveIpPort = slaveIpPort;
-	}
 	public String getConnectionParam() {
 		return connectionParam;
 	}
@@ -165,5 +174,17 @@ public class DatasourceConfigBean extends BaseBean {
 	}
 	public void setDatabaseType(String databaseType) {
 		this.databaseType = databaseType;
+	}
+	public String getMasterIpPort() {
+		return masterIpPort;
+	}
+	public void setMasterIpPort(String masterIpPort) {
+		this.masterIpPort = masterIpPort;
+	}
+	public String getSlaveIpPort() {
+		return slaveIpPort;
+	}
+	public void setSlaveIpPort(String slaveIpPort) {
+		this.slaveIpPort = slaveIpPort;
 	}
 }

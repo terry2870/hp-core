@@ -9,10 +9,10 @@ package com.hp.core.mybatis.enums;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.hp.core.mybatis.datasource.AbstPoolConnectionFactory;
-import com.hp.core.mybatis.datasource.impl.DBCPPoolConnectionFactoryImpl;
+import com.hp.core.mybatis.datasource.AbstConnectionPoolFactory;
+import com.hp.core.mybatis.datasource.impl.DBCPConnectionPoolFactoryImpl;
 
-public enum PoolConnectionFactoryEnum {
+public enum ConnectionPoolFactoryEnum {
 
 	DBCP,
 	C3P0,
@@ -23,15 +23,15 @@ public enum PoolConnectionFactoryEnum {
 	 * @param dsName
 	 * @return
 	 */
-	public static AbstPoolConnectionFactory getPoolConnectionFactory(String poolName) {
+	public static AbstConnectionPoolFactory getConnectionPoolFactory(String poolName) {
 		if (StringUtils.isEmpty(poolName)) {
 			poolName = DBCP.toString();
 		}
 		if (poolName.equals(DBCP.toString())) {
-			return new DBCPPoolConnectionFactoryImpl();
+			return new DBCPConnectionPoolFactoryImpl();
 		}
 		
-		return new DBCPPoolConnectionFactoryImpl();
+		return new DBCPConnectionPoolFactoryImpl();
 	}
 	
 }

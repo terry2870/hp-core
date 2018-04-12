@@ -1,14 +1,8 @@
 [{
 	"alias" : "database1",
 	"databaseName" : "eie",
-	"masterUrls" : [
-		"masterUrl1",
-		"masterUrl2"
-	],
-	"slaveUrls" : [
-		"slaveUrl1",
-		"slaveUrl2"
-	],
+	"masterIpPort" : "127.0.0.1:3306",
+	"slaveIpPort" : "127.0.0.1:3306",
 	"defaultDatabase" : true,
 	"daos" : [
 		"1", "2", "3"
