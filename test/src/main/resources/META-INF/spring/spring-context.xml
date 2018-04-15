@@ -45,6 +45,10 @@
 			<aop:around method="around" pointcut-ref="RedisInterceptPluginPointcut" />
 		</aop:aspect>
 	</aop:config>
+	
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.hp.core.test.dal" />
+	</bean>
 
 </beans>
 

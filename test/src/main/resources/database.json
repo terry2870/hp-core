@@ -3,8 +3,20 @@
 	"databaseName" : "eie",
 	"masterIpPort" : "127.0.0.1:3306",
 	"slaveIpPort" : "127.0.0.1:3306",
-	"defaultDatabase" : true,
+	"username" : "eie",
+	"password" : "123456",
+	"defaultDatabase" : true
+}, {
+	"alias" : "database2",
+	"databaseName" : "information_schema",
+	"masterIpPort" : "127.0.0.1:3306",
+	"slaveIpPort" : "127.0.0.1:3306",
+	"username" : "eie",
+	"password" : "123456",
+	"defaultDatabase" : false,
 	"daos" : [
-		"1", "2", "3"
+		"com.hp.core.test.dal.ITablesDAO",
+		"2",
+		"3"
 	]
 }]

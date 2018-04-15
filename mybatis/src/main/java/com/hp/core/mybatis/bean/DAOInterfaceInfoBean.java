@@ -3,8 +3,6 @@
  */
 package com.hp.core.mybatis.bean;
 
-import java.lang.reflect.Method;
-
 import com.hp.tools.common.beans.BaseBean;
 
 /**
@@ -18,30 +16,31 @@ public class DAOInterfaceInfoBean extends BaseBean {
 	 * 
 	 */
 	private static final long serialVersionUID = 4162275762456111854L;
-
+	
 	/**
 	 * dao的类名称
 	 */
-	private Class<?> className;
+	private String mapperNamespace;
 	
 	/**
 	 * 执行的方法
 	 */
-	private Method method;
+	private String statementId;
 
-	public Class<?> getClassName() {
-		return className;
+	public String getMapperNamespace() {
+		return mapperNamespace;
 	}
 
-	public void setClassName(Class<?> className) {
-		this.className = className;
+	public void setMapperNamespace(String mapperNamespace) {
+		this.mapperNamespace = mapperNamespace;
 	}
 
-	public Method getMethod() {
-		return method;
+	public String getStatementId() {
+		return statementId;
 	}
 
-	public void setMethod(Method method) {
-		this.method = method;
+	public void setStatementId(String statementId) {
+		this.statementId = statementId;
 	}
+
 }

@@ -31,7 +31,7 @@
 
 	<aop:config>
 		<aop:aspect id="DAOMethodInterceptorHandleAspect" ref="DAOMethodInterceptorHandle">
-			<aop:pointcut id="setDatasource" expression="execution(* com.eie.dal.*DAO.*(..)) or execution(* com.eie.dal.*Mapper.*(..)) or execution(* com.hp.core.test.dal.*DAO.*(..))" />
+			<aop:pointcut id="setDatasource" expression="execution(* com.hp.core.test.dal.*DAO.*(..))" />
 			<aop:before method="before" pointcut-ref="setDatasource" />
 			<aop:after method="after" pointcut-ref="setDatasource" />
 		</aop:aspect>

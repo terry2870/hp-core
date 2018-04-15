@@ -7,7 +7,10 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import com.hp.core.test.dal.IBillInfoDAO;
+import com.hp.core.test.dal.ITablesDAO;
 import com.hp.tools.common.junit.BaseJUnitTest;
 
 /**
@@ -16,13 +19,19 @@ import com.hp.tools.common.junit.BaseJUnitTest;
  */
 public class Test extends BaseJUnitTest {
 
+	@Autowired
+	private IBillInfoDAO billInfoDAO;
+	@Autowired
+	private ITablesDAO tablesDAO;
+	
 	@org.junit.Test
 	public void test() {
 		System.out.println(1);
-		try {
-			Thread.sleep(50000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		int num = billInfoDAO.selectBy();
+		System.out.println("num= " + num);
+		
+		int n = tablesDAO.selectBy();
+		System.out.println("tablesDAO= " + n);
+		
 	}
 }

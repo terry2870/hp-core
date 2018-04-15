@@ -19,7 +19,7 @@ public class MysqlDatabaseImpl implements AbstDatabase {
 	public String getConnectionUrl(String ipPort, String databaseName, String... params) {
 		String url = "jdbc:mysql://"+ ipPort +"/"+ databaseName;
 		if (ArrayUtils.isNotEmpty(params) && StringUtils.isNotEmpty(params[0])) {
-			url = "?" + params[0];
+			url += "?" + params[0];
 		}
 		return url;
 	}

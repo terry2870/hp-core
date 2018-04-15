@@ -1,7 +1,0 @@
-eie: 
-    jdbc.master.url: abc
-    jdbc.slave.url: 1234
-    
-eie2: 
-    jdbc.master.url: 1111
-    jdbc.slave.url: 222
