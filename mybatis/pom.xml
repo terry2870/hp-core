@@ -13,11 +13,11 @@
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<mybatis.version>3.4.1</mybatis.version>
+		<mybatis.version>3.4.6</mybatis.version>
 		<dbcp.version>2.1.1</dbcp.version>
 		<mysql.version>6.0.5</mysql.version>
-		<mybatis.spring.version>1.3.0</mybatis.spring.version>
-		<org.aspectj.version>1.9.0</org.aspectj.version>
+		<mybatis.spring.version>1.3.2</mybatis.spring.version>
+		<org.aspectj.version>1.9.1</org.aspectj.version>
 	</properties>
 	<dependencies>
 		<dependency>

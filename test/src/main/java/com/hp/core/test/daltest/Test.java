@@ -5,12 +5,15 @@ package com.hp.core.test.daltest;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.alibaba.fastjson.JSON;
 import com.hp.core.test.dal.IBillInfoDAO;
 import com.hp.core.test.dal.ITablesDAO;
+import com.hp.core.test.dal.model.BillInfo;
 import com.hp.tools.common.junit.BaseJUnitTest;
 
 /**
@@ -27,8 +30,8 @@ public class Test extends BaseJUnitTest {
 	@org.junit.Test
 	public void test() {
 		System.out.println(1);
-		int num = billInfoDAO.selectBy();
-		System.out.println("num= " + num);
+		List<BillInfo> num = billInfoDAO.selectBy(2);
+		System.out.println("num= " + JSON.toJSONString(num));
 		
 		int n = tablesDAO.selectBy();
 		System.out.println("tablesDAO= " + n);

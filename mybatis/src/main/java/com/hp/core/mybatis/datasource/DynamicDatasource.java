@@ -24,6 +24,7 @@ import com.hp.core.mybatis.bean.DAOInterfaceInfoBean;
 import com.hp.core.mybatis.bean.DatasourceConfigBean;
 import com.hp.core.mybatis.bean.DynamicDatasourceBean;
 import com.hp.core.mybatis.enums.ConnectionPoolFactoryEnum;
+import com.hp.core.mybatis.interceptor.DAOMethodInterceptorHandle;
 
 /**
  * @author huangping
@@ -54,7 +55,7 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 	@Override
 	protected Object determineCurrentLookupKey() {
 		//根据用户
-		DAOInterfaceInfoBean daoInfo = DynamicDataSourceHolder.getRouteDAOInfo();
+		DAOInterfaceInfoBean daoInfo = DAOMethodInterceptorHandle.getRouteDAOInfo();
 		if (daoInfo == null) {
 			log.warn("determineCurrentLookupKey error. with daoInfo is empty.");
 			return null;

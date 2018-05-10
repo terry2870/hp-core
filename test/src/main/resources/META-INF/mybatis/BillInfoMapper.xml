@@ -4,8 +4,8 @@
 	<resultMap id="BaseResultMap" type="com.hp.core.test.dal.model.BillInfo">
 	</resultMap>
 	
-	<select id="selectBy" resultType="int">
-		select count(1) from bill_info
+	<select id="selectBy" resultMap="BaseResultMap">
+		select * from bill_info where id=#{id}
 	</select>
 
 </mapper>
