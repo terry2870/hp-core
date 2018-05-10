@@ -11,10 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.hp.core.common.beans.BaseBean;
+import com.hp.core.common.utils.MD5Util;
 import com.hp.core.redis.HPHashOperations;
 import com.hp.core.redis.HPValueOperations;
-import com.hp.tools.common.beans.BaseBean;
-import com.hp.tools.common.utils.MD5Util;
 
 /**
  * redis缓存插件

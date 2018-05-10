@@ -5,9 +5,9 @@ package com.hp.core.mybatis.bean;
 
 import java.util.List;
 
-import com.hp.core.mybatis.enums.DatabaseEnum;
+import com.hp.core.common.beans.BaseBean;
 import com.hp.core.mybatis.enums.ConnectionPoolFactoryEnum;
-import com.hp.tools.common.beans.BaseBean;
+import com.hp.core.mybatis.enums.DatabaseEnum;
 
 /**
  * 动态数据库基础bean

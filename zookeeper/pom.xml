@@ -18,7 +18,10 @@
 		<curator-x-discovery.version>2.9.1</curator-x-discovery.version>
 	</properties>
 	<dependencies>
-
+		<dependency>
+			<groupId>com.hp.core</groupId>
+			<artifactId>hp-core-common</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.zookeeper</groupId>
 			<artifactId>zookeeper</artifactId>

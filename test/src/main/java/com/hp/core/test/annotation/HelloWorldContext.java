@@ -6,8 +6,6 @@ package com.hp.core.test.annotation;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.annotation.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.support.AopUtils;
@@ -15,7 +13,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 
-import com.hp.tools.common.utils.SpringContextUtil;
+import com.hp.core.common.utils.SpringContextUtil;
 
 
 /**

@@ -5,7 +5,7 @@ package com.hp.core.netty.bean;
 
 import java.util.UUID;
 
-import com.hp.tools.common.beans.BaseBean;
+import com.hp.core.common.beans.BaseBean;
 
 
 /**

@@ -9,12 +9,10 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.core.netty.bean.NettyRequest;
-import com.hp.core.netty.bean.NettyResponse;
+import com.hp.core.common.beans.BaseBean;
+import com.hp.core.common.utils.DateUtil;
 import com.hp.core.netty.client.Client;
 import com.hp.core.netty.client.NettyClient;
-import com.hp.tools.common.beans.BaseBean;
-import com.hp.tools.common.utils.DateUtil;
 
 /**
  * @author huangping

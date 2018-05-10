@@ -1,0 +1,16 @@
+2009-09-20完成。给出了一些基本的控件，有(dataList,getObject,iterator,labelEdit,loop,menu,select,setAttribute,tree,write)
+
+
+2009-10-16完成，增加了checkBox,dateTimePicker,radio，把所有的基本控件都定义了一个对象，然后重载toString方法，生成控件。
+
+2009-11-01完成，增加了checkBoxList和radioList
+
+2009-11-03完成，增加了滚动条
+
+2009-12-24完成，增加了BI
+
+2011-06-24去掉BI和滚动条，并且完善功能，使它支持spring的注入。
+
+2011-07-08生成新的版本。
+
+2012-03-28增加DB2数据库的支持

@@ -17,11 +17,11 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.hp.core.common.constants.DefaultConstant;
 import com.hp.core.zookeeper.bean.ZKNode;
 import com.hp.core.zookeeper.curator.ZKClusterClient;
 import com.hp.core.zookeeper.exception.ZKConnectException;
 import com.hp.core.zookeeper.exception.ZKOperateException;
-import com.hp.tools.common.constants.DefaultConstant;
 
 /**
  * @author ping.huang 2016年12月11日

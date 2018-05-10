@@ -13,8 +13,8 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 
+import com.hp.core.common.utils.DateUtil;
 import com.hp.core.task.enums.TaskModeEnum;
-import com.hp.tools.common.utils.DateUtil;
 
 /**
  * @author ping.huang

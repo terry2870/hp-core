@@ -5,7 +5,7 @@ package com.hp.core.mybatis.bean;
 
 import javax.sql.DataSource;
 
-import com.hp.tools.common.beans.BaseBean;
+import com.hp.core.common.beans.BaseBean;
 
 /**
  * @author huangping

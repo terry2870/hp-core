@@ -4,7 +4,7 @@
 package com.hp.core.mybatis.bean;
 
 import com.alibaba.fastjson.JSON;
-import com.hp.tools.common.beans.BaseBean;
+import com.hp.core.common.beans.BaseBean;
 
 /**
  * 当前执行的dao的类属性

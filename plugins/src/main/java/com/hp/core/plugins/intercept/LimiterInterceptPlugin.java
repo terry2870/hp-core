@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.core.limiter.api.LimiterService;
 import com.hp.core.limiter.enums.LimiterTypeEnum;
-import com.hp.tools.common.exceptions.TryAcquireErrorException;
+import com.hp.core.plugins.exceptions.TryAcquireErrorException;
 
 /**
  * 限流拦截器插件
