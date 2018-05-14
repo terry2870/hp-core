@@ -36,10 +36,10 @@ public class DatasourceConfigBean extends BaseBean {
 	private String databaseName;
 	
 	//主数据库的ip端口号
-	private String masterIpPort;
+	private List<String> masterIpPort;
 	
 	//从数据库的ip端口号
-	private String slaveIpPort;
+	private List<String> slaveIpPort;
 	
 	//数据库用户名
 	private String username;
@@ -175,16 +175,16 @@ public class DatasourceConfigBean extends BaseBean {
 	public void setDatabaseType(String databaseType) {
 		this.databaseType = databaseType;
 	}
-	public String getMasterIpPort() {
+	public List<String> getMasterIpPort() {
 		return masterIpPort;
 	}
-	public void setMasterIpPort(String masterIpPort) {
+	public void setMasterIpPort(List<String> masterIpPort) {
 		this.masterIpPort = masterIpPort;
 	}
-	public String getSlaveIpPort() {
+	public List<String> getSlaveIpPort() {
 		return slaveIpPort;
 	}
-	public void setSlaveIpPort(String slaveIpPort) {
+	public void setSlaveIpPort(List<String> slaveIpPort) {
 		this.slaveIpPort = slaveIpPort;
 	}
 }

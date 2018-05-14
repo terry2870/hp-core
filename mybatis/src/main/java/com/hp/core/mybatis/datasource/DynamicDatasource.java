@@ -3,27 +3,27 @@
  */
 package com.hp.core.mybatis.datasource;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
-import com.alibaba.fastjson.JSON;
 import com.hp.core.mybatis.bean.DAOInterfaceInfoBean;
 import com.hp.core.mybatis.bean.DatasourceConfigBean;
 import com.hp.core.mybatis.bean.DynamicDatasourceBean;
 import com.hp.core.mybatis.enums.ConnectionPoolFactoryEnum;
+import com.hp.core.mybatis.exceptions.DataSourceNotFoundException;
+import com.hp.core.mybatis.exceptions.DynamicDataSourceRouteException;
 import com.hp.core.mybatis.interceptor.DAOMethodInterceptorHandle;
 
 /**
@@ -39,6 +39,13 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 	// key=dao名称，value=databaseName
 	private static Map<String, String> databaseNameMap = new HashMap<>();
 	
+	/**
+	 * 存放所有的数据源主从的个数
+	 * master_databaseName,10
+	 * slave_databaseName,20
+	 */
+	private static Map<String, Integer> databaseIPCountMap = new HashMap<>();
+	
 	//默认的数据源名称
 	private static String DEFAULT_DATABASE_NAME = "";
 	
@@ -50,7 +57,7 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 	private static Pattern insert = Pattern.compile("^insert.*");
 	private static Pattern delete = Pattern.compile("^delete.*");
 	
-	private Resource[] resources = new Resource[0];
+	private Map<String, Object> databasesMap;
 
 	@Override
 	protected Object determineCurrentLookupKey() {
@@ -72,6 +79,7 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 		boolean fromMaster = false;
 		//获取用户执行的sql方法名
 		String statementId = daoInfo.getStatementId();
+		statementId = statementId.toLowerCase();
 		if (select.matcher(statementId).matches()) {
 			//使用slave数据源
 			fromMaster = false;
@@ -80,55 +88,158 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 			fromMaster = true;
 		} else {
 			//如果statemenetId不符合规范，则告警，并且使用master数据源
-			log.warn("statement id {}.{} is invalid, should be start with select*/insert*/update*/delete*. ", mapperNamespace, statementId);
+			log.warn("statement id {}.{} is invalid, should be start with select*/insert*/update*/delete*. ", mapperNamespace, daoInfo.getStatementId());
 			fromMaster = true;
 		}
 		
+		String result = getDatasourceByKey(databaseName, fromMaster);
+		log.debug("-------select route datasource with statementId={} and result is {}", (daoInfo.getMapperNamespace() + "." + daoInfo.getStatementId()), result);
+		return result;
+	}
+	
+	/**
+	 * 随机获取路由
+	 * @param databaseName
+	 * @param fromMaster
+	 * @return
+	 */
+	private String getDatasourceByKey(String databaseName, boolean fromMaster) {
+		String datasourceKey = null;
+		Integer num = null;
 		if (fromMaster) {
-			return buildMasterDatasourceKey(databaseName);
+			datasourceKey = buildMasterDatasourceKey(databaseName, -1);
+			num = databaseIPCountMap.get(datasourceKey);
+			if (num == null) {
+				//没找到，直接抛出异常
+				log.error("datasource not found with databaseName= {}", databaseName);
+				throw new DataSourceNotFoundException("datasource not found with databaseName= " + databaseName);
+			}
 		} else {
-			return buildSlaveDatasourceKey(databaseName);
+			datasourceKey = buildSlaveDatasourceKey(databaseName, -1);
+			num = databaseIPCountMap.get(datasourceKey);
+			if (num == null) {
+				//从库没有，则路由到主库
+				return getDatasourceByKey(databaseName, true);
+			}
 		}
+		
+		int random = 0;
+		if (num == 1) {
+			//如果就只有一个数据源，则就选择它
+			random = 0;
+		} else {
+			//随机获取一个数据源
+			random = RandomUtils.nextInt(0, num);
+		}
+		return fromMaster ? buildMasterDatasourceKey(databaseName, random) : buildSlaveDatasourceKey(databaseName, random);
 	}
 
 	@Override
 	public void afterPropertiesSet() {
 		//设置targetDataSources 值
-		if (ArrayUtils.isEmpty(this.resources)) {
-			log.error("set DynamicDatasource error. with resource is empty.");
-			return;
+		if (databasesMap == null) {
+			log.error("set DynamicDatasource error. with databasesMap is null.");
+			throw new DynamicDataSourceRouteException("DynamicDatasource route error. with databasesMap is null");
 		}
 		try {
 			//解析文件，设置db
-			String jsonTxt = FileUtils.readFileToString(this.resources[0].getFile(), "UTF-8");
-			List<DatasourceConfigBean> datasourceList = JSON.parseArray(jsonTxt, DatasourceConfigBean.class);
+			//String jsonTxt = FileUtils.readFileToString(ResourceUtils.getFile(databaseConfigLocation), "UTF-8");
+			//List<DatasourceConfigBean> datasourceList = JSON.parseArray(jsonTxt, DatasourceConfigBean.class);
 			Map<Object, Object> targetDataSources = new HashMap<>();
 			
 			DynamicDatasourceBean dynamicDatasourceBean = null;
 			AbstConnectionPoolFactory connectionPool = null;
-			for (DatasourceConfigBean b : datasourceList) {
-				connectionPool = ConnectionPoolFactoryEnum.getConnectionPoolFactory(b.getPoolName());
-				dynamicDatasourceBean = connectionPool.getDatasource(b);
+			String databaseName = null;
+			Object poolName = null, connectionParam = null, databaseType = null, driverClassName = null;
+			Map<String, Object> obj = null;
+			Map<String, Object> databaseMap = (Map<String, Object>) databasesMap.get("datasources");
+			DatasourceConfigBean datasourceBean = null;
+			Map<String, Object> serversList = null;
+			List<String> daoList = null, masterList = null, slaveList = null;
+			int i = 0;
+			for (Entry<String, Object> entry : databaseMap.entrySet()) {
+				databaseName = entry.getKey();
+				obj = (Map<String, Object>) entry.getValue();
+				poolName = obj.get("poolName");
+				
+				datasourceBean = new DatasourceConfigBean();
+				if (poolName != null) {
+					datasourceBean.setPoolName((String) poolName);
+				}
+				connectionParam = obj.get("connectionParam");
+				if (connectionParam != null) {
+					datasourceBean.setConnectionParam((String) connectionParam);
+				}
+				datasourceBean.setDatabaseName(databaseName);
+				databaseType = obj.get("databaseType");
+				if (databaseType != null) {
+					datasourceBean.setDatabaseType((String) databaseType);
+				}
+				driverClassName = obj.get("driverClassName");
+				if (driverClassName != null) {
+					datasourceBean.setDriverClassName((String) driverClassName);
+				}
+				datasourceBean.setUsername((String) obj.get("username"));
+				datasourceBean.setPassword(obj.get("password").toString());
+				serversList = (Map<String, Object>) obj.get("servers");
+				if (MapUtils.isEmpty(serversList)) {
+					log.error("init database error. with servers is empty.");
+					throw new DynamicDataSourceRouteException("servers is empty with databaseName is: " + datasourceBean.getDatabaseName());
+				}
+				masterList = (List<String>) serversList.get("master");
+				slaveList = (List<String>) serversList.get("slave");
+				
+				if (CollectionUtils.isEmpty(masterList)) {
+					log.error("init database error. with masterUrls is empty.");
+					throw new DynamicDataSourceRouteException("masterUrls is empty. with databaseName is: " + datasourceBean.getDatabaseName());
+				}
+				datasourceBean.setMasterIpPort(masterList);
+				if (CollectionUtils.isNotEmpty(slaveList)) {
+					datasourceBean.setSlaveIpPort(slaveList);
+				}
+				daoList = (List<String>) obj.get("daos");
+				if (CollectionUtils.isNotEmpty(daoList)) {
+					datasourceBean.setDaos(daoList);
+				}
+				
+				datasourceBean.setDefaultDatabase(i == 0);
+				connectionPool = ConnectionPoolFactoryEnum.getConnectionPoolFactory(datasourceBean.getPoolName());
+				
+				
+				dynamicDatasourceBean = connectionPool.getDynamicDatasource(datasourceBean);
+				if (dynamicDatasourceBean == null || CollectionUtils.isEmpty(dynamicDatasourceBean.getMasterDatasource())) {
+					log.error("init database error. with masterUrls is empty.");
+					throw new DynamicDataSourceRouteException("masterUrls is empty. with databaseName is: " + datasourceBean.getDatabaseName());
+				}
 				
 				//设置master
-				targetDataSources.put(buildMasterDatasourceKey(b.getDatabaseName()), dynamicDatasourceBean.getMasterDatasource());
+				for (int j = 0; j < dynamicDatasourceBean.getMasterDatasource().size(); j++) {
+					targetDataSources.put(buildMasterDatasourceKey(databaseName, j), dynamicDatasourceBean.getMasterDatasource().get(j));
+				}
+				//设置master有几个数据源
+				databaseIPCountMap.put(buildMasterDatasourceKey(databaseName, -1), dynamicDatasourceBean.getMasterDatasource().size());
 				
 				//设置slave
-				if (dynamicDatasourceBean.getSlaveDatasource() != null) {
-					targetDataSources.put(buildSlaveDatasourceKey(b.getDatabaseName()), dynamicDatasourceBean.getSlaveDatasource());
+				if (CollectionUtils.isNotEmpty(dynamicDatasourceBean.getSlaveDatasource())) {
+					for (int j = 0; j < dynamicDatasourceBean.getSlaveDatasource().size(); j++) {
+						targetDataSources.put(buildSlaveDatasourceKey(databaseName, j), dynamicDatasourceBean.getSlaveDatasource().get(j));
+					}
+					//设置slave有几个数据源
+					databaseIPCountMap.put(buildSlaveDatasourceKey(databaseName, -1), dynamicDatasourceBean.getSlaveDatasource().size());
 				}
 				
 				//默认数据源
-				if (b.isDefaultDatabase()) {
-					DEFAULT_DATABASE_NAME = b.getDatabaseName();
+				if (datasourceBean.isDefaultDatabase()) {
+					DEFAULT_DATABASE_NAME = databaseName;
 				}
 				
 				//处理dao
-				dealDAOS(b);
+				dealDAOS(datasourceBean);
+				i++;
 			}
 			super.setTargetDataSources(targetDataSources);
 			super.afterPropertiesSet();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			log.error("deal DynamicDatasource error.", e);
 		}
 	}
@@ -149,23 +260,37 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 	/**
 	 * 获取主数据源的key
 	 * @param databaseName
+	 * @param index
 	 * @return
 	 */
-	private String buildMasterDatasourceKey(String databaseName) {
-		return MASTER_DS_KEY_PREX + databaseName;
+	private String buildMasterDatasourceKey(String databaseName, int index) {
+		StringBuilder sb = new StringBuilder(MASTER_DS_KEY_PREX).append(databaseName);
+		if (index >= 0) {
+			sb.append("_").append(index);
+		}
+		return sb.toString();
 	}
 	
 	/**
 	 * 获取从数据源的key
 	 * @param databaseName
+	 * @param index
 	 * @return
 	 */
-	private String buildSlaveDatasourceKey(String databaseName) {
-		return SLAVE_DS_KEY_PREX + databaseName;
+	private String buildSlaveDatasourceKey(String databaseName, int index) {
+		StringBuilder sb = new StringBuilder(SLAVE_DS_KEY_PREX).append(databaseName);
+		if (index >= 0) {
+			sb.append("_").append(index);
+		}
+		return sb.toString();
 	}
 
-	public void setResources(Resource... resources) {
-		this.resources = resources;
+	public Map<String, Object> getDatabasesMap() {
+		return databasesMap;
+	}
+
+	public void setDatabasesMap(Map<String, Object> databasesMap) {
+		this.databasesMap = databasesMap;
 	}
 
 }

@@ -13,9 +13,9 @@
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<zk.version>3.4.9</zk.version>
-		<curator.framework.version>2.9.1</curator.framework.version>
-		<curator-x-discovery.version>2.9.1</curator-x-discovery.version>
+		<zk.version>3.4.12</zk.version>
+		<curator.framework.version>4.0.1</curator.framework.version>
+		<curator-x-discovery.version>4.0.1</curator-x-discovery.version>
 	</properties>
 	<dependencies>
 		<dependency>
