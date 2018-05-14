@@ -38,6 +38,7 @@ public class Test extends BaseJUnitTest {
 		int n = tablesDAO.selectBy();
 		System.out.println("tablesDAO= " + n);
 		*/
+		testTableDAO.selectOne(1);
 		for (int i = 0; i < 10; i++) {
 			TestTable test = testTableDAO.selectById(1);
 			System.out.println("test=    " + test);
