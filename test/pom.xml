@@ -47,5 +47,11 @@
 			<groupId>com.hp.core</groupId>
 			<artifactId>hp-core-mybatis</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.gitee.hengboy</groupId>
+			<artifactId>mybatis-enhance-spring-boot-starter</artifactId>
+			<version>1.0.2.RELEASE</version>
+		</dependency>
 	</dependencies>
 </project>
