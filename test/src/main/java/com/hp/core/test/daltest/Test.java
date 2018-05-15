@@ -30,14 +30,14 @@ public class Test extends BaseJUnitTest {
 	
 	@org.junit.Test
 	public void test() {
-		/*
+		
 		System.out.println(1);
 		List<BillInfo> num = billInfoDAO.selectBy(2);
 		System.out.println("num= " + JSON.toJSONString(num));
 		
 		int n = tablesDAO.selectBy();
 		System.out.println("tablesDAO= " + n);
-		*/
+		
 		for (int i = 0; i < 10; i++) {
 			TestTable test = testTableDAO.selectById(1);
 			System.out.println("test=    " + test);
