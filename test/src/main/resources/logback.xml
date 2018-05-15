@@ -18,7 +18,7 @@
 	<property name="maxFileSize" value="10MB"/>
 	
 	<!-- 日志根目录 -->
-	<property name="logs.basedir" value="E:/logs/"/>
+	<property name="logs.basedir" value="./logs/"/>
 	
 	<!-- 项目名称 -->
 	<property name="projectName" value="test"/>
