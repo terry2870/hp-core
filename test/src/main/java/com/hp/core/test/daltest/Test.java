@@ -43,8 +43,7 @@ public class Test extends BaseJUnitTest {
 			System.out.println("test=    " + test);
 		}
 		
-		TestTable test = testTableDAO.selectOne(1);
-		System.out.println("test222==== " + test);
+		
 		
 //		TestTable test = new TestTable();
 //		test.setId(1);

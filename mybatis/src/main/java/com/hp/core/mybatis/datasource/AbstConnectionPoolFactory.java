@@ -13,7 +13,6 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,16 +37,14 @@ public interface AbstConnectionPoolFactory {
 		}
 		
 		DynamicDatasourceBean result = new DynamicDatasourceBean();
-		BasicDataSource ds = null;
+		DataSource ds = null;
 		AbstDatabase database = DatabaseEnum.getConnectionUrlByDatabaseType(bean.getDatabaseType());
 		
 		List<DataSource> masterDatasource = new ArrayList<>(bean.getMasterIpPort().size());
 		
 		//处理master的数据源
 		for (String url : bean.getMasterIpPort()) {
-			ds = getDatasource(bean);
-			ds.setUrl(database.getConnectionUrl(url, bean.getDatabaseName(), bean.getConnectionParam()));
-			ds.setDriverClassName(database.getDriverClassName(bean));
+			ds = getDatasource(bean, database, url);
 			masterDatasource.add(ds);
 		}
 		result.setMasterDatasource(masterDatasource);
@@ -56,9 +53,7 @@ public interface AbstConnectionPoolFactory {
 		if (CollectionUtils.isNotEmpty(bean.getSlaveIpPort())) {
 			List<DataSource> slaveDatasource = new ArrayList<>(bean.getSlaveIpPort().size());
 			for (String url : bean.getSlaveIpPort()) {
-				ds = getDatasource(bean);
-				ds.setUrl(database.getConnectionUrl(url, bean.getDatabaseName(), bean.getConnectionParam()));
-				ds.setDriverClassName(database.getDriverClassName(bean));
+				ds = getDatasource(bean, database, url);
 				slaveDatasource.add(ds);
 			}
 			result.setSlaveDatasource(slaveDatasource);
@@ -69,7 +64,9 @@ public interface AbstConnectionPoolFactory {
 	/**
 	 * 获取基础信息
 	 * @param bean
+	 * @param database
+	 * @param ipPort
 	 * @return
 	 */
-	public BasicDataSource getDatasource(DatasourceConfigBean bean);
+	public DataSource getDatasource(DatasourceConfigBean bean, AbstDatabase database, String ipPort);
 }

@@ -1,2 +1,0 @@
-2018-05-16 07:30:44.822 [main] WARN  org.apache.curator.CuratorZookeeperClient:120 - session timeout [5000] is less than connection timeout [15000]
-2018-05-16 07:30:46.804 [main] WARN  com.hp.core.mybatis.interceptor.DAOMethodInterceptorHandle:76 - execute db expire time. operator db with, delay=501, dao=com.hp.core.test.dal.ITestTableDAO.selectById, arguments=[1]

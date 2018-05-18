@@ -7,10 +7,9 @@ package com.hp.core.test.dal;
  * 2018年5月14日
  */
 
-import com.gitee.hengboy.mybatis.enhance.mapper.EnhanceMapper;
 import com.hp.core.test.dal.model.TestTable;
 
-public interface ITestTableDAO extends EnhanceMapper<TestTable, Integer> {
+public interface ITestTableDAO {
 
 	TestTable selectById(Integer id);
 	

@@ -3,10 +3,10 @@ datasources:
       servers:
          master:
            - 127.0.0.1:3306
-#           - 192.168.102.17:3306
+           - 192.168.102.17:3306
          slave:
            - 127.0.0.1:3306
-#           - 192.168.102.17:3306
+           - 192.168.102.17:3306
       username: yh_test
       password: yh_test
    information_schema:
