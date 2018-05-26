@@ -3,6 +3,8 @@
  */
 package com.hp.core.mybatis.bean;
 
+import java.lang.reflect.Method;
+
 import com.alibaba.fastjson.JSON;
 import com.hp.core.common.beans.BaseBean;
 
@@ -17,6 +19,21 @@ public class DAOInterfaceInfoBean extends BaseBean {
 	 * 
 	 */
 	private static final long serialVersionUID = 4162275762456111854L;
+	
+	/**
+	 * mapper的接口类型
+	 */
+	private Class<?> className;
+	
+	/**
+	 * 父接口的class
+	 */
+	private Class<?> parentClassName;
+	
+	/**
+	 * 执行的方法
+	 */
+	private Method method;
 	
 	/**
 	 * dao的类名称
@@ -106,6 +123,30 @@ public class DAOInterfaceInfoBean extends BaseBean {
 
 	public void setDelay(DBDelayInfo delay) {
 		this.delay = delay;
+	}
+
+	public Class<?> getClassName() {
+		return className;
+	}
+
+	public void setClassName(Class<?> className) {
+		this.className = className;
+	}
+
+	public Method getMethod() {
+		return method;
+	}
+
+	public void setMethod(Method method) {
+		this.method = method;
+	}
+
+	public Class<?> getParentClassName() {
+		return parentClassName;
+	}
+
+	public void setParentClassName(Class<?> parentClassName) {
+		this.parentClassName = parentClassName;
 	}
 
 }

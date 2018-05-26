@@ -4,12 +4,18 @@
 package com.hp.core.test.dal.model;
 
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import com.hp.core.common.beans.BaseBean;
 
 /**
  * @author huangping
  * 2018年5月14日
  */
+@Table
 public class TestTable extends BaseBean {
 
 	/**
@@ -17,9 +23,14 @@ public class TestTable extends BaseBean {
 	 */
 	private static final long serialVersionUID = -463188118297996495L;
 
+	@Id
 	private Integer id;
 	private String title;
+	
 	private String simplified;
+	
+	@Transient
+	private String str1111;
 	public Integer getId() {
 		return id;
 	}

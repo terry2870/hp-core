@@ -1,5 +1,8 @@
 package com.hp.core.test.dal.model;
 
+import javax.persistence.Id;
+import javax.persistence.Transient;
+
 import com.hp.core.common.beans.BaseBean;
 
 public class BillInfo extends BaseBean {
@@ -8,6 +11,7 @@ public class BillInfo extends BaseBean {
 	 */
 	private static final long serialVersionUID = -5218103022405672603L;
 
+	@Id
 	private Integer id;
 
 	private Integer projectId;
@@ -33,15 +37,21 @@ public class BillInfo extends BaseBean {
 	private Integer createUserId;
 
 	private Integer createTime;
+	
+	@Transient
 	private String createTimeJoin;
 
 	private Integer updateTime;
 	
+	@Transient
 	private String queryYear;
 	
 	private Integer billCompany;
+	
+	@Transient
 	private String billCompanyStr;
 	
+	@Transient
 	private String isIndex;
 	
 	public Integer getId() {

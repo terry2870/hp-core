@@ -3,7 +3,9 @@
  */
 package com.hp.core.mybatis.interceptor;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ClassUtils;
@@ -36,19 +38,30 @@ public class DAOMethodInterceptorHandle {
 		DAOInterfaceInfoBean bean = new DAOInterfaceInfoBean();
 		Class<?> clazz = join.getThis().getClass();
 		Class<?>[] targetInterfaces = ClassUtils.getAllInterfacesForClass(clazz, clazz.getClassLoader());
+		Class<?>[] parentClass = targetInterfaces[0].getInterfaces();
+		if (ArrayUtils.isNotEmpty(parentClass)) {
+			bean.setParentClassName(parentClass[0]);
+		}
+		
+		bean.setClassName(targetInterfaces[0]);
 		bean.setMapperNamespace(targetInterfaces[0].getName());
+		MethodSignature signature = (MethodSignature) join.getSignature();
+		bean.setMethod(signature.getMethod());
 		bean.setStatementId(join.getSignature().getName());
 		bean.setParameters(join.getArgs());
 		this.setRouteDAOInfo(bean);
 		
 		entry();
 	}
+	
+	public void throwing(JoinPoint join, Exception ex) {
+		log.debug("start throwing");
+		log.error("execute db error. with exceptions is: ", ex);
+	}
 
 	public void after(JoinPoint point) {
 		log.debug("start after");
-		
 		exit();
-		
 		//释放当前线程的数据
 		this.removeRouteDAOInfo();
 	}

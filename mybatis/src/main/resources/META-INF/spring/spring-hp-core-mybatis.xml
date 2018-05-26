@@ -47,6 +47,7 @@
 			<aop:pointcut id="setDatasource" expression="${hp.core.dao.interceptor.expression:}" />
 			<aop:before method="before" pointcut-ref="setDatasource" />
 			<aop:after method="after" pointcut-ref="setDatasource" />
+			<aop:after-throwing method="throwing" throwing="ex" pointcut-ref="setDatasource"/>
 		</aop:aspect>
 	</aop:config>
 	

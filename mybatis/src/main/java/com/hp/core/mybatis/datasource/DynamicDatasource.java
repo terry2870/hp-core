@@ -3,6 +3,8 @@
  */
 package com.hp.core.mybatis.datasource;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
+import com.hp.core.mybatis.annotation.ForceMaster;
+import com.hp.core.mybatis.annotation.ForceSlave;
 import com.hp.core.mybatis.bean.DAOInterfaceInfoBean;
 import com.hp.core.mybatis.bean.DatasourceConfigBean;
 import com.hp.core.mybatis.bean.DynamicDatasourceBean;
@@ -45,6 +49,11 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 	 * slave_databaseName,20
 	 */
 	private static Map<String, Integer> databaseIPCountMap = new HashMap<>();
+	
+	/**
+	 * 存放方法是否有注解的map
+	 */
+	private static Map<String, Boolean> methodAnnotationMap = new HashMap<>();
 	
 	//默认的数据源名称
 	private static String DEFAULT_DATABASE_NAME = "";
@@ -76,6 +85,53 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 			databaseName = DEFAULT_DATABASE_NAME;
 		}
 		
+		String result = getDatasourceByKey(databaseName, getFormMaster(daoInfo));
+		log.debug("-------select route datasource with statementId={} and result is {}", (daoInfo.getMapperNamespace() + "." + daoInfo.getStatementId()), result);
+		return result;
+	}
+	
+	private boolean getFormMaster(DAOInterfaceInfoBean daoInfo) {
+		String key = daoInfo.getMapperNamespace() + "." + daoInfo.getStatementId();
+		//查询缓存
+		Boolean bool = methodAnnotationMap.get(key);
+		if (bool != null) {
+			return bool.booleanValue();
+		}
+		
+		boolean b = getFormMasterFromAnnotation(daoInfo);
+		methodAnnotationMap.put(key, new Boolean(b));
+		return b;
+	}
+	
+	/**
+	 * 查询是从哪个数据源
+	 */
+	private boolean getFormMasterFromAnnotation(DAOInterfaceInfoBean daoInfo) {
+		//先判断方法上面
+		ForceMaster forceMaster = getAnnotationByMethod(daoInfo.getMethod(), ForceMaster.class);
+		if (forceMaster != null) {
+			//方法上有注解，直接返回
+			return true;
+		}
+		ForceSlave forceSlave = getAnnotationByMethod(daoInfo.getMethod(), ForceSlave.class);
+		if (forceSlave != null) {
+			//方法上有注解，直接返回
+			return false;
+		}
+		
+		//再判断接口上面
+		forceMaster = getAnnotationByClass(daoInfo.getClassName(), ForceMaster.class);
+		if (forceMaster != null) {
+			//方法上有注解，直接返回
+			return true;
+		}
+		forceSlave = getAnnotationByClass(daoInfo.getClassName(), ForceSlave.class);
+		if (forceSlave != null) {
+			//方法上有注解，直接返回
+			return false;
+		}
+		
+		//根据方法名称去判断
 		boolean fromMaster = false;
 		//获取用户执行的sql方法名
 		String statementId = daoInfo.getStatementId();
@@ -88,13 +144,38 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 			fromMaster = true;
 		} else {
 			//如果statemenetId不符合规范，则告警，并且使用master数据源
-			log.warn("statement id {}.{} is invalid, should be start with select*/insert*/update*/delete*. ", mapperNamespace, daoInfo.getStatementId());
+			log.warn("statement id {}.{} is invalid, should be start with select*/insert*/update*/delete*. ", daoInfo.getMapperNamespace(), daoInfo.getStatementId());
 			fromMaster = true;
 		}
-		
-		String result = getDatasourceByKey(databaseName, fromMaster);
-		log.debug("-------select route datasource with statementId={} and result is {}", (daoInfo.getMapperNamespace() + "." + daoInfo.getStatementId()), result);
-		return result;
+		return fromMaster;
+	}
+	
+	/**
+	 * 查询方法上是否有注解
+	 * @param method
+	 * @param annotationType
+	 * @return
+	 */
+	private <T extends Annotation> T getAnnotationByMethod(Method method, Class<T> annotationType) {
+		T a = method.getAnnotation(annotationType);
+		if (a == null) {
+			return null;
+		}
+		return a;
+	}
+	
+	/**
+	 * 查询接口上是否有注解
+	 * @param clazz
+	 * @param annotationType
+	 * @return
+	 */
+	private <T extends Annotation> T getAnnotationByClass(Class<?> clazz, Class<T> annotationType) {
+		T a = clazz.getAnnotation(annotationType);
+		if (a == null) {
+			return null;
+		}
+		return a;
 	}
 	
 	/**
@@ -118,7 +199,7 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 			datasourceKey = buildSlaveDatasourceKey(databaseName, -1);
 			num = databaseIPCountMap.get(datasourceKey);
 			if (num == null) {
-				//从库没有，则路由到主库
+				//没有配置从库，则路由到主库
 				return getDatasourceByKey(databaseName, true);
 			}
 		}
