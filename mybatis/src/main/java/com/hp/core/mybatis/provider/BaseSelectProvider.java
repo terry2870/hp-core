@@ -43,6 +43,11 @@ public class BaseSelectProvider {
 				.toString();
 	}
 	
+	public static String selectCountByParams(Map<String, Object> params) {
+		DynamicEntityBean entity = getEntity();
+		return "";
+	}
+	
 	/**
 	 * 获取dal对象实体
 	 * @return
