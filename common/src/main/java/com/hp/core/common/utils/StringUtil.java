@@ -9,7 +9,6 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.text.DecimalFormat;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,20 +26,7 @@ public class StringUtil {
 	 * @return
 	 */
 	public static String toDBColumn(String fieldName) {
-		if (StringUtils.isEmpty(fieldName)) {
-			return "";
-		}
-		StringBuilder sb = new StringBuilder();
-		String[] arr = fieldName.split("");
-		String reg = "[A-Z]";
-		for (String s : arr) {
-			if (s.matches(reg)) {
-				sb.append("_").append(s.toLowerCase());
-			} else {
-				sb.append(s);
-			}
-		}
-		return sb.toString();
+		return NameDefineUtil.camelCaseToUnderline(fieldName);
 	}
 
 	/**

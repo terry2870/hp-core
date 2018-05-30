@@ -63,22 +63,22 @@ public class DynamicEntityBean extends BaseBean {
 	/**
 	 * insert语句用到的字段
 	 */
-	private String insertColumns;
-
+	private List<DynamicColumnBean> insertColumnsList;
+	
 	/**
-	 * insert语句用到的字段
+	 * 新增的字段的string数组
 	 */
-	private List<String> insertColumnsList;
+	private List<String> insertColumnStringList;
+	
+	/**
+	 * 新增的字段连起来字符串
+	 */
+	private String insertColumnString;
 
 	/**
 	 * update语句用到的字段
 	 */
-	private String updateColumns;
-
-	/**
-	 * update语句用到的字段
-	 */
-	private List<String> updateColumnsList;
+	private List<DynamicColumnBean> updateColumnsList;
 
 	/**
 	 * 所有的字段
@@ -96,27 +96,27 @@ public class DynamicEntityBean extends BaseBean {
 		selectColumnsList = new ArrayList<>();
 		insertColumnsList = new ArrayList<>();
 		updateColumnsList = new ArrayList<>();
+		insertColumnStringList = new ArrayList<>();
 		for (DynamicColumnBean column : columns) {
 			if (!column.isPersistence()) {
-				// 非持久化，退出
+				// 非持久化，跳过
 				continue;
 			}
 			selectColumnsList.add(column.getColumnName());
 			if (column.isInsertable()) {
-				insertColumnsList.add(column.getColumnName());
+				insertColumnsList.add(column);
+				insertColumnStringList.add(column.getColumnName());
 			}
 			if (column.isUpdatable()) {
-				updateColumnsList.add(column.getColumnName());
+				updateColumnsList.add(column);
 			}
 
 			if (CollectionUtils.isNotEmpty(selectColumnsList)) {
 				selectColumns = StringUtils.join(selectColumnsList, ", ");
 			}
-			if (CollectionUtils.isNotEmpty(insertColumnsList)) {
-				insertColumns = StringUtils.join(insertColumnsList, ", ");
-			}
-			if (CollectionUtils.isNotEmpty(updateColumnsList)) {
-				updateColumns = StringUtils.join(updateColumnsList, ", ");
+			
+			if (CollectionUtils.isNotEmpty(insertColumnStringList)) {
+				insertColumnString = StringUtils.join(insertColumnStringList, ", ");
 			}
 		}
 	}
@@ -181,24 +181,24 @@ public class DynamicEntityBean extends BaseBean {
 		return selectColumns;
 	}
 
-	public String getInsertColumns() {
-		return insertColumns;
+	public List<String> getSelectColumnsList() {
+		return selectColumnsList;
 	}
 
-	public List<String> getInsertColumnsList() {
+	public List<DynamicColumnBean> getInsertColumnsList() {
 		return insertColumnsList;
 	}
 
-	public String getUpdateColumns() {
-		return updateColumns;
-	}
-
-	public List<String> getUpdateColumnsList() {
+	public List<DynamicColumnBean> getUpdateColumnsList() {
 		return updateColumnsList;
 	}
 
-	public List<String> getSelectColumnsList() {
-		return selectColumnsList;
+	public String getInsertColumnString() {
+		return insertColumnString;
+	}
+
+	public List<String> getInsertColumnStringList() {
+		return insertColumnStringList;
 	}
 
 }

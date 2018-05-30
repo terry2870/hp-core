@@ -6,6 +6,7 @@ package com.hp.core.test.daltest;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.fastjson.JSON;
+import com.hp.core.common.beans.page.PageBean;
+import com.hp.core.common.beans.page.PageModel;
 import com.hp.core.common.junit.BaseJUnitTest;
 import com.hp.core.mybatis.annotation.ForceMaster;
 import com.hp.core.test.bean.UserBean;
@@ -35,8 +38,6 @@ public class Test extends BaseJUnitTest {
 	@Autowired
 	private IBillInfoDAO billInfoDAO;
 	@Autowired
-	private ITablesDAO tablesDAO;
-	@Autowired
 	private ITestTableDAO testTableDAO;
 	
 	@org.junit.Test
@@ -49,18 +50,45 @@ public class Test extends BaseJUnitTest {
 //		int n = tablesDAO.selectBy();
 //		System.out.println("tablesDAO= " + n);
 		
-		for (int i = 0; i < 10; i++) {
-			//TestTable test = testTableDAO.selectById(1);
-			//System.out.println("test=    " + test);
-		}
-		TestTable t = testTableDAO.selectByPrimaryKey(1);
-		System.out.println("t= " + t);
+//		BillInfo bill = new BillInfo();
+//		bill.setId(2);
+//		bill.setEnterpriseName("爱仕达多asdasd");
+//		bill.setExpressCode("asdhakjsdhkajshd");
+//		bill.setExpressContacts("我们的1234");
+//		bill.setProjectId(123);
+		//System.out.println("update ======= " + billInfoDAO.updateByPrimaryKeySelective(bill));
+		//bill.setCreateTime(1487230903);
 		
-		System.out.println(testTableDAO.selectAllCount());
+		//System.out.println(billInfoDAO.selectAllCount());
+//		System.out.println("-----" + billInfoDAO.selectByPrimaryKey(2));
+		//System.out.println(billInfoDAO.selectCountByParams(bill));
+//		PageModel page = new PageModel();
+//		page.setCurrentPage(1);
+//		page.setPageSize(10);
+//		page.setSortColumn("projectId");
+		//List<BillInfo> list = billInfoDAO.selectListByParams(bill, page);
+		//System.out.println("list = " + JSON.toJSONString(list));
 		
-		System.out.println(billInfoDAO.selectAllCount());
-		System.out.println(billInfoDAO.selectByPrimaryKey(2));
+//		TestTable test = new TestTable();
+//		test.setSimplified("simplified___" + 1);
+//		//test.setTitle("title_" + 1);
+//		//test.setTestName("testName_" + 1);
+//		System.out.println("insert   " + testTableDAO.insertSelective(test));
+//		System.out.println("id===" + test.getId());
 		
+//		TestTable test = null;
+//		List<TestTable> list = new ArrayList<>();
+//		for (int i = 0; i < 10; i++) {
+//			test = new TestTable();
+//			test.setSimplified("sim___" + i);
+//			test.setTestName("name___" + i);
+//			test.setTitle("tit___" + i);
+//			list.add(test);
+//		}
+//		testTableDAO.insertBatch(list);
+		
+		TestTable test = testTableDAO.selectByPrimaryKey(1);
+		System.out.println("test= " + test);
 	}
 	
 	

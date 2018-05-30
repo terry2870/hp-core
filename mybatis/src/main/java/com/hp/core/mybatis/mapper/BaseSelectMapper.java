@@ -3,15 +3,22 @@
  */
 package com.hp.core.mybatis.mapper;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
 
+import com.hp.core.common.beans.page.PageModel;
+import com.hp.core.mybatis.constant.SQLProviderConstant;
 import com.hp.core.mybatis.provider.BaseSelectProvider;
 
 /**
+ * 基本的查询操作
+ * 继承该接口，可以实现一些简单的查询操作
  * @author huangping
  * 2018年5月21日
  */
-public interface BaseSelectMapper<T, PK> {
+public interface BaseSelectMapper<T> {
 
 	/**
 	 *  无条件查询所有总数
@@ -26,13 +33,23 @@ public interface BaseSelectMapper<T, PK> {
 	 * @return
 	 */
 	@SelectProvider(type = BaseSelectProvider.class, method = "selectByPrimaryKey")
-	public T selectByPrimaryKey(PK id);
+	public T selectByPrimaryKey(Object id);
 	
 	/**
 	 * 根据条件，查询数量
-	 * @param params
+	 * @param target
 	 * @return
 	 */
 	@SelectProvider(type = BaseSelectProvider.class, method = "selectCountByParams")
-	public Integer selectCountByParams(T params);
+	public Integer selectCountByParams(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target);
+	
+	/**
+	 * 根据条件，查询list（分页）
+	 * @param params
+	 * @param page
+	 * @return
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectListByParams")
+	public List<T> selectListByParams(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target, @Param(SQLProviderConstant.PAGE_OBJECT_ALIAS) PageModel page);
+	
 }

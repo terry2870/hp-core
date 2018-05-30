@@ -3,13 +3,5 @@
 <mapper namespace="com.hp.core.test.dal.ITestTableDAO">
 	<resultMap id="BaseResultMap" type="com.hp.core.test.dal.model.TestTable">
 	</resultMap>
-	
-	<select id="selectById" resultMap="BaseResultMap">
-		select * from test_table where id=#{id}
-	</select>
-	
-	<update id="updateById">
-		update test_table set simplified=#{simplified} where id=#{id}
-	</update>
 
 </mapper>

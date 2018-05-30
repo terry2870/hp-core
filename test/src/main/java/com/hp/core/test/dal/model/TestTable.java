@@ -4,9 +4,7 @@
 package com.hp.core.test.dal.model;
 
 
-import javax.persistence.Column;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.hp.core.common.beans.BaseBean;
@@ -15,7 +13,6 @@ import com.hp.core.common.beans.BaseBean;
  * @author huangping
  * 2018年5月14日
  */
-@Table
 public class TestTable extends BaseBean {
 
 	/**
@@ -31,6 +28,8 @@ public class TestTable extends BaseBean {
 	
 	@Transient
 	private String str1111;
+	
+	private String testName;
 	public Integer getId() {
 		return id;
 	}
@@ -48,5 +47,11 @@ public class TestTable extends BaseBean {
 	}
 	public void setSimplified(String simplified) {
 		this.simplified = simplified;
+	}
+	public String getTestName() {
+		return testName;
+	}
+	public void setTestName(String testName) {
+		this.testName = testName;
 	}
 }

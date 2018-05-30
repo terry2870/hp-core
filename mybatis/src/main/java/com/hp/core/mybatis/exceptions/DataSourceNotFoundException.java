@@ -14,6 +14,6 @@ public class DataSourceNotFoundException extends RuntimeException {
 	private static final long serialVersionUID = 3488699974375454334L;
 
 	public DataSourceNotFoundException(String message) {
-		super(message);
+		super("datasource not found with databaseName= " + message);
 	}
 }

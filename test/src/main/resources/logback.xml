@@ -71,6 +71,7 @@
 		</encoder>
 	</appender>
 
+	<logger name="com.hp.core.mybatis.provider" level="DEBUG"/>
 
 	<!-- root级别 DEBUG -->
 	<root level="${logs.level}">

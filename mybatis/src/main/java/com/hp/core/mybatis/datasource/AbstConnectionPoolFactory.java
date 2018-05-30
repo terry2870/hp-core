@@ -33,7 +33,7 @@ public interface AbstConnectionPoolFactory {
 	public default DynamicDatasourceBean getDynamicDatasource(DatasourceConfigBean bean) {
 		if (bean == null || CollectionUtils.isEmpty(bean.getMasterIpPort())) {
 			log.error("getDatasource error. with masterIpPort is empty");
-			throw new MasterUrlNotFoundException("master url is not find from bean");
+			throw new MasterUrlNotFoundException();
 		}
 		
 		DynamicDatasourceBean result = new DynamicDatasourceBean();

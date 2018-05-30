@@ -20,24 +20,31 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.core.common.utils.NameDefineUtil;
+import com.hp.core.mybatis.bean.DAOInterfaceInfoBean;
 import com.hp.core.mybatis.bean.DynamicColumnBean;
 import com.hp.core.mybatis.bean.DynamicEntityBean;
 import com.hp.core.mybatis.bean.GenericParadigmBean;
+import com.hp.core.mybatis.exceptions.EntityHaveNotExistsPrimaryKeyException;
+import com.hp.core.mybatis.interceptor.DAOMethodInterceptorHandle;
 
 /**
  * @author huangping 2018年5月22日
  */
-public class BaseProviderFactory {
+public class BaseSQLProviderFactory {
+	
+	private static Logger log = LoggerFactory.getLogger(BaseSQLProviderFactory.class);
 
 	/**
 	 * 私有构造方法保证单例
 	 */
-	private BaseProviderFactory() {
+	private BaseSQLProviderFactory() {
 	}
 
-	private static BaseProviderFactory instance = new BaseProviderFactory();
+	private static BaseSQLProviderFactory instance = new BaseSQLProviderFactory();
 
 	/**
 	 * 存放所有dao继承的父类时候的泛型
@@ -49,12 +56,29 @@ public class BaseProviderFactory {
 	 */
 	private static Map<String, DynamicEntityBean> entityBeanMap = new ConcurrentHashMap<>();
 
+	
+	/**
+	 * 获取dal对象实体
+	 * @return
+	 */
+	public static DynamicEntityBean getEntity() {
+		DAOInterfaceInfoBean info = DAOMethodInterceptorHandle.getRouteDAOInfo();
+		
+		//获取泛型对象
+		GenericParadigmBean genericParadigmBean = instance.getGenericParadigmByClass(info.getClassName());
+		
+		//获取表名和所有字段
+		DynamicEntityBean entity = instance.getDynamicEntityByClass(genericParadigmBean.getTargetModelClassName());
+		return entity;
+	}
+	
+	
 	/**
 	 * 获取实例
 	 * 
 	 * @return
 	 */
-	public static BaseProviderFactory getInstance() {
+	public static BaseSQLProviderFactory getInstance() {
 		return instance;
 	}
 
@@ -76,10 +100,13 @@ public class BaseProviderFactory {
 		
 		//锁这个class对象，保证
 		synchronized (targetClass) {
+			//双重校验
+			//类似单例里面的双重校验锁
 			bean = genericParadigmClassMap.get(targetClass.getName());
 			if (bean != null) {
 				return bean;
 			}
+			log.info("begin to call getGenericParadigmByClass with targetClass={}", targetClass);
 			// 获取这个接口继承的父类的泛型
 			Type[] genType = targetClass.getGenericInterfaces();
 			if (ArrayUtils.isEmpty(genType)) {
@@ -90,7 +117,7 @@ public class BaseProviderFactory {
 			if (ArrayUtils.isEmpty(genericType)) {
 				return null;
 			}
-			bean = new GenericParadigmBean((Class<?>) genericType[0], (Class<?>) genericType[1]);
+			bean = new GenericParadigmBean((Class<?>) genericType[0]);
 			genericParadigmClassMap.put(targetClass.getName(), bean);
 			return bean;
 		}
@@ -115,14 +142,22 @@ public class BaseProviderFactory {
 		//缓存没有，则锁这个class对象，解析字段
 		//按照targetClass对象  加锁
 		synchronized (targetClass) {
+			//双重校验
+			//类似单例里面的双重校验锁
 			entity = entityBeanMap.get(targetClass.getName());
 			if (entity != null) {
 				return entity;
 			}
-
+			log.info("begin to call getDynamicEntityByClass with targetClass={}", targetClass);
 			entity = new DynamicEntityBean();
 			entity.setClassName(targetClass);
 			setTableAndAllColumns(targetClass, entity);
+			//如果该实体对象没有主键，则不允许使用该插件
+			if (StringUtils.isEmpty(entity.getPrimaryKeyColumnName())) {
+				log.error("entity have not exists primary key. with class={}", targetClass);
+				throw new EntityHaveNotExistsPrimaryKeyException(targetClass);
+			}
+			
 			entity.dealColumns();
 			
 			//缓存起来
@@ -164,7 +199,7 @@ public class BaseProviderFactory {
 				//static的字段不解析
 				continue;
 			}
-			column = getColumn(field);
+			column = getColumnByField(field);
 			if(column.isPrimaryKey()) {
 				entity.setPrimaryKeyFieldName(column.getFieldName());
 				entity.setPrimaryKeyColumnName(column.getColumnName());
@@ -181,7 +216,7 @@ public class BaseProviderFactory {
 	 * @param field
 	 * @return
 	 */
-	private DynamicColumnBean getColumn(Field field) {
+	private DynamicColumnBean getColumnByField(Field field) {
 		DynamicColumnBean bean = new DynamicColumnBean();
 		setColumn(field, bean);
 		bean.setFieldName(field.getName());

@@ -1,5 +1,6 @@
 package com.hp.core.test.dal.model;
 
+import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
@@ -14,10 +15,12 @@ public class BillInfo extends BaseBean {
 	@Id
 	private Integer id;
 
+	@Column(updatable = false)
 	private Integer projectId;
 
 	private String enterpriseName;
 
+	@Column(updatable = false)
 	private String expressContacts;
 
 	private String expressContactsMobile;

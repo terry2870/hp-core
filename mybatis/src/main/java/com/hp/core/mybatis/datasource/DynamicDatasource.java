@@ -193,7 +193,7 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 			if (num == null) {
 				//没找到，直接抛出异常
 				log.error("datasource not found with databaseName= {}", databaseName);
-				throw new DataSourceNotFoundException("datasource not found with databaseName= " + databaseName);
+				throw new DataSourceNotFoundException(databaseName);
 			}
 		} else {
 			datasourceKey = buildSlaveDatasourceKey(databaseName, -1);
@@ -231,7 +231,7 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 			DynamicDatasourceBean dynamicDatasourceBean = null;
 			AbstConnectionPoolFactory connectionPool = null;
 			String databaseName = null;
-			Object poolName = null, connectionParam = null, databaseType = null, driverClassName = null;
+			
 			Map<String, Object> obj = null;
 			Map<String, Object> databaseMap = (Map<String, Object>) databasesMap.get("datasources");
 			DatasourceConfigBean datasourceBean = null;
@@ -241,27 +241,12 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 			for (Entry<String, Object> entry : databaseMap.entrySet()) {
 				databaseName = entry.getKey();
 				obj = (Map<String, Object>) entry.getValue();
-				poolName = obj.get("poolName");
 				
 				datasourceBean = new DatasourceConfigBean();
-				if (poolName != null) {
-					datasourceBean.setPoolName((String) poolName);
-				}
-				connectionParam = obj.get("connectionParam");
-				if (connectionParam != null) {
-					datasourceBean.setConnectionParam((String) connectionParam);
-				}
+				//设置数据源基础信息
+				dealDatasourceBaseInfo(obj, datasourceBean);
 				datasourceBean.setDatabaseName(databaseName);
-				databaseType = obj.get("databaseType");
-				if (databaseType != null) {
-					datasourceBean.setDatabaseType((String) databaseType);
-				}
-				driverClassName = obj.get("driverClassName");
-				if (driverClassName != null) {
-					datasourceBean.setDriverClassName((String) driverClassName);
-				}
-				datasourceBean.setUsername((String) obj.get("username"));
-				datasourceBean.setPassword(obj.get("password").toString());
+				
 				serversList = (Map<String, Object>) obj.get("servers");
 				if (MapUtils.isEmpty(serversList)) {
 					log.error("init database error. with servers is empty.");
@@ -323,6 +308,60 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 		} catch (Exception e) {
 			log.error("deal DynamicDatasource error.", e);
 		}
+	}
+	
+	/**
+	 * 设置数据源基础的信息
+	 * @param map
+	 * @param bean
+	 */
+	private void dealDatasourceBaseInfo(Map<String, Object> map, DatasourceConfigBean bean) {
+		Object maxTotal = map.get("maxTotal");
+		Object maxIdle = map.get("maxIdle");
+		Object initialSize = map.get("initialSize");
+		Object maxWaitMillis = map.get("maxWaitMillis");
+		Object timeBetweenEvictionRunsMillis = map.get("timeBetweenEvictionRunsMillis");
+		Object testWhileIdle = map.get("testWhileIdle");
+		Object numTestsPerEvictionRun = map.get("numTestsPerEvictionRun");
+		Object poolName = map.get("poolName");
+		Object connectionParam = map.get("connectionParam");
+		Object databaseType = map.get("databaseType");
+		Object driverClassName = map.get("driverClassName");
+		if (maxTotal != null) {
+			bean.setMaxTotal((int) maxTotal);
+		}
+		if (maxIdle != null) {
+			bean.setMaxIdle((int) maxIdle);
+		}
+		if (initialSize != null) {
+			bean.setInitialSize((int) initialSize);
+		}
+		if (maxWaitMillis != null) {
+			bean.setMaxWaitMillis((int) maxWaitMillis);
+		}
+		if (timeBetweenEvictionRunsMillis != null) {
+			bean.setTimeBetweenEvictionRunsMillis((int) timeBetweenEvictionRunsMillis);
+		}
+		if (testWhileIdle != null) {
+			bean.setTestWhileIdle((boolean) testWhileIdle);
+		}
+		if (numTestsPerEvictionRun != null) {
+			bean.setNumTestsPerEvictionRun((int) numTestsPerEvictionRun);
+		}
+		if (poolName != null) {
+			bean.setPoolName((String) poolName);
+		}
+		if (connectionParam != null) {
+			bean.setConnectionParam((String) connectionParam);
+		}
+		if (databaseType != null) {
+			bean.setDatabaseType((String) databaseType);
+		}
+		if (driverClassName != null) {
+			bean.setDriverClassName((String) driverClassName);
+		}
+		bean.setUsername(map.get("username").toString());
+		bean.setPassword(map.get("password").toString());
 	}
 	
 	/**
