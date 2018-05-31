@@ -50,24 +50,34 @@ public class Test extends BaseJUnitTest {
 //		int n = tablesDAO.selectBy();
 //		System.out.println("tablesDAO= " + n);
 		
-//		BillInfo bill = new BillInfo();
+		BillInfo bill = new BillInfo();
 //		bill.setId(2);
 //		bill.setEnterpriseName("爱仕达多asdasd");
 //		bill.setExpressCode("asdhakjsdhkajshd");
 //		bill.setExpressContacts("我们的1234");
-//		bill.setProjectId(123);
+		bill.setProjectId(2);
 		//System.out.println("update ======= " + billInfoDAO.updateByPrimaryKeySelective(bill));
 		//bill.setCreateTime(1487230903);
 		
 		//System.out.println(billInfoDAO.selectAllCount());
 //		System.out.println("-----" + billInfoDAO.selectByPrimaryKey(2));
 		//System.out.println(billInfoDAO.selectCountByParams(bill));
-//		PageModel page = new PageModel();
-//		page.setCurrentPage(1);
-//		page.setPageSize(10);
-//		page.setSortColumn("projectId");
-		//List<BillInfo> list = billInfoDAO.selectListByParams(bill, page);
-		//System.out.println("list = " + JSON.toJSONString(list));
+		PageModel page = new PageModel();
+		page.setCurrentPage(1);
+		page.setPageSize(2);
+		page.setSortColumn("projectId");
+		
+		Integer total = billInfoDAO.selectCountByParams(bill);
+		System.out.println("total= " + total);
+		
+		List<BillInfo> list = billInfoDAO.selectListByParams(bill);
+		System.out.println("list1 = " + JSON.toJSONString(list));
+		
+		list = billInfoDAO.selectListByParamsWithPage(bill, page);
+		System.out.println("list2 = " + JSON.toJSONString(list));
+		
+		list = billInfoDAO.selectByPrimaryKeys(2);
+		System.out.println("list3 = " + JSON.toJSONString(list));
 		
 //		TestTable test = new TestTable();
 //		test.setSimplified("simplified___" + 1);
@@ -87,8 +97,11 @@ public class Test extends BaseJUnitTest {
 //		}
 //		testTableDAO.insertBatch(list);
 		
-		TestTable test = testTableDAO.selectByPrimaryKey(1);
-		System.out.println("test= " + test);
+//		TestTable test = testTableDAO.selectByPrimaryKey(1);
+//		System.out.println("test= " + test);
+//		
+//		
+//		testTableDAO.deleteByPrimaryKeys(1,2,3);
 	}
 	
 	

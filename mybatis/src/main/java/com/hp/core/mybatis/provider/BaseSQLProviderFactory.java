@@ -32,6 +32,7 @@ import com.hp.core.mybatis.exceptions.EntityHaveNotExistsPrimaryKeyException;
 import com.hp.core.mybatis.interceptor.DAOMethodInterceptorHandle;
 
 /**
+ * 基础的sqlmap  provider工厂
  * @author huangping 2018年5月22日
  */
 public class BaseSQLProviderFactory {

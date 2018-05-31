@@ -18,6 +18,8 @@ import com.hp.core.mybatis.constant.SQLProviderConstant;
 import com.hp.core.mybatis.exceptions.ProviderSQLException;
 
 /**
+ * 基本的查询操作
+ * 获取基本的查询操作的sql
  * @author huangping 2018年5月21日
  */
 public class BaseSelectProvider {
@@ -49,6 +51,34 @@ public class BaseSelectProvider {
 				.FROM(entity.getTableName())
 				.WHERE(entity.getPrimaryKeyColumnName() + "=#{id}");
 		log.debug("selectByPrimaryKey get sql \r\nsql={} \r\nid={}  \r\nentity={}", sql, id, entity);
+		return sql.toString();
+	}
+	
+	/**
+	 * 根据主键，批量查询
+	 * @param params
+	 * @return
+	 */
+	public static String selectByPrimaryKeys(Map<String, Object> params) {
+		DynamicEntityBean entity = BaseSQLProviderFactory.getEntity();
+		Object[] arr = (Object[]) params.get("array");
+		StringBuilder sql = new StringBuilder("SELECT ")
+				.append("\n")
+				.append(entity.getSelectColumns())
+				.append("\n")
+				.append(" FROM ")
+				.append(entity.getTableName())
+				.append(" WHERE ")
+				.append(entity.getPrimaryKeyColumnName())
+				.append(" IN (");
+		for (int i = 0; i < arr.length; i++) {
+			sql.append("#{array[").append(i).append("]}");
+			if (i != arr.length - 1) {
+				sql.append(", ");
+			}
+		}
+		sql.append(")");
+		log.debug("selectByPrimaryKeys get sql \r\nsql={} \r\narr={}  \r\nentity={}", sql, arr.length, entity);
 		return sql.toString();
 	}
 	
@@ -90,7 +120,10 @@ public class BaseSelectProvider {
 				.FROM(entity.getTableName());
 		setSQLByParams(target.get(SQLProviderConstant.TARGET_OBJECT_ALIAS), entity, sql);
 		
-		String sql1 = sql.toString() + getPageSQL((PageModel) target.get(SQLProviderConstant.PAGE_OBJECT_ALIAS), entity);
+		String sql1 = sql.toString();
+		if (target.containsKey(SQLProviderConstant.PAGE_OBJECT_ALIAS)) {
+			sql1 += getPageSQL((PageModel) target.get(SQLProviderConstant.PAGE_OBJECT_ALIAS), entity);
+		}
 		
 		log.debug("selectListByParams get sql \r\nsql={} \r\nparams={}, \r\nentity={}", sql1, target, entity);
 		return sql1;
@@ -124,6 +157,9 @@ public class BaseSelectProvider {
 	 * @param sql
 	 */
 	private static void setSQLByParams(Object params, DynamicEntityBean entity, SQL sql) {
+		if (params == null) {
+			return;
+		}
 		String key = null;
 		Object value = null;
 		try {
@@ -134,7 +170,6 @@ public class BaseSelectProvider {
 					//为空，跳过
 					continue;
 				}
-				
 				sql.WHERE(column.getColumnName() + " = #{"+ SQLProviderConstant.TARGET_OBJECT_ALIAS +"."+ column.getFieldName() +"}");
 			}
 		} catch (Exception e) {

@@ -12,6 +12,7 @@ public interface BaseMapper<T>
 	extends
 	BaseSelectMapper<T>,
 	BaseUpdateMapper<T>,
-	BaseInsertMapper<T> {
+	BaseInsertMapper<T>,
+	BaseDeleteMapper<T> {
 
 }

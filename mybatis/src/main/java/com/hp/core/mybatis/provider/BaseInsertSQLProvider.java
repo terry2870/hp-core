@@ -2,12 +2,7 @@
  * 
  */
 package com.hp.core.mybatis.provider;
-/**
- * @author huangping
- * 2018年5月29日
- */
 
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +14,13 @@ import org.slf4j.LoggerFactory;
 import com.hp.core.mybatis.bean.DynamicColumnBean;
 import com.hp.core.mybatis.bean.DynamicEntityBean;
 
+
+/**
+ * 基本的插入操作
+ * 获取基本的插入操作的sql
+ * @author huangping
+ * 2018年5月30日
+ */
 public class BaseInsertSQLProvider {
 
 	private static Logger log = LoggerFactory.getLogger(BaseInsertSQLProvider.class);
@@ -46,6 +48,7 @@ public class BaseInsertSQLProvider {
 	 * @param params
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public static String insertBatch(Map<String, Object> params) {
 		DynamicEntityBean entity = BaseSQLProviderFactory.getEntity();
 		StringBuilder sql = new StringBuilder("INSERT INTO ").append(entity.getTableName());
@@ -57,7 +60,7 @@ public class BaseInsertSQLProvider {
 		for (int i = 0; i < list.size(); i++) {
 			sql.append("(");
 			for (int j = 0; j < entity.getInsertColumnsList().size(); j++) {
-				sql.append("#{list["+ i +"]."+ entity.getInsertColumnsList().get(j).getFieldName() +"}");
+				sql.append("#{list[").append(i).append("].").append(entity.getInsertColumnsList().get(j).getFieldName()).append("}");
 				if (j != entity.getInsertColumnsList().size() - 1) {
 					sql.append(", ");
 				}

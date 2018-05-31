@@ -44,12 +44,27 @@ public interface BaseSelectMapper<T> {
 	public Integer selectCountByParams(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target);
 	
 	/**
+	 * 根据条件，查询list（不分页）
+	 * @param params
+	 * @return
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectListByParams")
+	public List<T> selectListByParams(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target);
+	
+	/**
 	 * 根据条件，查询list（分页）
 	 * @param params
 	 * @param page
 	 * @return
 	 */
 	@SelectProvider(type = BaseSelectProvider.class, method = "selectListByParams")
-	public List<T> selectListByParams(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target, @Param(SQLProviderConstant.PAGE_OBJECT_ALIAS) PageModel page);
+	public List<T> selectListByParamsWithPage(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target, @Param(SQLProviderConstant.PAGE_OBJECT_ALIAS) PageModel page);
 	
+	/**
+	 * 根据主键，批量查询
+	 * @param ids
+	 * @return
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectByPrimaryKeys")
+	public List<T> selectByPrimaryKeys(Object... ids);
 }

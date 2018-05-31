@@ -73,8 +73,11 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 		//根据用户
 		DAOInterfaceInfoBean daoInfo = DAOMethodInterceptorHandle.getRouteDAOInfo();
 		if (daoInfo == null) {
+			//如果没有获取到拦截信息，则取主数据库
 			log.warn("determineCurrentLookupKey error. with daoInfo is empty.");
-			return null;
+			//return null;
+			//new一个对象出来
+			daoInfo = new DAOInterfaceInfoBean();
 		}
 		
 		//按照dao的className，从数据源中获取数据源
@@ -135,6 +138,10 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 		boolean fromMaster = false;
 		//获取用户执行的sql方法名
 		String statementId = daoInfo.getStatementId();
+		if (StringUtils.isEmpty(statementId)) {
+			//没有获取到方法，走master
+			return true;
+		}
 		statementId = statementId.toLowerCase();
 		if (select.matcher(statementId).matches()) {
 			//使用slave数据源
@@ -157,6 +164,9 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 	 * @return
 	 */
 	private <T extends Annotation> T getAnnotationByMethod(Method method, Class<T> annotationType) {
+		if (method == null) {
+			return null;
+		}
 		T a = method.getAnnotation(annotationType);
 		if (a == null) {
 			return null;
@@ -171,6 +181,9 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 	 * @return
 	 */
 	private <T extends Annotation> T getAnnotationByClass(Class<?> clazz, Class<T> annotationType) {
+		if (clazz == null) {
+			return null;
+		}
 		T a = clazz.getAnnotation(annotationType);
 		if (a == null) {
 			return null;
