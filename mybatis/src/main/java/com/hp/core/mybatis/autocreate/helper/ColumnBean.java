@@ -1,7 +1,7 @@
 /* author hp
  * 创建日期 Aug 16, 2011
  */
-package com.hp.core.mybatis.autocreate;
+package com.hp.core.mybatis.autocreate.helper;
 
 import com.hp.core.common.beans.BaseBean;
 
@@ -15,7 +15,8 @@ public class ColumnBean extends BaseBean {
 	private String columnComment;
 	private String fieldName;
 	private String fieldNameFirstUpper;
-	private String dataType;
+	private String jdbcType;
+	private String javaType;
 	private Integer dataLength;
 	private Integer dataScale;
 	private String constraintName;
@@ -34,15 +35,7 @@ public class ColumnBean extends BaseBean {
 	}
 
 	public void setColumnComment(String columnComment) {
-		this.columnComment = columnComment;
-	}
-
-	public String getDataType() {
-		return this.dataType;
-	}
-
-	public void setDataType(String dataType) {
-		this.dataType = dataType;
+		this.columnComment = columnComment == null ? "" : columnComment;
 	}
 
 	public Integer getDataLength() {
@@ -91,5 +84,21 @@ public class ColumnBean extends BaseBean {
 
 	public void setFieldNameFirstUpper(String fieldNameFirstUpper) {
 		this.fieldNameFirstUpper = fieldNameFirstUpper;
+	}
+
+	public String getJavaType() {
+		return javaType;
+	}
+
+	public void setJavaType(String javaType) {
+		this.javaType = javaType;
+	}
+
+	public String getJdbcType() {
+		return jdbcType;
+	}
+
+	public void setJdbcType(String jdbcType) {
+		this.jdbcType = jdbcType;
 	}
 }

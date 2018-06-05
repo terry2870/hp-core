@@ -21,17 +21,35 @@ public class PageResponse<T> extends BaseBean {
 	private int totalPage;
 	private List<T> rows = new ArrayList<>();
 	private List<T> footer = new ArrayList<>();
+	
+	private boolean hasMore;
 
 	public PageResponse() {
 	}
+
+	public PageResponse(int currentPage, int pageSize) {
+		setCurrentPage(currentPage);
+		setPageSize(pageSize);
+	}
 	
 	public PageResponse(int total, List<T> rows) {
-		this.total = total;
-		this.rows = rows;
+		setTotal(total);
+		setRows(rows);
 	}
 	
 	public PageResponse(int total, List<T> rows, List<T> footer) {
 		this(total, rows);
+		this.footer = footer;
+	}
+	
+	public PageResponse(int total, List<T> rows, int currentPage, int pageSize) {
+		this(currentPage, pageSize);
+		setTotal(total);
+		setRows(rows);
+	}
+	
+	public PageResponse(int total, List<T> rows, int currentPage, int pageSize, List<T> footer) {
+		this(total, rows, currentPage, pageSize);
 		this.footer = footer;
 	}
 
@@ -46,10 +64,17 @@ public class PageResponse<T> extends BaseBean {
 	}
 	
 	private void dealTotalPage() {
-		if (total > 0 && pageSize > 0) {
-			int totalPage = total % pageSize == 0 ? total / pageSize : total / pageSize + 1;
-			this.setTotalPage(totalPage);
+		if (this.totalPage > 0) {
+			//当已经设置过totalPage，则无需重复设置
+			return;
 		}
+		if (total <= 0 || pageSize <= 0) {
+			//当总数和每页条数未设置时，跳过
+			return;
+		}
+		int totalPage = total % pageSize == 0 ? total / pageSize : total / pageSize + 1;
+		this.setTotalPage(totalPage);
+		this.setHasMore(totalPage > currentPage);
 	}
 
 	public int getTotalPage() {
@@ -82,6 +107,16 @@ public class PageResponse<T> extends BaseBean {
 
 	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
+		// 在设置煤业条数时的时候计算出对应的总页数
+		dealTotalPage();
+	}
+
+	public boolean isHasMore() {
+		return hasMore;
+	}
+
+	public void setHasMore(boolean hasMore) {
+		this.hasMore = hasMore;
 	}
 
 	public List<T> getFooter() {

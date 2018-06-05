@@ -30,7 +30,7 @@ public class DatasourceConfigBean extends BaseBean {
 	private String driverClassName;
 	
 	//数据库连接串
-	private String connectionParam = "useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC";
+	private String connectionParam = "useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC&useInformationSchema=true";
 	
 	//数据库名称
 	private String databaseName;

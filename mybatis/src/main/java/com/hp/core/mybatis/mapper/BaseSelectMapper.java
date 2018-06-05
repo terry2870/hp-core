@@ -58,7 +58,7 @@ public interface BaseSelectMapper<T> {
 	 * @return
 	 */
 	@SelectProvider(type = BaseSelectProvider.class, method = "selectListByParams")
-	public List<T> selectListByParamsWithPage(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target, @Param(SQLProviderConstant.PAGE_OBJECT_ALIAS) PageModel page);
+	public List<T> selectPageListByParams(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target, @Param(SQLProviderConstant.PAGE_OBJECT_ALIAS) PageModel page);
 	
 	/**
 	 * 根据主键，批量查询

@@ -5,15 +5,19 @@ package com.hp.core.mybatis.autocreate;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.jdbc.core.JdbcTemplate;
 
+import com.hp.core.mybatis.autocreate.helper.TableBean;
+import com.hp.core.mybatis.autocreate.helper.TableBeanHelper;
 import com.hp.core.mybatis.datasource.DynamicDatasource;
 
 /**
@@ -21,6 +25,8 @@ import com.hp.core.mybatis.datasource.DynamicDatasource;
  * 2018年5月30日
  */
 public class CreateFile {
+	
+	private static Logger log = LoggerFactory.getLogger(CreateFile.class);
 
 	//文件生成的主路径
 	public static String MAIN_PATH_DIR = "./";
@@ -28,16 +34,26 @@ public class CreateFile {
 	//java文件存放主目录
 	public static String JAVA_DIR = "src/main/java";
 
-	//DAO生成的包地址
-	public static String DAO_PACKAGE = "com.hp.core.test.dal";
-	
-	//model生成的包地址
-	public static String MODEL_PACKAGE = DAO_PACKAGE + ".model";
+	public static String PROJECT_PACKAGE = "com.hp.core.test";
 
 	public static String MAPPING_DIR = "src/main/resources/META-INF/mybatis";
 	
+	//service所在module名称
+	public static String SERVICE_MAVEN_MODULE = "";
+	//controller锁在module名称
+	public static String CONTROLLER_MAVEN_MODULE = "";
+	
 	public static final String BASE_BEAN_PACKAGE = "com.hp.core.common.beans.BaseBean";
+	public static final String BASE_REQUEST_BO_PACKAGE = "com.base.model.request.BaseRequestBO";
 	public static final String BASE_MAPPER_PACKAGE = "com.hp.core.mybatis.mapper.BaseMapper";
+	public static final String BASE_RESPONSE_PACKAGE = "com.hp.core.common.beans.Response";
+	public static final String BASE_PAGE_REQUEST_PACKAGE = "com.hp.core.common.beans.page.PageRequest";
+	public static final String BASE_PAGE_RESPONSE_PACKAGE = "com.hp.core.common.beans.page.PageResponse";
+	public static final String BASE_PAGE_MODEL_PACKAGE = "com.hp.core.common.beans.page.PageModel";
+	public static final String DAL_DIR_NAME = "dal";
+	public static final String COMMON_DIR_NAME = "common";
+	public static final String MODEL_DIR_NAME = "model";
+	public static final String AUTHER_NAME = "huangping";
 	
 	public static List<String> tableList = new ArrayList<>();
 	
@@ -50,30 +66,56 @@ public class CreateFile {
 			JAVA_DIR = args[2];
 		}
 		if (args.length > 3) {
-			DAO_PACKAGE = args[3];
+			PROJECT_PACKAGE = args[3];
 		}
 		if (args.length > 4) {
-			MODEL_PACKAGE = args[4];
+			SERVICE_MAVEN_MODULE = args[4];
 		}
 		if (args.length > 5) {
-			MAPPING_DIR = args[5];
+			CONTROLLER_MAVEN_MODULE = args[5];
 		}
-		try (ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/spring-*.xml")) {
+		if (args.length > 6) {
+			MAPPING_DIR = args[6];
+		}
+		try (
+				ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/spring-*.xml");
+		) {
 			DataSource datasource = context.getBean(DynamicDatasource.class);
-			JdbcTemplate jdbc = new JdbcTemplate(datasource);
+			Connection conn = datasource.getConnection();
 			TableBean table = null;
+			
 			for (String tableName : tableArr) {
-				table = TableBeanHelper.getTableBeanByTableName(jdbc, tableName);
+				table = TableBeanHelper.getTableInfoByTableName(conn, tableName);
 				
 				//生成model
-				CreateModel.create(table);
+				CreateDalModel.create(table);
 				
 				//生成dao
 				CreateDAO.create(table);
 				
 				//生成mapper文件
 				CreateMapper.create(table);
+				
+				//生成request model
+				CreatModel.creat(table, "1");
+				
+				//生成response model
+				CreatModel.creat(table, "2");
+				
+				//生成convert
+				CreateConvert.create(table);
+				
+				//生成service
+				CreateService.createInterface(table);
+				
+				//生成实现类
+				CreateService.createInterfaceImpl(table);
+				
+				//生成controller
+				CreateController.create(table);
 			}
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -84,9 +126,17 @@ public class CreateFile {
 	 */
 	public static void saveFile(String fileName, String data) {
 		try {
+			String path = fileName.substring(0,  fileName.lastIndexOf("/"));
+			File pathFile = new File(path);
+			//文件夹不存在，则创建文件夹
+			if (!pathFile.exists()) {
+				pathFile.mkdirs();
+			}
 			FileUtils.writeStringToFile(new File(fileName), data, "UTF-8");
+			log.info("createFile with fileName={}", fileName);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
 }

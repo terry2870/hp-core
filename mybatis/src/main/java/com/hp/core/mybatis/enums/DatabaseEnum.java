@@ -20,8 +20,8 @@ public enum DatabaseEnum {
 	 * @param databaseType
 	 * @return
 	 */
-	public static AbstDatabase getConnectionUrlByDatabaseType(String databaseType) {
-		if (MYSQL.toString().equals(databaseType)) {
+	public static AbstDatabase getDatabaseByDatabaseType(String databaseType) {
+		if (MYSQL.toString().equalsIgnoreCase(databaseType)) {
 			return new MysqlDatabaseImpl();
 		}
 		return null;

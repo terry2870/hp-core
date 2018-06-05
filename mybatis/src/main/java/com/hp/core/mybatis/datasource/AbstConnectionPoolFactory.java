@@ -38,7 +38,7 @@ public interface AbstConnectionPoolFactory {
 		
 		DynamicDatasourceBean result = new DynamicDatasourceBean();
 		DataSource ds = null;
-		AbstDatabase database = DatabaseEnum.getConnectionUrlByDatabaseType(bean.getDatabaseType());
+		AbstDatabase database = DatabaseEnum.getDatabaseByDatabaseType(bean.getDatabaseType());
 		
 		List<DataSource> masterDatasource = new ArrayList<>(bean.getMasterIpPort().size());
 		

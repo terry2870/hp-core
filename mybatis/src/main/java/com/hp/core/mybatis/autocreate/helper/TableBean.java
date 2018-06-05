@@ -1,7 +1,7 @@
 /* author hp
  * 创建日期 Aug 15, 2011
  */
-package com.hp.core.mybatis.autocreate;
+package com.hp.core.mybatis.autocreate.helper;
 
 import java.util.List;
 
@@ -19,6 +19,7 @@ public class TableBean extends BaseBean {
 	private String tableComment;
 	private List<ColumnBean> columnList;
 	private String primaryKey;
+	private String primaryKeyFirstUpper;
 	private String status;
 
 	public String getTableName() {
@@ -34,7 +35,7 @@ public class TableBean extends BaseBean {
 	}
 
 	public void setTableComment(String tableComment) {
-		this.tableComment = tableComment;
+		this.tableComment = tableComment == null ? "" : tableComment;
 	}
 	
 	public String getPrimaryKey() {
@@ -75,6 +76,14 @@ public class TableBean extends BaseBean {
 
 	public void setModelNameFirstLow(String modelNameFirstLow) {
 		this.modelNameFirstLow = modelNameFirstLow;
+	}
+
+	public String getPrimaryKeyFirstUpper() {
+		return primaryKeyFirstUpper;
+	}
+
+	public void setPrimaryKeyFirstUpper(String primaryKeyFirstUpper) {
+		this.primaryKeyFirstUpper = primaryKeyFirstUpper;
 	}
 
 }

@@ -3,10 +3,6 @@
  */
 package com.hp.core.test.daltest;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,16 +12,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.fastjson.JSON;
-import com.hp.core.common.beans.page.PageBean;
 import com.hp.core.common.beans.page.PageModel;
 import com.hp.core.common.junit.BaseJUnitTest;
-import com.hp.core.mybatis.annotation.ForceMaster;
 import com.hp.core.test.bean.UserBean;
 import com.hp.core.test.dal.IBillInfoDAO;
-import com.hp.core.test.dal.ITablesDAO;
 import com.hp.core.test.dal.ITestTableDAO;
 import com.hp.core.test.dal.model.BillInfo;
-import com.hp.core.test.dal.model.TestTable;
 
 /**
  * @author huangping
@@ -73,7 +65,7 @@ public class Test extends BaseJUnitTest {
 		List<BillInfo> list = billInfoDAO.selectListByParams(bill);
 		System.out.println("list1 = " + JSON.toJSONString(list));
 		
-		list = billInfoDAO.selectListByParamsWithPage(bill, page);
+		list = billInfoDAO.selectPageListByParams(bill, page);
 		System.out.println("list2 = " + JSON.toJSONString(list));
 		
 		list = billInfoDAO.selectByPrimaryKeys(2);
