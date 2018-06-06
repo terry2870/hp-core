@@ -24,10 +24,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.core.common.utils.NameDefineUtil;
+import com.hp.core.mybatis.annotation.QueryType;
 import com.hp.core.mybatis.bean.DAOInterfaceInfoBean;
 import com.hp.core.mybatis.bean.DynamicColumnBean;
 import com.hp.core.mybatis.bean.DynamicEntityBean;
 import com.hp.core.mybatis.bean.GenericParadigmBean;
+import com.hp.core.mybatis.enums.QueryTypeEnum;
 import com.hp.core.mybatis.exceptions.EntityHaveNotExistsPrimaryKeyException;
 import com.hp.core.mybatis.interceptor.DAOMethodInterceptorHandle;
 
@@ -223,6 +225,7 @@ public class BaseSQLProviderFactory {
 		bean.setFieldName(field.getName());
 		//bean.setGenerationType(generationType);
 		bean.setPrimaryKey(checkPrimaryKey(field));
+		bean.setQueryType(getQueryType(field));
 		
 		bean.setJavaType(field.getType());
 		//bean.setJdbcType(jdbcType);
@@ -271,6 +274,19 @@ public class BaseSQLProviderFactory {
 	private boolean checkPrimaryKey(Field field) {
 		Id id = field.getAnnotation(Id.class);
 		return id != null;
+	}
+	
+	/**
+	 * 获取字段的匹配方式
+	 * @param field
+	 * @return
+	 */
+	private QueryTypeEnum getQueryType(Field field) {
+		QueryType q = field.getAnnotation(QueryType.class);
+		if (q == null) {
+			return QueryTypeEnum.EQUALS;
+		}
+		return q.value();
 	}
 	
 	/**

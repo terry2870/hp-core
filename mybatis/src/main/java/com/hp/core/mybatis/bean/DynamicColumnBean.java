@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import org.apache.ibatis.type.JdbcType;
 
 import com.hp.core.common.beans.BaseBean;
+import com.hp.core.mybatis.enums.QueryTypeEnum;
 
 /**
  * @author huangping
@@ -44,6 +45,11 @@ public class DynamicColumnBean extends BaseBean {
      * 主键生成策略
      */
     private GenerationType generationType = GenerationType.AUTO;
+    
+    /**
+     * 匹配方式
+     */
+    private QueryTypeEnum queryType = QueryTypeEnum.EQUALS;
     
     /**
      * 是否持久化
@@ -173,5 +179,13 @@ public class DynamicColumnBean extends BaseBean {
 
 	public void setUpdatable(boolean updatable) {
 		this.updatable = updatable;
+	}
+
+	public QueryTypeEnum getQueryType() {
+		return queryType;
+	}
+
+	public void setQueryType(QueryTypeEnum queryType) {
+		this.queryType = queryType;
 	}
 }

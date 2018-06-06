@@ -15,6 +15,7 @@ import com.hp.core.common.beans.page.PageModel;
 import com.hp.core.mybatis.bean.DynamicColumnBean;
 import com.hp.core.mybatis.bean.DynamicEntityBean;
 import com.hp.core.mybatis.constant.SQLProviderConstant;
+import com.hp.core.mybatis.enums.QueryTypeEnum;
 import com.hp.core.mybatis.exceptions.ProviderSQLException;
 
 /**
@@ -92,10 +93,9 @@ public class BaseSelectProvider {
 			return selectAllCount();
 		}
 		DynamicEntityBean entity = BaseSQLProviderFactory.getEntity();
-		
-		SQL sql = new SQL()
-				.SELECT("count(*)")
-				.FROM(entity.getTableName());
+		StringBuilder sql = new StringBuilder("SELECT count(*) FROM ")
+				.append(entity.getTableName())
+				.append(" WHERE 1=1");
 		
 		//遍历属性字段，不为空的都加入sql查询条件
 		setSQLByParams(target.get(SQLProviderConstant.TARGET_OBJECT_ALIAS), entity, sql);
@@ -114,19 +114,19 @@ public class BaseSelectProvider {
 			throw new ProviderSQLException("params is null");
 		}
 		DynamicEntityBean entity = BaseSQLProviderFactory.getEntity();
-		
-		SQL sql = new SQL()
-				.SELECT(entity.getSelectColumns())
-				.FROM(entity.getTableName());
+		StringBuilder sql = new StringBuilder("SELECT ")
+				.append(entity.getSelectColumns())
+				.append(" FROM ")
+				.append(entity.getTableName())
+				.append(" WHERE 1=1");
 		setSQLByParams(target.get(SQLProviderConstant.TARGET_OBJECT_ALIAS), entity, sql);
 		
-		String sql1 = sql.toString();
 		if (target.containsKey(SQLProviderConstant.PAGE_OBJECT_ALIAS)) {
-			sql1 += getPageSQL((PageModel) target.get(SQLProviderConstant.PAGE_OBJECT_ALIAS), entity);
+			getPageSQL((PageModel) target.get(SQLProviderConstant.PAGE_OBJECT_ALIAS), entity, sql);
 		}
 		
-		log.debug("selectListByParams get sql \r\nsql={} \r\nparams={}, \r\nentity={}", sql1, target, entity);
-		return sql1;
+		log.debug("selectListByParams get sql \r\nsql={} \r\nparams={}, \r\nentity={}", sql, target, entity);
+		return sql.toString();
 	}
 	
 	/**
@@ -136,7 +136,7 @@ public class BaseSelectProvider {
 	 * @param entity
 	 * @return
 	 */
-	private static String getPageSQL(PageModel page, DynamicEntityBean entity) {
+	private static String getPageSQL(PageModel page, DynamicEntityBean entity, StringBuilder sql) {
 		if (page == null) {
 			return "";
 		}
@@ -156,7 +156,7 @@ public class BaseSelectProvider {
 	 * @param entity
 	 * @param sql
 	 */
-	private static void setSQLByParams(Object params, DynamicEntityBean entity, SQL sql) {
+	private static void setSQLByParams(Object params, DynamicEntityBean entity, StringBuilder sql) {
 		if (params == null) {
 			return;
 		}
@@ -170,7 +170,24 @@ public class BaseSelectProvider {
 					//为空，跳过
 					continue;
 				}
-				sql.WHERE(column.getColumnName() + " = #{"+ SQLProviderConstant.TARGET_OBJECT_ALIAS +"."+ column.getFieldName() +"}");
+				if (QueryTypeEnum.EQUALS.equals(column.getQueryType())) {
+					sql.append(" AND ")
+						.append(column.getColumnName())
+						.append(" = #{")
+						.append(SQLProviderConstant.TARGET_OBJECT_ALIAS)
+						.append(".")
+						.append(column.getFieldName())
+						.append("}");
+				} else if (QueryTypeEnum.LIKE.equals(column.getQueryType())) {
+					sql.append(" AND INSTR(")
+						.append(column.getColumnName())
+						.append(", #{")
+						.append(SQLProviderConstant.TARGET_OBJECT_ALIAS)
+						.append(".")
+						.append(column.getFieldName())
+						.append("}) > 0");
+				}
+				
 			}
 		} catch (Exception e) {
 			log.error("get setSQLByParams sql error. with params is {}", params, e);
