@@ -21,7 +21,7 @@ hp.core.dao.interceptor.expression=execution(* com.hp.core.test.dal.*DAO.*(..))
 ** 在src/main/resources目录下增加数据库配置文件 database.yml
 ```
 datasources:
-   eie:						//数据库名称（第一个是默认数据库）
+   dababase1:					//数据库名称（第一个是默认数据库）
       servers:
          master:				//数据库主库的配置（可以配置多个）
            - 127.0.0.1:3306
@@ -29,7 +29,7 @@ datasources:
 	   - 127.0.0.1:3306
       username: yh_test
       password: yh_test
-   dababase2:					//第二个数据库
+   dababase2:					//第二个数据源
       servers:
         master:
            - 127.0.0.1:3306
