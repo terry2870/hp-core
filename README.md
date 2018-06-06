@@ -11,7 +11,7 @@
  - java队列
  - redis包装
  - spring定时任务包装
- - mybatis多数据源，读写分离，自动路由。包含crud自动生成
+ - [mybatis多数据源，读写分离，自动路由。包含crud自动生成](https://github.com/terry2870/hp-core/blob/master/mybatis.md)
 
 #### 软件架构
 软件架构说明
