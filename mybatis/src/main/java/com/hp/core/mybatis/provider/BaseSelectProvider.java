@@ -134,20 +134,17 @@ public class BaseSelectProvider {
 	 * (由于mybatis的SQL对象不支持 append 方法，所以这里只能这样处理)
 	 * @param page
 	 * @param entity
-	 * @return
 	 */
-	private static String getPageSQL(PageModel page, DynamicEntityBean entity, StringBuilder sql) {
+	private static void getPageSQL(PageModel page, DynamicEntityBean entity, StringBuilder sql) {
 		if (page == null) {
-			return "";
+			return;
 		}
-		StringBuilder sb = new StringBuilder();
 		if (StringUtils.isNotEmpty(page.getSortColumn())) {
-			sb.append(" order by ").append(page.getSortColumn()).append(" ").append(page.getOrder());
+			sql.append(" order by ").append(page.getSortColumn()).append(" ").append(page.getOrder());
 		}
 		if (page.getPageSize() > 0) {
-			sb.append(" limit ").append(page.getStartIndex()).append(", ").append(page.getPageSize());
+			sql.append(" limit ").append(page.getStartIndex()).append(", ").append(page.getPageSize());
 		}
-		return sb.toString();
 	}
 	
 	/**
