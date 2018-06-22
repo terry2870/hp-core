@@ -88,6 +88,7 @@ public class CreateService {
 		sb.append("import java.util.ArrayList;\r\n");
 		sb.append("import java.util.List;\r\n");
 		sb.append("\r\n");
+		sb.append("import org.apache.commons.collections.CollectionUtils;\r\n");
 		sb.append("import org.slf4j.Logger;\r\n");
 		sb.append("import org.slf4j.LoggerFactory;\r\n");
 		sb.append("import org.springframework.beans.factory.annotation.Autowired;\r\n");
@@ -142,9 +143,18 @@ public class CreateService {
 		sb.append("			log.warn(\"query").append(table.getModelName()).append("PageList error. with total=0. with request={}\", request);\r\n");
 		sb.append("			return null;\r\n");
 		sb.append("		}\r\n");
+		sb.append("		PageResponse<").append(table.getModelName()).append("ResponseBO> resp = new PageResponse<>();\r\n");
+		sb.append("		resp.setCurrentPage(pageRequest.getPage());\r\n");
+		sb.append("		resp.setPageSize(pageRequest.getRows());\r\n");
+		sb.append("		resp.setTotal(total);\r\n");
 		sb.append("\r\n");
 		sb.append("		//查询列表\r\n");
 		sb.append("		List<").append(table.getModelName()).append("> list = ").append(table.getModelNameFirstLow()).append("DAO.selectPageListByParams(dal, page);\r\n");
+		sb.append("		if (CollectionUtils.isEmpty(list)) {\r\n");
+		sb.append("			log.warn(\"query").append(table.getModelName()).append("PageList error. with list is empty. with request={}\", request);\r\n");
+		sb.append("			return resp;\r\n");
+		sb.append("		}\r\n");
+		sb.append("\r\n");
 		sb.append("		List<").append(table.getModelName()).append("ResponseBO> respList = new ArrayList<>();\r\n");
 		sb.append("		for (").append(table.getModelName()).append(" a : list) {\r\n");
 		sb.append("			respList.add(").append(table.getModelName()).append("Convert.dal2BOResponse(a));\r\n");
