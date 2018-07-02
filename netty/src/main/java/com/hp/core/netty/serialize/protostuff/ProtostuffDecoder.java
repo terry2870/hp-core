@@ -22,6 +22,7 @@ public class ProtostuffDecoder extends ByteToMessageDecoder {
 
 	@Override
 	public void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+		int i = in.readableBytes();
 		if (in.readableBytes() < 4) {
 			return;
 		}
@@ -30,6 +31,7 @@ public class ProtostuffDecoder extends ByteToMessageDecoder {
 		if (dataLength < 0) {
 			ctx.close();
 		}
+		i = in.readableBytes();
 		if (in.readableBytes() < dataLength) {
 			in.resetReaderIndex();
 			return;

@@ -19,7 +19,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * @author ping.huang
  * 2016年10月24日
  */
-public class NettyServerChannelInboundHandler extends SimpleChannelInboundHandler<NettyRequest> {
+public class NettyServerChannelInboundHandler extends SimpleChannelInboundHandler<String> {
 
 	// 服务端处理的具体方法
 	private NettyProcess nettyProcess;
@@ -38,7 +38,13 @@ public class NettyServerChannelInboundHandler extends SimpleChannelInboundHandle
 	ExecutorService exe = Executors.newFixedThreadPool(3);
 	
 	@Override
-	protected void channelRead0(ChannelHandlerContext ctx, NettyRequest request) throws Exception {
+	public void channelActive(ChannelHandlerContext ctx) throws Exception {
+		log.info("channelActive");
+		super.channelActive(ctx);
+	}
+	
+	@Override
+	protected void channelRead0(ChannelHandlerContext ctx, String request) throws Exception {
 		/*exe.execute(new Runnable() {
 			
 			@Override
@@ -59,21 +65,21 @@ public class NettyServerChannelInboundHandler extends SimpleChannelInboundHandle
 				ctx.writeAndFlush(response);
 			}
 		});*/
-		
+		log.info("channelRead0");
 		log.debug("服务端收到消息。 request={}", request);
-		NettyResponse response = new NettyResponse();
-		response.setMessageId(request.getMessageId());
-		try {
-			Object data = nettyProcess.process(request);
-			response.setData(data);
-			response.setClassName(data.getClass());
-		} catch (Exception e) {
-			log.error("channelRead0 error. with messageId={}", request.getMessageId(), e);
-			response.setException(e);
-		}
+//		NettyResponse response = new NettyResponse();
+//		response.setMessageId(request.getMessageId());
+//		try {
+//			Object data = nettyProcess.process(request);
+//			response.setData(data);
+//			response.setClassName(data.getClass());
+//		} catch (Exception e) {
+//			log.error("channelRead0 error. with messageId={}", request.getMessageId(), e);
+//			response.setException(e);
+//		}
 		
 		//ByteBuf resp = Unpooled.copiedBuffer((response.toString() + System.getProperty("line.separator")).getBytes());
-		ctx.writeAndFlush(response);
+//		ctx.writeAndFlush(response);
 	}
 	
 	/**

@@ -19,6 +19,8 @@ import com.hp.core.netty.serialize.protostuff.ProtostuffEncoder;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
@@ -39,13 +41,10 @@ public class NettyClient implements Client {
 	
 
 	private EventLoopGroup workerGroup;
-	private BlockingQueue<Channel> channelQueue = null;
 	private Bootstrap bootstrap;
 	
 	private String host;
 	private int port;
-	private int chanelSize = Runtime.getRuntime().availableProcessors() * 2; // 连接服务端，使用最大channel个数。默认为cpu核数 * 2
-	//private int chanelSize = 1; // 连接服务端，使用最大channel个数。默认为cpu核数 * 2
 	
 	private SerializationTypeEnum serializationTypeEnum = SerializationTypeEnum.PROTOSTUFF; // 序列化方法
 	
@@ -60,16 +59,10 @@ public class NettyClient implements Client {
 		this.host = host;
 		this.port = port;
 	}
-	
-	public NettyClient(String host, int port, int chanelSize) {
-		this(host, port);
-		this.chanelSize = chanelSize;
-	}
 
 	@Override
 	public Client init() throws Exception {
 		log.info("init client start with host={}, port={}", host, port);
-		channelQueue = new ArrayBlockingQueue<>(chanelSize, true);
 		initBootstrap();
 		log.info("init client success with host={}, port={}", host, port);
 		return this;
@@ -80,7 +73,7 @@ public class NettyClient implements Client {
 	 */
 	private void initBootstrap() throws Exception {
 		log.info("initBootstrap client start. with host={}, port={}", host, port);
-		workerGroup = new NioEventLoopGroup(chanelSize);
+		workerGroup = new NioEventLoopGroup();
 		bootstrap = new Bootstrap();
 		bootstrap
 			.group(workerGroup)
@@ -109,12 +102,8 @@ public class NettyClient implements Client {
 					pipeline.addLast(new NettyClientChannelInboundHandler());
 				}
 			});
-		for (int i = 0; i < chanelSize; i++) {
-			//创建多个管道，存放在阻塞队列中
-			Channel channel = bootstrap.connect(host, port).sync().channel();
-			//channel.closeFuture().sync();
-			channelQueue.add(channel);
-		}
+		ChannelFuture channelFuture = bootstrap.connect(host, port).sync();
+		//channel.addListener(ChannelFutureListener.CLOSE);
 		log.info("initBootstrap client end. with host={}, port={}", host, port);
 	}
 	

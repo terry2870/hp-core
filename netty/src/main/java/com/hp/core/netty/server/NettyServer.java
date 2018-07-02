@@ -14,7 +14,7 @@ import com.hp.core.netty.serialize.protostuff.ProtostuffEncoder;
 import com.hp.core.netty.server.NettyServerChannelInboundHandler.NettyProcess;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
@@ -33,7 +33,7 @@ public class NettyServer implements Server {
 
 	private static Logger log = LoggerFactory.getLogger(NettyServer.class);
 
-	private Channel channel;
+	//private Channel channel;
 	private EventLoopGroup bossGroup;
 	private EventLoopGroup workerGroup;
 	private ServerBootstrap serverBootstrap;
@@ -126,23 +126,24 @@ public class NettyServer implements Server {
 					ChannelPipeline pipeline = ch.pipeline();
 					switch (serializationTypeEnum) {
 					case PROTOSTUFF:
-						pipeline.addLast(new ProtostuffDecoder(NettyRequest.class));
-						pipeline.addLast(new ProtostuffEncoder(NettyResponse.class));
+						pipeline.addLast(new ProtostuffDecoder(String.class));
+						pipeline.addLast(new ProtostuffEncoder(String.class));
 						break;
 					case LINEBASED:
 						pipeline.addLast(new LineBasedFrameDecoder(1024));
 						pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
 						break;
 					default:
-						pipeline.addLast(new ProtostuffEncoder(NettyRequest.class));
-						pipeline.addLast(new ProtostuffDecoder(NettyResponse.class));
+						pipeline.addLast(new ProtostuffEncoder(String.class));
+						pipeline.addLast(new ProtostuffDecoder(String.class));
 						break;
 					}
 					pipeline.addLast(new NettyServerChannelInboundHandler(nettyProcess));
+					//pipeline.addLast(new ServerHandler());
 				}
 			});
-		channel = serverBootstrap.bind(port).sync().channel();
-		//channel.closeFuture().sync();
+		ChannelFuture channelFuture = serverBootstrap.bind(port).sync();
+		//channelFuture.channel().closeFuture().sync();
 		log.info("initServerBootstrap server end with port={}", port);
 	}
 
@@ -154,12 +155,8 @@ public class NettyServer implements Server {
 		if (workerGroup != null) {
 			workerGroup.shutdownGracefully();
 		}
-		if (channel != null) {
-			channel.closeFuture().syncUninterruptibly();
-		}
 		bossGroup = null;
 		workerGroup = null;
-		channel = null;
 		return this;
 	}
 
