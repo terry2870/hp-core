@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
@@ -25,7 +26,6 @@ import io.netty.util.CharsetUtil;
 public class TcpServer {
 
 	private static final Logger logger = LoggerFactory.getLogger(TcpServer.class);
-	private static final String IP = "127.0.0.1";
 	private static final int PORT = 9999;
 	/** 用于分配处理业务线程的线程组个数 */
 	protected static final int BIZGROUPSIZE = Runtime.getRuntime().availableProcessors() * 2; // 默认
@@ -56,7 +56,8 @@ public class TcpServer {
 			}
 		});
 
-		b.bind(IP, PORT).sync();
+		ChannelFuture f = b.bind(PORT).sync();
+		//f.channel().closeFuture().sync();
 		logger.info("TCP服务器已启动");
 	}
 

@@ -22,7 +22,7 @@ public class NettyClientTest {
 
 	static Logger log = LoggerFactory.getLogger(NettyClientTest.class);
 	
-	static Client client = new NettyClient("127.0.0.1", 9999, 2);
+	static Client client = new NettyClient("127.0.0.1", 9999);
 	
 	public static void main(String[] args) {
 		log.info("client");

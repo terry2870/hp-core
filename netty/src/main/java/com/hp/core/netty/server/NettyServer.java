@@ -15,6 +15,7 @@ import com.hp.core.netty.server.NettyServerChannelInboundHandler.NettyProcess;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
@@ -108,7 +109,7 @@ public class NettyServer implements Server {
 	 * 初始化serverBootstrap
 	 * @throws Exception
 	 */
-	private void initServerBootstrap() throws Exception {
+	private void initServerBootstrap() {
 		log.info("initServerBootstrap server start with port={}", port);
 		bossGroup = new NioEventLoopGroup(threadSize); //接收消息循环队列
 		workerGroup = new NioEventLoopGroup(threadSize);//发送消息循环队列
@@ -126,25 +127,32 @@ public class NettyServer implements Server {
 					ChannelPipeline pipeline = ch.pipeline();
 					switch (serializationTypeEnum) {
 					case PROTOSTUFF:
-						pipeline.addLast(new ProtostuffDecoder(String.class));
-						pipeline.addLast(new ProtostuffEncoder(String.class));
+						pipeline.addLast(new ProtostuffDecoder(NettyRequest.class));
+						pipeline.addLast(new ProtostuffEncoder(NettyResponse.class));
 						break;
 					case LINEBASED:
 						pipeline.addLast(new LineBasedFrameDecoder(1024));
 						pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
 						break;
 					default:
-						pipeline.addLast(new ProtostuffEncoder(String.class));
-						pipeline.addLast(new ProtostuffDecoder(String.class));
+						pipeline.addLast(new ProtostuffEncoder(NettyRequest.class));
+						pipeline.addLast(new ProtostuffDecoder(NettyResponse.class));
 						break;
 					}
 					pipeline.addLast(new NettyServerChannelInboundHandler(nettyProcess));
-					//pipeline.addLast(new ServerHandler());
 				}
 			});
-		ChannelFuture channelFuture = serverBootstrap.bind(port).sync();
-		//channelFuture.channel().closeFuture().sync();
-		log.info("initServerBootstrap server end with port={}", port);
+		try {
+			ChannelFuture channelFuture = serverBootstrap.bind(port).sync();
+			//channelFuture.channel().closeFuture().sync();
+			//channelFuture.addListener(ChannelFutureListener.CLOSE);
+			log.info("initServerBootstrap server end with port={}", port);
+		} catch (Exception e) {
+			log.error("", e);
+		} finally {
+			//bossGroup.shutdownGracefully();
+			//workerGroup.shutdownGracefully();
+		}
 	}
 
 	@Override

@@ -25,20 +25,9 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<Object> {
 	protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
 		
 		
-		exe.execute(new Runnable() {
-			
-			@Override
-			public void run() {
-				
-				try {
-					logger.info("SERVER接收到消息:" + msg);
-					Thread.sleep(10000);
-					ctx.channel().writeAndFlush("yes, server is accepted you ,nice !" + msg);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		});
+		logger.info("SERVER接收到消息:" + msg);
+		Thread.sleep(10000);
+		ctx.channel().writeAndFlush("yes, server is accepted you ,nice !" + msg);
 		
 		
 		

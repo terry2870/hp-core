@@ -19,7 +19,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * @author ping.huang
  * 2016年10月24日
  */
-public class NettyServerChannelInboundHandler extends SimpleChannelInboundHandler<String> {
+public class NettyServerChannelInboundHandler extends SimpleChannelInboundHandler<NettyRequest> {
 
 	// 服务端处理的具体方法
 	private NettyProcess nettyProcess;
@@ -44,42 +44,23 @@ public class NettyServerChannelInboundHandler extends SimpleChannelInboundHandle
 	}
 	
 	@Override
-	protected void channelRead0(ChannelHandlerContext ctx, String request) throws Exception {
-		/*exe.execute(new Runnable() {
-			
-			@Override
-			public void run() {
-				log.debug("服务端收到消息。 request={}", request);
-				NettyResponse response = new NettyResponse();
-				response.setMessageId(request.getMessageId());
-				try {
-					Object data = nettyProcess.process(request);
-					response.setData(data);
-					response.setClassName(data.getClass());
-				} catch (Exception e) {
-					log.error("channelRead0 error. with messageId={}", request.getMessageId(), e);
-					response.setException(e);
-				}
-				
-				//ByteBuf resp = Unpooled.copiedBuffer((response.toString() + System.getProperty("line.separator")).getBytes());
-				ctx.writeAndFlush(response);
-			}
-		});*/
+	protected void channelRead0(ChannelHandlerContext ctx, NettyRequest request) throws Exception {
 		log.info("channelRead0");
 		log.debug("服务端收到消息。 request={}", request);
-//		NettyResponse response = new NettyResponse();
-//		response.setMessageId(request.getMessageId());
-//		try {
-//			Object data = nettyProcess.process(request);
-//			response.setData(data);
-//			response.setClassName(data.getClass());
-//		} catch (Exception e) {
-//			log.error("channelRead0 error. with messageId={}", request.getMessageId(), e);
-//			response.setException(e);
-//		}
+		NettyResponse response = new NettyResponse();
+		response.setMessageId(request.getMessageId());
+		try {
+			Object data = nettyProcess.process(request);
+			response.setData(data);
+			response.setClassName(data.getClass());
+		} catch (Exception e) {
+			log.error("channelRead0 error. with messageId={}", request.getMessageId(), e);
+			response.setException(e);
+		}
 		
 		//ByteBuf resp = Unpooled.copiedBuffer((response.toString() + System.getProperty("line.separator")).getBytes());
-//		ctx.writeAndFlush(response);
+		ctx.writeAndFlush(response);
+		ctx.close();
 	}
 	
 	/**

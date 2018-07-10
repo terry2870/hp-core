@@ -4,9 +4,7 @@
 package com.hp.core.netty.client;
 
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +23,8 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.group.ChannelGroup;
+import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LineBasedFrameDecoder;
@@ -71,14 +71,14 @@ public class NettyClient implements Client {
 	/**
 	 * 初始化Bootstrap
 	 */
-	private void initBootstrap() throws Exception {
+	private void initBootstrap() {
 		log.info("initBootstrap client start. with host={}, port={}", host, port);
 		workerGroup = new NioEventLoopGroup();
 		bootstrap = new Bootstrap();
 		bootstrap
 			.group(workerGroup)
 			.channel(NioSocketChannel.class)
-			.option(ChannelOption.SO_KEEPALIVE, true)
+			.option(ChannelOption.SO_KEEPALIVE, false)
 			.handler(new ChannelInitializer<Channel>() {
 
 				@Override
@@ -102,8 +102,6 @@ public class NettyClient implements Client {
 					pipeline.addLast(new NettyClientChannelInboundHandler());
 				}
 			});
-		ChannelFuture channelFuture = bootstrap.connect(host, port).sync();
-		//channel.addListener(ChannelFutureListener.CLOSE);
 		log.info("initBootstrap client end. with host={}, port={}", host, port);
 	}
 	
@@ -116,7 +114,10 @@ public class NettyClient implements Client {
 		if (bootstrap == null) {
 			initBootstrap();
 		}
-		return channelQueue.take();
+		ChannelFuture channelFuture = bootstrap.connect(host, port).sync();
+		//channelFuture.channel().closeFuture().sync();
+		//channelFuture.addListener(ChannelFutureListener.CLOSE);
+		return channelFuture.channel();
 	}
 
 	@Override
@@ -152,8 +153,6 @@ public class NettyClient implements Client {
 		} finally {
 			//清空处理响应的队列
 			NettyConstants.responseMap.remove(messageId);
-			//把管道还回到队列中
-			channelQueue.add(channel);
 		}
 		return response;
 	}
@@ -164,15 +163,6 @@ public class NettyClient implements Client {
 			workerGroup.shutdownGracefully();
 			workerGroup = null;
 		}
-		if (CollectionUtils.isNotEmpty(channelQueue)) {
-			int i = 0;
-			while (i < chanelSize) {
-				channelQueue.take().closeFuture().syncUninterruptibly();
-				i++;
-			}
-		}
-		channelQueue.clear();
-		channelQueue = null;
 		return this;
 	}
 
@@ -198,14 +188,6 @@ public class NettyClient implements Client {
 
 	public void setSerializationTypeEnum(SerializationTypeEnum serializationTypeEnum) {
 		this.serializationTypeEnum = serializationTypeEnum;
-	}
-
-	public int getChanelSize() {
-		return chanelSize;
-	}
-
-	public void setChanelSize(int chanelSize) {
-		this.chanelSize = chanelSize;
 	}
 
 }

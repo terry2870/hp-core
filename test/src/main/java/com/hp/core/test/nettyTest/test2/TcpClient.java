@@ -3,11 +3,16 @@
  */
 package com.hp.core.test.nettyTest.test2;
 
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.hp.core.netty.bean.NettyResponse;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -15,6 +20,8 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.group.ChannelGroup;
+import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
@@ -22,6 +29,7 @@ import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.util.CharsetUtil;
+import io.netty.util.concurrent.GlobalEventExecutor;
 
 /**
  * @author ping.huang 2016年11月9日
@@ -33,7 +41,10 @@ public class TcpClient {
 	public static int PORT = 9999;
 
 	public static Bootstrap bootstrap = getBootstrap();
-	public static Channel channel = getChannel(HOST, PORT);
+	
+	public static Map<String, BlockingQueue<String>> responseMap = new ConcurrentHashMap<String, BlockingQueue<String>>();
+	
+	//private static Map<String, V>
 
 	/**
 	 * 初始化Bootstrap
@@ -59,18 +70,20 @@ public class TcpClient {
 		return b;
 	}
 
-	public static final Channel getChannel(String host, int port) {
+	public static final Channel getChannel() {
 		Channel channel = null;
 		try {
-			channel = bootstrap.connect(host, port).sync().channel();
+			channel = bootstrap.connect(HOST, PORT).sync().channel();
 		} catch (Exception e) {
-			logger.error(String.format("连接Server(IP[%s],PORT[%s])失败", host, port), e);
+			logger.error(String.format("连接Server(IP[%s],PORT[%s])失败", HOST, PORT), e);
 			return null;
 		}
 		return channel;
 	}
 
 	public static void sendMsg(String msg) throws Exception {
+		Channel channel = getChannel();
+		logger.info("send msg= {}" + msg);
 		if (channel != null) {
 			channel.writeAndFlush(msg).sync();
 		} else {
@@ -85,18 +98,7 @@ public class TcpClient {
 			
 			
 			for (int i = 0; i < 5; i++) {
-				/*exe.execute(new Runnable() {
-					public void run() {
-						try {
-							TcpClient.sendMsg("你好1");
-							logger.info("send msg");
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				});*/
-				logger.info("client send msg={}", i);
-				TcpClient.sendMsg("你好" + i);
+				exe.execute(new Run(i));
 				
 			}
 			long t1 = System.nanoTime();
@@ -104,6 +106,26 @@ public class TcpClient {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static class Run implements Runnable {
+
+		private int i;
+		
+		public Run(int i) {
+			this.i = i;
+		}
+		
+		@Override
+		public void run() {
+			try {
+				TcpClient.sendMsg("你好1" + i);
+				//logger.info("send msg" + i);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
 	}
 
 }

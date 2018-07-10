@@ -18,7 +18,14 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 	Logger log = LoggerFactory.getLogger(ServerHandler.class);
 	
 	@Override
+	public void channelActive(ChannelHandlerContext ctx) throws Exception {
+		super.channelActive(ctx);
+		log.info("channelActive msg={}");
+	}
+	
+	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
 		log.info("channelRead msg={}", msg);
+		ctx.writeAndFlush("haha " + msg);
 	}
 }
