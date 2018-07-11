@@ -9,6 +9,7 @@ import java.io.FileWriter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
@@ -21,16 +22,11 @@ public class FreeMarkerUtil {
 
 	private static Logger log = LoggerFactory.getLogger(FreeMarkerUtil.class);
 	
-	/**
-	 * 使用FreeMarker 模板生成文件
-	 * @param templateFileName
-	 * @param outFileName
-	 * @param root
-	 */
 	public static void createFile(String templateFileName, String outFileName, Object root) {
-		Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
-		String templatePath = templateFileName.contains("/") ? templateFileName.substring(0, templateFileName.lastIndexOf("/")) : "./";
-		String templateName = templateFileName.substring(templateFileName.lastIndexOf("/") + 1);
+		
+		FreeMarkerConfigurer cfg2 = SpringContextUtil.getBean(FreeMarkerConfigurer.class);
+		
+		Configuration cfg = cfg2.getConfiguration();
 		
 		String outPath = outFileName.contains("/") ? outFileName.substring(0,  outFileName.lastIndexOf("/")) : "./";
 		File outFile = new File(outPath);
@@ -43,14 +39,15 @@ public class FreeMarkerUtil {
 				FileWriter fw = new FileWriter(outFile);
 				BufferedWriter bw = new BufferedWriter(fw);
 			) {
-			cfg.setClassForTemplateLoading(FreeMarkerUtil.class, templatePath);
+			//cfg.setClassForTemplateLoading(FreeMarkerUtil.class, templatePath);
 			cfg.setObjectWrapper(new DefaultObjectWrapper(Configuration.VERSION_2_3_28));
-			Template temp = cfg.getTemplate(templateName);
+			Template temp = cfg.getTemplate(templateFileName);
 			temp.process(root, bw);
 			bw.flush();
 		} catch (Exception e) {
 			log.error("createFile error. with error=", e);
 		}
 	}
+
 
 }

@@ -20,7 +20,7 @@ public class CreateJSP {
 
 		String fileName = CreateFile.MAIN_PATH_DIR + "/" + CreateFile.WEB_DIR_NAME + "/" + CreateFile.JSP_FILE_PATH
 				+ "/" + table.getModelNameFirstLow() + "List.jsp";
-		FreeMarkerUtil.createFile("/com/hp/core/mybatis/autocreate/freemarkerTemplate/jspList.ftl", fileName, table);
+		FreeMarkerUtil.createFile("jspList.ftl", fileName, table);
 	}
 
 	/**
@@ -31,7 +31,7 @@ public class CreateJSP {
 
 		String fileName = CreateFile.MAIN_PATH_DIR + "/" + CreateFile.WEB_DIR_NAME + "/" + CreateFile.JSP_FILE_PATH
 				+ "/" + table.getModelNameFirstLow() + "Edit.jsp";
-		FreeMarkerUtil.createFile("/com/hp/core/mybatis/autocreate/freemarkerTemplate/jspEdit.ftl", fileName, table);
+		FreeMarkerUtil.createFile("jspEdit.ftl", fileName, table);
 	}
 
 	/**
@@ -42,6 +42,6 @@ public class CreateJSP {
 
 		String fileName = CreateFile.MAIN_PATH_DIR + "/" + CreateFile.WEB_DIR_NAME + "/" + CreateFile.JSP_FILE_PATH
 				+ "/" + table.getModelNameFirstLow() + "Search.jsp";
-		FreeMarkerUtil.createFile("/com/hp/core/mybatis/autocreate/freemarkerTemplate/jspSearch.ftl", fileName, table);
+		FreeMarkerUtil.createFile("jspSearch.ftl", fileName, table);
 	}
 }
