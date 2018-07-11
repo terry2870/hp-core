@@ -33,6 +33,8 @@ public class CreateFile {
 	
 	//java文件存放主目录
 	public static String JAVA_DIR = "src/main/java";
+	
+	public static String JSP_FILE_PATH = "src/main/webapp/jsp/newfile";
 
 	public static String PROJECT_PACKAGE = "com.hp.core.test";
 
@@ -51,9 +53,12 @@ public class CreateFile {
 	public static final String BASE_PAGE_RESPONSE_PACKAGE = "com.hp.core.common.beans.page.PageResponse";
 	public static final String BASE_PAGE_MODEL_PACKAGE = "com.hp.core.common.beans.page.PageModel";
 	public static final String DAL_DIR_NAME = "dal";
+	public static final String WEB_DIR_NAME = "web";
 	public static final String COMMON_DIR_NAME = "common";
 	public static final String MODEL_DIR_NAME = "model";
 	public static final String AUTHER_NAME = "huangping";
+	
+	public static String is_create_JSP = "0";
 	
 	public static List<String> tableList = new ArrayList<>();
 	
@@ -76,6 +81,12 @@ public class CreateFile {
 		}
 		if (args.length > 6) {
 			MAPPING_DIR = args[6];
+		}
+		if (args.length > 7) {
+			is_create_JSP = args[7];
+		}
+		if (args.length > 8) {
+			JSP_FILE_PATH = args[8];
 		}
 		try (
 				ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/spring-*.xml");
@@ -113,6 +124,12 @@ public class CreateFile {
 				
 				//生成controller
 				CreateController.create(table);
+				
+				if ("1".equals(is_create_JSP)) {
+					CreateJSP.createJSPList(table);
+					CreateJSP.createJSPEdit(table);
+					CreateJSP.createJSPSearch(table);
+				}
 			}
 		} catch(Exception e) {
 			e.printStackTrace();

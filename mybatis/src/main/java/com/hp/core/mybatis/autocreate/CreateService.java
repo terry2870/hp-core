@@ -126,7 +126,7 @@ public class CreateService {
 		sb.append("			").append(table.getModelNameFirstLow()).append("DAO.insert(dal);\r\n");
 		sb.append("		} else {\r\n");
 		sb.append("			//修改\r\n");
-		sb.append("			").append(table.getModelNameFirstLow()).append("DAO.updateByPrimaryKey(dal);\r\n");
+		sb.append("			").append(table.getModelNameFirstLow()).append("DAO.updateByPrimaryKeySelective(dal);\r\n");
 		sb.append("		}\r\n");
 		sb.append("		log.info(\"save").append(table.getModelName()).append(" success with request={}\", request);\r\n");
 		sb.append("	}\r\n");

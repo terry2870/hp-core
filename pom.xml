@@ -27,6 +27,7 @@
 		<commons-beanutils.version>1.9.3</commons-beanutils.version>
 		<javax.mail.version>1.6.1</javax.mail.version>
 		<ognl.version>3.2.1</ognl.version>
+		<freemarker.version>2.3.28</freemarker.version>
 	</properties>
 
 	<dependencyManagement>
@@ -166,7 +167,6 @@
 			<artifactId>fastjson</artifactId>
 			<version>${fastjson.version}</version>
 		</dependency>
-
 	</dependencies>
 
 	<modules>
