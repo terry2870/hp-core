@@ -123,7 +123,7 @@ public class CreateService {
 		sb.append("		").append(table.getModelName()).append(" dal = ").append(table.getModelName()).append("Convert.boRequest2Dal(request);\r\n");
 		sb.append("		if (request.get").append(table.getPrimaryKeyFirstUpper()).append("() == null || request.get").append(table.getPrimaryKeyFirstUpper()).append("().intValue() == 0) {\r\n");
 		sb.append("			//新增\r\n");
-		sb.append("			").append(table.getModelNameFirstLow()).append("DAO.insert(dal);\r\n");
+		sb.append("			").append(table.getModelNameFirstLow()).append("DAO.insertSelective(dal);\r\n");
 		sb.append("		} else {\r\n");
 		sb.append("			//修改\r\n");
 		sb.append("			").append(table.getModelNameFirstLow()).append("DAO.updateByPrimaryKeySelective(dal);\r\n");

@@ -173,7 +173,6 @@
 			cache : false,
 			pagination : true,
 			pageSize : 50,
-			rownumbers : true,
 			idField : "id",
 			showFooter : true,
 			singleSelect : true,

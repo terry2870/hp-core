@@ -17,7 +17,7 @@
                         http://www.springframework.org/schema/task
                         http://www.springframework.org/schema/task/spring-task.xsd">
 
-	<bean id="freeMarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+	<bean id="local_freeMarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
 		<property name="templateLoaderPath" value="${spring.freeMarker.templateLoaderPath:classpath:/templates}"/>
 		<property name="freemarkerSettings">
 			<props>

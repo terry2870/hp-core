@@ -1,0 +1,25 @@
+/*!
+ * easyui.hp.myAccordion
+ */
+.easyui-hp-myAccordion_ul{
+	list-style-type: none;
+	list-style-position : outside;
+	text-align: left;
+	padding-left: 0px;
+	margin-top: 0px;
+	margin-left: 0px;
+}
+.easyui-hp-myAccordion_ul li{
+	line-height: 30px;
+	border-bottom:1px #B8C2CB solid;
+	padding-left: 50px;
+	cursor: pointer;
+	text-overflow : ellipsis;
+	white-space : nowrap;
+}
+.easyui-hp-myAccordion_ul li:hover{
+	background:#eeefff url(images/t2.gif) no-repeat 30px center;
+}
+.easyui-hp-myAccordion-li-selected{
+	background:#eeefff url(images/t2.gif) no-repeat 30px center;
+}

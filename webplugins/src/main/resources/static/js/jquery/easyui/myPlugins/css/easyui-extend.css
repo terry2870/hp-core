@@ -1,0 +1,21 @@
+﻿
+.combobox-item {
+	cursor : pointer;
+}
+
+.datagrid-header-row,
+.datagrid-row {
+  height: 30px;
+}
+
+
+.exter-icon {
+	height: 16px !important;
+	width: 16px !important;
+	background-image: url(images/icons.png);
+	background-image: url(images/icons.gif) \9;
+}
+
+.exter-multipart-image {
+	background-position: -726px -77px;
+}

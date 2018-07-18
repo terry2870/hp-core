@@ -24,7 +24,7 @@ public class FreeMarkerUtil {
 	
 	public static void createFile(String templateFileName, String outFileName, Object root) {
 		
-		FreeMarkerConfigurer cfg2 = SpringContextUtil.getBean(FreeMarkerConfigurer.class);
+		FreeMarkerConfigurer cfg2 = SpringContextUtil.getBean("local_freeMarkerConfigurer", FreeMarkerConfigurer.class);
 		
 		Configuration cfg = cfg2.getConfiguration();
 		

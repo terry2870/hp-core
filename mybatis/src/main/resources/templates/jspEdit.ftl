@@ -6,7 +6,7 @@
 	<table class="table_style" align="center">
 	<#list columnList as column>
 		<tr>
-			<td <#if column_index == 0>width="30%"</#if>align="right">${column.columnComment}：</td>
+			<td <#if column_index == 0>width="30%" </#if>align="right">${column.columnComment}：</td>
 			<td<#if column_index == 0> width="70%"</#if>><input name="${column.fieldName}" id="${column.fieldName}" class="easyui-textbox" data-options="prompt:'${column.columnComment}',width:200" /></td>
 		</tr>
 	</#list>

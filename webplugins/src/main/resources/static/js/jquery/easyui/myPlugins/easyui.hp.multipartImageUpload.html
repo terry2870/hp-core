@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<div class="easyui-layout" fit="true" id="multipartImageUploadDialog">
+	<div data-options="region:'north'" style="height:30px;" id="multipartImageUploadRegionNorth">
+		<div style="float:left;height:100%;background-color: red" id="multipartImageUploadMessageDiv">123</div>
+		<div style="float:right;height:100%">
+			<div class="multipart-image-upload">
+				<input type="file" id="multipartImageUploadFile" style="display: none" />
+				<a id="multipartImageUploadAddImage"></a>
+			</div>
+			<a id="multipartImageUploadUploadImage" style="margin-left: 10px;margin-right: 10px"></a>
+		</div>
+	</div>
+	<div data-options="region:'center'" style="padding:5px" id="multipartImageUploadRegionCenter">
+		<ul class="filelist" id="multipartImageUploadImageList"></ul>
+	</div>
+</div>
+<script>
+	$(function() {
+		
+		var opt = $.fn.multipartImageUpload.tempParam;
+		
+		var multipartImageUploadFile = $("#multipartImageUploadDialog #multipartImageUploadFile");
+		multipartImageUploadFile.attr("accept", opt.accept);
+		
+		if (opt.multiple === true) {
+			multipartImageUploadFile.attr("multiple", "multiple")
+		}
+		
+		function createImage(base64Str, isUploaded) {
+			var li = $("<li>");
+			var div = $("<div>").addClass("img-div").appendTo(li);
+			if (isUploaded === true) {
+				div.append($("<input type='hidden'>").val(base64Str));
+			}
+			var img = $("<img>").attr({
+				src : base64Str
+			}).appendTo(div);
+			//div.append($("<span>").addClass("file-close"));
+			var tools = $("<div>").appendTo(div).addClass("tool-panel").hide();
+			var cancel = $("<span>").addClass("cancel").appendTo(tools);
+			var handleDiv = $("<div>").addClass("handel-panel").appendTo(div);
+			cancel.click(function() {
+				li.remove();
+			});
+			li.hover(function() {
+				tools.slideDown();
+			}, function() {
+				tools.slideUp();
+			});
+			li.draggable({
+				proxy : "clone",
+				revert : true,
+				handle : ".handel-panel",
+				cursor : "auto",
+				onStartDrag : function() {
+					$(this).draggable("proxy").addClass("multipart-image-upload-draggable-proxy");
+					$(this).draggable("proxy").get(0).offsetTop = $(this).draggable("proxy").get(0).offsetTop - li.parent().scrollTop();
+				},
+				onStopDrag : function() {
+					//$(this).draggable("options").cursor = "auto";
+				},
+				onDrag : function(e) {
+					var d = e.data;
+					if (d.left < 0) {
+						d.left = 0;
+					}
+					if (d.top < 0) {
+						d.top = 0;
+					}
+					d.top = d.top - $(d.parent).scrollTop();
+					if (d.left + $(d.target).outerWidth() >= $(d.parent).outerWidth()) {
+						d.left = $(d.parent).outerWidth() - $(d.target).outerWidth();
+					}
+				}
+			});
+			li.droppable({
+				accept : "#multipartImageUploadImageList li",
+				onDragEnter : function(e, source) {
+					$(source).draggable("proxy").css("border", "2px solid red");
+					$(this).css("border", "2px solid green");
+				},
+				onDragLeave : function(e, source) {
+					$(source).draggable("proxy").css("border", "2px solid white");
+					$(this).css("border", "2px solid white");
+				},
+				onDrop : function(e, source) {
+					$(source).draggable("proxy").css("border", "2px solid white");
+					$(this).css("border", "2px solid white");
+					var tmpSource = $(source).clone();
+					tmpSource.insertBefore($(source));
+					$(source).insertBefore($(this));
+					$(this).detach().insertBefore(tmpSource);
+					tmpSource.remove();
+				}
+			});
+			return li;
+		}
+		
+		multipartImageUploadFile.change(function() {
+			$.myPlugin.convertImgToBase64(this, function(arr) {
+				if (!arr || arr.length == 0) {
+					return;
+				}
+				$(arr).each(function(index, item) {
+					$("#multipartImageUploadDialog #multipartImageUploadImageList").append(createImage(item));
+				});
+			});
+		});
+		
+		$("#multipartImageUploadDialog #multipartImageUploadAddImage").linkbutton({
+			text : "选择图片",
+			iconCls : "icon-add",
+			onClick : function() {
+				$(this).prev().click();
+			}
+		});
+		$("#multipartImageUploadDialog #multipartImageUploadUploadImage").linkbutton({
+			text : "开始上传",
+			iconCls : "icon-redo",
+			onClick : function() {
+				var imagesList = $("#multipartImageUploadImageList div.img-div");
+				if (!imagesList || imagesList.length == 0) {
+					$.messager.alert("提示", "没有需要上传的文件", "error");
+					return;
+				}
+				var arr = [];
+				$(imagesList).each(function(index, item) {
+					if ($(item).has("input[type='hidden']")) {
+						return true;
+					}
+					arr.push(item);
+				});
+				if (arr.length == 0) {
+					$.messager.alert("提示", "没有需要上传的文件", "error");
+					return;
+				}
+				$(arr).each(function() {
+					
+				});
+			}
+		});
+		
+		//alert(JSON.stringify($.fn.multipartImageUpload.tempParam));
+	});
+</script>

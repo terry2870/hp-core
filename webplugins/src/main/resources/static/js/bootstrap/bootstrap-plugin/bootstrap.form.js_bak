@@ -1,0 +1,171 @@
+/**
+ * 显示一个输入的表单
+ * 作者：黄平
+ * 日期：2016-04-18
+ * 依赖validate，panel
+ */
+(function($) {
+	$.fn.form = function(options, param) {
+		var self = this;
+		if (typeof (options) == "string") {
+			var method = $.fn.form.methods[options];
+			if (method){
+				return method.call(this, param);
+			}
+		}
+		return this.each(function() {
+			var opt = $.extend({}, $.fn.form.defaults, options);
+			self.data("form", opt);
+			_createForm(self);
+		});
+	};
+
+	/**
+	 * 创建form
+	 * @param opt
+	 * @returns
+	 */
+	function _createForm(jq) {
+		var opt = jq.data("form");
+		jq.empty();
+		jq.addClass("center-block");
+		var buttons = [];
+		if (opt.buttons) {
+			buttons.concat(opt.buttons);
+		}
+		buttons.push({
+			
+		});
+		var panel = jq.panel($.extend({}, opt, {
+			buttons : buttons
+		}));
+
+		var form = $("<form>").addClass("form-horizontal").attr({
+			role : "form",
+			id : opt.id,
+			name : opt.name,
+			action : opt.action,
+			method : opt.method
+		});
+
+		//添加输入框
+		if (!opt.editors || opt.editors.length == 0) {
+			return;
+		}
+		
+		var groupDiv, colDiv, input;
+		//循环
+		$(opt.editors).each(function(index, item) {
+			groupDiv = $("<div>").addClass("form-group").appendTo(form);
+			$("<label>").addClass("col-sm-" + opt.labelWidth).addClass("control-label").attr({
+				"for" : item.id
+			}).html(item.label).appendTo(groupDiv);
+			colDiv = $("<div>").addClass("col-sm-" + opt.inputWidth).appendTo(groupDiv);
+			input = $("<input type=\""+ (item.type ? item.type : "text") +"\">").addClass("form-control").appendTo(colDiv);
+			if (item.className) {
+				input.addClass(item.className);
+			}
+			
+			//加载css属性，如果没有，则给input框加上默认的宽度
+			if (item.style) {
+				input.css(item.style);
+			} else {
+				input.css("width", "70%");
+			}
+			input.attr({
+				id : item.id,
+				name : item.name ? item.name : item.id,
+				placeholder : item.placeholder ? item.placeholder : item.label,
+				value : item.value
+			});
+			if (item.otherAttr) {
+				input.attr(item.otherAttr);
+			}
+			//如果是number类型
+			if (item.type === "number") {
+				if (item.min > 0) {
+					input.attr("min", item.min);
+				}
+				if (item.max > 0) {
+					input.attr("max", item.max);
+				}
+			}
+			
+			//设置disable
+			if (item.disable === true) {
+				input.prop("disable", true);
+			}
+			
+			//设置是否只读
+			if (item.readonly === true) {
+				input.prop("readonly", true);
+			}
+			
+			//设置是否隐藏
+			if (item.hide === true) {
+				groupDiv.hide();
+			}
+			
+			//设置验证信息
+			if (item.validateParam) {
+				input.validate(item.validateParam);
+			}
+		});
+		
+		//把form设置到body中
+		panel.panel("content", form);
+		
+		//添加提交按钮
+		
+	}
+	
+	$.fn.form.methods = $.extend({}, $.fn.panel.methods, {
+		/**
+		 * 提交
+		 */
+		submit : function() {
+			
+		},
+		/**
+		 * 验证
+		 */
+		validate : function() {
+			
+		}
+	});
+	
+	$.fn.form.event = $.extend({}, $.fn.panel.event, {
+		onBeforeSubmit : function() {},
+		success : function(data) {}
+	});
+	
+	$.fn.form.defaults = $.extend({}, $.fn.form.event, $.fn.panel.defaults, {
+		id : "",				//id
+		name : "",				//name
+		editors : [],			//输入控件
+		action : "",			//提交的url
+		method : "POST",		//method
+		labelWidth : 2,			//标签的宽度（这里的宽度是bootstrap的列宽（最大是12））
+		inputWidth : 10,		//输入框的宽度（这里的宽度是bootstrap的列宽（最大是12））
+		buttons : []			//表单的按钮	
+	});
+	
+	/**
+	 * 其中editors属性为一数组，包括字段
+	 * type='text'			类型（text,redio,checkbox.number等等，input的type属性一样）
+	 * hide=false			是否隐藏
+	 * label=''				显示的标签
+	 * id=''				输入框的id
+	 * name=''				输入框的name
+	 * className=''			输入框的class
+	 * style={}				输入框的style
+	 * disable=false		是否禁用
+	 * readonly=false		是否只读
+	 * placeholder=""		未输入时，提示文字
+	 * value=""				值
+	 * validateParam=null	验证属性
+	 * otherAttr=null		输入框的其他属性
+	 * min=0				仅type=number时有效
+	 * max=0				仅type=number时有效
+	 */
+})(jQuery);

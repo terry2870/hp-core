@@ -1,0 +1,14 @@
+
+.table-loading {
+	background:url(images/table-loading.gif);
+	width : 124px;
+	height : 124px;
+	position : absolute;
+}
+
+.small-loading {
+	background:url(images/small-loading.gif);
+	width : 16px;
+	height : 16px;
+	position : absolute;
+}
