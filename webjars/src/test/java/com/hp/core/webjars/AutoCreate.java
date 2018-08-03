@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.webplugins;
+package com.hp.core.webjars;
 
 import com.hp.core.mybatis.autocreate.CreateFile;
 
@@ -18,7 +18,7 @@ public class AutoCreate {
 		String javaDir = "src/main/java";//java文件存放主目录
 		String serviceMavenModule = "webjars";//service所在项目名称
 		String controllerMavenModule = "webjars";//controller所在项目名称
-		String projectPackage = "com.hp.core.webplugins";//DAO生成的包地址
+		String projectPackage = "com.hp.core.webjars";//DAO生成的包地址
 		String mappingDir = "src/main/resources/META-INF/mybatis";
 		String isCreateJSP = "0"; //是否生成jsp
 		String jspFilePath = "src/main/webapp/jsp/newfile";

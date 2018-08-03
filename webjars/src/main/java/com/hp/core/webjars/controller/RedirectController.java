@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.hp.core.webplugins.controller;
+package com.hp.core.webjars.controller;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -16,17 +16,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * 公共的跳转控制器
- * @author huangping
- * 2018年8月3日
+ * 
+ * @author huangping 2018年8月3日
  */
 @Controller
 @RequestMapping("/RedirectController")
 public class RedirectController {
 
 	private Logger log = LoggerFactory.getLogger(RedirectController.class);
-	
+
 	/**
 	 * 公共的跳转方法
+	 * 
 	 * @param request
 	 * @param redirectUrl
 	 * @return
@@ -44,5 +45,5 @@ public class RedirectController {
 		}
 		return "freemarker/" + redirectUrl;
 	}
-	
+
 }

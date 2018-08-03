@@ -1,4 +1,4 @@
-package org.webplugins;
+package com.hp.core.webjars;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
