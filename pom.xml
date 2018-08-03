@@ -98,7 +98,7 @@
 			</dependency>
 			<dependency>
 				<groupId>com.hp.core</groupId>
-				<artifactId>hp-core-webplugins</artifactId>
+				<artifactId>hp-core-webjars</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 		</dependencies>
@@ -187,6 +187,6 @@
 		<module>mail</module>
 		<module>queue</module>
 		<module>jsptags</module>
-		<module>webplugins</module>
+		<module>webjars</module>
   </modules>
 </project>
