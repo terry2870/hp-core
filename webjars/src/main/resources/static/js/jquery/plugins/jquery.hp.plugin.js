@@ -2,19 +2,6 @@
  * 对myPlugin 进行扩展了一些工具类
  */
 $.myPlugin = {
-		
-	/**
-	 * bootstrap中的样式
-	 */
-	bootstrapClass : {
-		DEFAULT : "default",
-		PRIMARY : "primary",
-		SUCCESS : "success",
-		INFO : "info",
-		WARNING : "warning",
-		DANGER : "danger",
-		LINK : "link"
-	},
 	/**
 	 * 显示
 	 * @param jq

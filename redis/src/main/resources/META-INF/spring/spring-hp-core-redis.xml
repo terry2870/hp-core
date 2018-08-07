@@ -36,7 +36,7 @@
 	</bean>
 
 	<!-- 读写 -->
-	<bean id="hpJedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+	<bean id="hpJedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" primary="true">
 		<property name="poolConfig" ref="jedisPoolConfig" />
 		<property name="timeout" value="${redis.timeout:200}" />
 		<property name="hostName" value="${redis.proxy.address:127.0.0.1}" />
@@ -44,7 +44,7 @@
 		<property name="password" value="${redis.proxy.auth:}" />
 		<property name="database" value="${redis.proxy.database:0}" />
 	</bean>
-	<bean id="hpRedisTemplate" class="com.hp.core.redis.HPRedisTemplate">
+	<bean id="hpRedisTemplate" class="com.hp.core.redis.HPRedisTemplate" primary="true">
 		<property name="connectionFactory" ref="hpJedisConnectionFactory" />
 	</bean>
 

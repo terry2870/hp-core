@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hp.core.webjars.dal.ISysMenuDAO">
+	<resultMap id="BaseResultMap" type="com.hp.core.webjars.dal.model.SysMenu">
+	</resultMap>
+
+	<!-- 查询该用户的菜单 -->
+	<select id="selectByUserId" resultType="java.lang.Integer">
+		select DISTINCT t1.menu_id from sys_role_menu t1 where t1.role_id IN (SELECT t2.role_id FROM sys_user_role t2 WHERE t2.user_id=#{userId})
+	</select>
+	
+	<!-- 查询菜单，向上递归 -->
+	<select id="selectSysMenu" resultMap="BaseResultMap">
+		SELECT DISTINCT menu.* from sys_menu menu where menu.status=1
+		AND FIND_IN_SET(menu_id, getParentsMenuIdByMenuId(#{menuIds})) &gt; 0
+		ORDER BY menu.sort_number
+	</select>
+
+</mapper>

@@ -13,7 +13,7 @@ public class AutoCreate {
 
 	
 	public static void main(String[] args) {
-		String tableName = "sys_menu";
+		String tableName = "sys_menu,sys_user,sys_role,sys_role_menu,sys_user_role";
 		String mainPathDir = "../";//文件生成的主路径
 		String javaDir = "src/main/java";//java文件存放主目录
 		String serviceMavenModule = "webjars";//service所在项目名称

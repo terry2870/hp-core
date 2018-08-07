@@ -5,15 +5,15 @@
  */
 (function($) {
 	$.fn.panel = function(options, param) {
-		var self = this;
+		let self = this;
 		if (typeof (options) == "string") {
-			var method = $.fn.panel.methods[options];
+			let method = $.fn.panel.methods[options];
 			if (method){
 				return method.call(this, param);
 			}
 		}
 		return this.each(function() {
-			var opt = $.extend({}, $.fn.panel.defaults, options);
+			let opt = $.extend({}, $.fn.panel.defaults, options);
 			self.data("panel", opt);
 			_createPanel.call(self);
 		});
@@ -23,8 +23,8 @@
 	 * 生成panel
 	 */
 	function _createPanel() {
-		var jq = this;
-		var opt = jq.data("panel");
+		let jq = this;
+		let opt = jq.data("panel");
 		jq.empty();
 		jq.addClass("panel");
 		if (opt.className) {
@@ -39,7 +39,24 @@
 		}
 		
 		$("<div>").addClass("panel-heading").appendTo(jq);
-		$("<div>").addClass("panel-body").appendTo(jq);
+		let bodyDiv = $("<div>").appendTo(jq);
+		if (opt.collapseAble === true) {
+			bodyDiv.attr({
+				id : "panel-element-" + new Date().getTime()
+			});
+			if (opt.usePanelCollapse === true) {
+				bodyDiv.addClass("panel-collapse");
+			} else {
+				bodyDiv.addClass("panel-body");
+			}
+			bodyDiv.addClass("collapse");
+			if (opt.collapse === "open") {
+				bodyDiv.addClass("in");
+			}
+		} else {
+			bodyDiv.addClass("panel-body");
+		}
+		
 		$("<div>").addClass("panel-footer").appendTo(jq);
 		
 		
@@ -62,8 +79,8 @@
 	 * @returns
 	 */
 	function _createHead(jq) {
-		var opt = jq.data("panel");
-		var head = _getHead(jq);
+		let opt = jq.data("panel");
+		let head = _getHead(jq);
 		if (!opt.title) {
 			head.hide();
 		}
@@ -73,22 +90,32 @@
 		if (opt.headStyle) {
 			head.css(opt.headStyle);
 		}
-		var h = $("<h>").addClass("panel-title").appendTo(head);
+		
+		let h = $("<h>").addClass("panel-title").appendTo(head);
+		if (opt.collapseAble === true) {
+			h.append($("<a>").addClass("collapsed").attr({
+				"data-toggle" : "collapse",
+				href : "#" + _getBody(jq).attr("id"),
+				"aria-expanded" : false
+			}).append(opt.title));
+		} else {
+			h.append($("<apan>").append(opt.title));
+		}
 		if (opt.closeAble === true) {
-			var close = $("<a>").addClass("close").append("&times;").appendTo(h);
+			let close = $("<a>").addClass("close").append("&times;").appendTo(h);
 			close.click(function() {
 				_destory(jq, opt);
 			});
 		}
-		h.append($("<apan>").append(opt.title));
+		
 	}
 	
 	/**
 	 * 生成body
 	 */
 	function _createBody(jq) {
-		var opt = jq.data("panel");
-		var body = _getBody(jq);
+		let opt = jq.data("panel");
+		let body = _getBody(jq);
 		if (opt.bodyClassName) {
 			body.addClass(opt.bodyClassName);
 		}
@@ -118,9 +145,9 @@
 	 * 生成foot
 	 */
 	function _createFoot(jq) {
-		var opt = jq.data("panel");
-		var foot = _getFooter(jq);
-		if ((!opt.buttons || opt.buttons.length == 0) && opt.showFooter !== true) {
+		let opt = jq.data("panel");
+		let foot = _getFooter(jq);
+		if (!opt.showFooter) {
 			foot.hide();
 			return;
 		}
@@ -131,22 +158,28 @@
 		if (opt.footStyle) {
 			foot.css(opt.footStyle);
 		}
-		//设置底部内容靠右对齐
-		foot.css("text-align", "right");
-		$(opt.buttons).each(function(index, item) {
-			var btn = $("<input type='button'>").addClass("btn").addClass(item.className).css("margin-left", "20px").val(item.text).appendTo(foot);
-			if (item.disabled === true) {
-				btn.prop("disabled", true);
-			}
-			if (item.id) {
-				btn.attr("id", item.id);
-			}
-			if (item.onclick) {
-				btn.click(function() {
-					item.onclick.call(btn);
-				});
-			}
-		});
+		if (opt.footContent) {
+			//设置内容
+			foot.append(opt.footContent);
+		} else {
+			//按钮
+			//设置底部内容靠右对齐
+			foot.css("text-align", "right");
+			$(opt.buttons).each(function(index, item) {
+				let btn = $("<input type='button'>").addClass("btn").addClass(item.className).css("margin-left", "20px").val(item.text).appendTo(foot);
+				if (item.disabled === true) {
+					btn.prop("disabled", true);
+				}
+				if (item.id) {
+					btn.attr("id", item.id);
+				}
+				if (item.onclick) {
+					btn.click(function() {
+						item.onclick.call(btn);
+					});
+				}
+			});
+		}
 	}
 	
 	//获取标题
@@ -161,7 +194,11 @@
 	
 	//获取主体
 	function _getBody(jq) {
-		return jq.find("> .panel-body:first");
+		let o = jq.find("> .panel-body:first");
+		if (o.length > 0) {
+			return o;
+		}
+		return jq.find("> .panel-collapse:first");
 	}
 	
 	//获取脚部
@@ -173,7 +210,7 @@
 	 * 设置或获取title
 	 */
 	function _title(jq, title) {
-		var obj = _getTitle(jq);
+		let obj = _getTitle(jq);
 		if (title === undefined) {
 			return obj.html();
 		}
@@ -190,7 +227,7 @@
 	 * 设置或获取content
 	 */
 	function _content(jq, content) {
-		var obj = _getBody(jq);
+		let obj = _getBody(jq);
 		if (content === undefined) {
 			return obj.html();
 		}
@@ -205,7 +242,7 @@
 	 * 设置或获取footer
 	 */
 	function _footer(jq, footer) {
-		var obj = _getFooter(jq);
+		let obj = _getFooter(jq);
 		if (footer === undefined) {
 			return obj.html();
 		}
@@ -240,7 +277,7 @@
 	 * 销毁整个panel
 	 */
 	function _destory(jq, option) {
-		var onClose = option.onClose.call(jq, option);
+		let onClose = option.onClose.call(jq, option);
 		if (onClose === false) {
 			return;
 		}
@@ -253,7 +290,7 @@
 		 * 隐藏面板
 		 */
 		hide : function(option) {
-			var jq = this;
+			let jq = this;
 			return this.each(function() {
 				$.myPlugin.hide(jq, option);
 			});
@@ -262,7 +299,7 @@
 		 * 显示面板
 		 */
 		show : function(option) {
-			var jq = this;
+			let jq = this;
 			return this.each(function() {
 				$.myPlugin.show(jq, option);
 			});
@@ -271,7 +308,7 @@
 		 * 设置标题
 		 */
 		setTitle : function(title) {
-			var jq = this;
+			let jq = this;
 			return this.each(function() {
 				_title(jq, title);
 			});
@@ -280,14 +317,14 @@
 		 * 获取标题
 		 */
 		getTitle : function() {
-			var jq = this;
+			let jq = this;
 			return _title(jq);
 		},
 		/**
 		 * 设置内容
 		 */
 		setContent : function(content) {
-			var jq = this;
+			let jq = this;
 			return this.each(function() {
 				_content(jq, content);
 			});
@@ -296,14 +333,14 @@
 		 * 获取内容
 		 */
 		getContent : function() {
-			var jq = this;
+			let jq = this;
 			return _content(jq);
 		},
 		/**
 		 * 设置底部
 		 */
 		setFooter : function(footer) {
-			var jq = this;
+			let jq = this;
 			return this.each(function() {
 				_footer(jq, footer);
 			});
@@ -312,14 +349,14 @@
 		 * 获取底部
 		 */
 		getFooter : function() {
-			var jq = this;
+			let jq = this;
 			return _footer(jq);
 		},
 		/**
 		 * 隐藏内容
 		 */
 		hideBody : function(option) {
-			var jq = this;
+			let jq = this;
 			return this.each(function() {
 				_hideBody(jq, option);
 			});
@@ -328,7 +365,7 @@
 		 * 显示内容
 		 */
 		showBody : function(option) {
-			var jq = this;
+			let jq = this;
 			return this.each(function() {
 				_showBody(jq, option);
 			});
@@ -337,7 +374,7 @@
 		 * 销毁
 		 */
 		destory : function(option) {
-			var jq = this;
+			let jq = this;
 			return this.each(function() {
 				_destory(jq, option);
 			});
@@ -356,7 +393,7 @@
 	
 	//属性
 	$.fn.panel.defaults = $.extend({}, $.fn.panel.event, {
-		className : $.myPlugin.bootstrapClass.DEFAULT,	//面板的css
+		className : $.bootstrapClass.DEFAULT,	//面板的css
 		style : {},						//面板的样式
 		headClassName : null,			//面板头部css
 		headStyle : {},					//面板头部样式
@@ -371,7 +408,11 @@
 		url : "",						//从远端加载内容
 		queryParams : {},				//从远端加载内容传递的参数
 		buttons : [],					//底部的按钮
+		footContent : "",				//底部内容（footContent>buttons）
 		showFooter : false,				//是否显示底
-		closeAble : false				//是否可以关闭
+		closeAble : false,				//是否可以关闭
+		collapseAble : false	,			//是否可折叠
+		collapse : "open",				//折叠状态（open-打开；close-关闭）
+		usePanelCollapse : false			//是否使用panel-collapse 代替 panel-body（只有在accordion中才会使用）
 	});
 })(jQuery);

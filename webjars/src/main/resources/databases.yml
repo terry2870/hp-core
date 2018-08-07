@@ -1,8 +1,0 @@
-datasources:
-   yh_cms:
-      servers:
-         master:
-           - 192.168.102.17:3306
-      username: yh_test
-      password: yh_test
-      

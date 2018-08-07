@@ -46,7 +46,6 @@ jQuery.extend({
 			};
 			//检查所有依赖是否通过
 			var judage = function() {
-				console.log(successNum);
 				if (successNum == depends.length) {
 					callback();
 				} else {
