@@ -1,12 +1,9 @@
 package com.hp.core.webjars.service;
 
-import com.hp.core.webjars.model.request.SysMenuRequestBO;
-import com.hp.core.webjars.model.response.SysMenuResponseBO;
-
 import java.util.List;
 
-import com.hp.core.common.beans.page.PageRequest;
-import com.hp.core.common.beans.page.PageResponse;
+import com.hp.core.webjars.model.request.SysMenuRequestBO;
+import com.hp.core.webjars.model.response.SysMenuResponseBO;
 
 /**
  * 系统菜单表业务接口定义
@@ -26,14 +23,6 @@ public interface ISysMenuService {
 	 * @param request
 	 */
 	public void saveSysMenu(SysMenuRequestBO request);
-
-	/**
-	 * 查询系统菜单表列表
-	 * @param request
-	 * @param pageRequest
-	 * @return
-	 */
-	public PageResponse<SysMenuResponseBO> querySysMenuPageList(SysMenuRequestBO request, PageRequest pageRequest);
 
 	/**
 	 * 删除系统菜单表

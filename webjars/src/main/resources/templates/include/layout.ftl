@@ -2,7 +2,7 @@
 <div class="container-fluid">
 	<div class="row clearfix" id="topBanner" style="background-color: #337ab7;color: white">
 		<!-- 顶部banner -->
-		顶部banner new
+		<#include "topBanner.ftl">
 	</div>
 	<div class="row clearfix" style="margin-top: 4px">
 		<!-- 左侧菜单 -->
@@ -18,24 +18,21 @@
 <script>
 	$(function() {
 		$("#leftMenu").accordion({
-			panelClass : "panel-primary",
-			idField : "menuId",
+			panelClass : $.bootstrapClass.PRIMARY,
+			selected : 0,
+			idField : "id",
 			pidField : "parentMenuId",
 			textField : "menuName",
 			ajaxParam : {
 				dataType : "json",
-				url: contextPath + '/admin/SysMenuController/getSysMenuList.do',
+				url: "${request.contextPath}/SysMenuController/queryUserMenuFromSession",
 				type: "POST"
 			},
 			onClickMenu : function(item, parent) {
-				$("body").find("div.fade").remove();
-				$("#body").load(contextPath + item.menuUrl);
+				alert(item.menuName + "____" + parent.menuName);
 			},
 			loadFilter : function(data) {
-				if (!data || data.code != 200) {
-					return null;
-				}
-				return data.data;
+				return defaultLoadFilter(data);
 			}
 		});
 	

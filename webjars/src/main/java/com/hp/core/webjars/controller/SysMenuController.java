@@ -1,14 +1,18 @@
 package com.hp.core.webjars.controller;
 
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hp.core.common.beans.Response;
-import com.hp.core.common.beans.page.PageRequest;
-import com.hp.core.common.beans.page.PageResponse;
+import com.hp.core.webjars.constants.BaseConstant;
 import com.hp.core.webjars.model.request.SysMenuRequestBO;
 import com.hp.core.webjars.model.response.SysMenuResponseBO;
 import com.hp.core.webjars.service.ISysMenuService;
@@ -27,20 +31,19 @@ public class SysMenuController {
 	@Autowired
 	private ISysMenuService sysMenuService;
 
+	
 	/**
-	 * 查询系统菜单表列表
-	 * @param request
-	 * @param pageRequest
+	 * 查询用户的权限菜单（从session中获取）
+	 * @param session
 	 * @return
 	 */
-	@RequestMapping("/queryAllSysMenu.do")
-	public Response<PageResponse<SysMenuResponseBO>> queryAllSysMenu(SysMenuRequestBO request, PageRequest pageRequest) {
-		log.info("queryAllSysMenu with request={}, page={}", request, pageRequest);
-		PageResponse<SysMenuResponseBO> list = sysMenuService.querySysMenuPageList(request, pageRequest);
-		log.info("queryAllSysMenu success. with request={}, page={}", request, pageRequest);
-		if (list == null) {
-			return new Response<>(new PageResponse<>());
-		}
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/queryUserMenuFromSession")
+	@ResponseBody
+	public Response<List<SysMenuResponseBO>> queryUserMenuFromSession(HttpSession session) {
+		log.info("queryUserSessionMenu start");
+		List<SysMenuResponseBO> list = (List<SysMenuResponseBO>) session.getAttribute(BaseConstant.USER_MENU);
+		log.info("queryUserSessionMenu success");
 		return new Response<>(list);
 	}
 
@@ -49,7 +52,7 @@ public class SysMenuController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping("/saveSysMenu.do")
+	@RequestMapping("/saveSysMenu")
 	public Response<Object> saveSysMenu(SysMenuRequestBO request) {
 		log.info("saveSysMenu with request={}", request);
 		sysMenuService.saveSysMenu(request);
@@ -62,7 +65,7 @@ public class SysMenuController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping("/deleteSysMenu.do")
+	@RequestMapping("/deleteSysMenu")
 	public Response<Object> deleteSysMenu(Integer id) {
 		log.info("deleteSysMenu with id={}", id);
 		sysMenuService.deleteSysMenu(id);
@@ -75,7 +78,7 @@ public class SysMenuController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping("/querySysMenuById.do")
+	@RequestMapping("/querySysMenuById")
 	public Response<SysMenuResponseBO> querySysMenuById(Integer id) {
 		log.info("querySysMenuById with id={}", id);
 		SysMenuResponseBO bo = sysMenuService.querySysMenuById(id);

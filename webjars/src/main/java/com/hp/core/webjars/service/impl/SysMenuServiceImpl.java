@@ -10,10 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hp.core.common.beans.page.PageModel;
-import com.hp.core.common.beans.page.PageRequest;
-import com.hp.core.common.beans.page.PageResponse;
-import com.hp.core.common.enums.StatusEnum;
 import com.hp.core.webjars.convert.SysMenuConvert;
 import com.hp.core.webjars.dal.ISysMenuDAO;
 import com.hp.core.webjars.dal.model.SysMenu;
@@ -51,38 +47,6 @@ public class SysMenuServiceImpl implements ISysMenuService {
 	}
 
 	@Override
-	public PageResponse<SysMenuResponseBO> querySysMenuPageList(SysMenuRequestBO request, PageRequest pageRequest) {
-		log.info("querySysMenuPageList with request={}", request);
-		SysMenu dal = SysMenuConvert.boRequest2Dal(request);
-		PageModel page = pageRequest.toPageModel();
-
-		//查询总数
-		int total = sysMenuDAO.selectCountByParams(dal);
-		if (total == 0) {
-			log.warn("querySysMenuPageList error. with total=0. with request={}", request);
-			return null;
-		}
-		PageResponse<SysMenuResponseBO> resp = new PageResponse<>();
-		resp.setCurrentPage(pageRequest.getPage());
-		resp.setPageSize(pageRequest.getRows());
-		resp.setTotal(total);
-
-		//查询列表
-		List<SysMenu> list = sysMenuDAO.selectPageListByParams(dal, page);
-		if (CollectionUtils.isEmpty(list)) {
-			log.warn("querySysMenuPageList error. with list is empty. with request={}", request);
-			return resp;
-		}
-
-		List<SysMenuResponseBO> respList = new ArrayList<>();
-		for (SysMenu a : list) {
-			respList.add(SysMenuConvert.dal2BOResponse(a));
-		}
-		log.info("querySysMenuPageList success. with request={}", request);
-		return new PageResponse<>(total, respList, page.getCurrentPage(), page.getPageSize());
-	}
-
-	@Override
 	public void deleteSysMenu(Integer id) {
 		log.info("deleteSysMenu with id={}", id);
 		sysMenuDAO.deleteByPrimaryKey(id);
@@ -107,12 +71,7 @@ public class SysMenuServiceImpl implements ISysMenuService {
 		List<SysMenu> list = null;
 		if (SessionUtil.isSuperUser()) {
 			//超级管理员，直接看到所有菜单
-			
-			SysMenu menu = new SysMenu();
-			menu.setStatus(StatusEnum.OPEN.getValue());
-			PageModel page = new PageModel();
-			page.setSortColumn("sortNumber");
-			list = sysMenuDAO.selectPageListByParams(menu, page);
+			list = sysMenuDAO.selectMenuForSuperAdmin();
 		} else {
 			//其他用户，只能看到分配的菜单
 			List<Integer> menuIds = sysMenuDAO.selectByUserId(user.getId());

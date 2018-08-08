@@ -15,7 +15,7 @@ import com.hp.core.webjars.dal.model.SysMenu;
 public interface ISysMenuDAO extends BaseMapper<SysMenu> {
 
 	/**
-	 * 查询该用户的菜单
+	 * 查询该用户的菜单（非超级管理员）
 	 * @param userId
 	 * @return
 	 */
@@ -27,4 +27,10 @@ public interface ISysMenuDAO extends BaseMapper<SysMenu> {
 	 * @return
 	 */
 	public List<SysMenu> selectSysMenu(@Param("menuIds") String menuIds);
+	
+	/**
+	 * 查询超级管理员看到的菜单
+	 * @return
+	 */
+	public List<SysMenu> selectMenuForSuperAdmin();
 }

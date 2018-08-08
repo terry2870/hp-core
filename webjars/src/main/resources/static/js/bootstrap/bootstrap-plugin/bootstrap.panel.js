@@ -27,11 +27,11 @@
 		let opt = jq.data("panel");
 		jq.empty();
 		jq.addClass("panel");
-		if (opt.className) {
-			if (opt.className.indexOf("-") > 0) {
-				jq.addClass(opt.className);
+		if (opt.panelClass) {
+			if (opt.panelClass.indexOf("-") > 0) {
+				jq.addClass(opt.panelClass);
 			} else {
-				jq.addClass("panel-" + opt.className);
+				jq.addClass("panel-" + opt.panelClass);
 			}
 		}
 		if (opt.style) {
@@ -42,7 +42,7 @@
 		let bodyDiv = $("<div>").appendTo(jq);
 		if (opt.collapseAble === true) {
 			bodyDiv.attr({
-				id : "panel-element-" + new Date().getTime()
+				id : "panel-element-" + opt.paneElementSuffix
 			});
 			if (opt.usePanelCollapse === true) {
 				bodyDiv.addClass("panel-collapse");
@@ -134,7 +134,7 @@
 				opt.onLoadSuccess.call(jq, data);
 			});
 		} else {
-			body.html(opt.content);
+			body.append(opt.content);
 			if (opt.onLoadSuccess) {
 				opt.onLoadSuccess.call(jq);
 			}
@@ -166,7 +166,12 @@
 			//设置底部内容靠右对齐
 			foot.css("text-align", "right");
 			$(opt.buttons).each(function(index, item) {
-				let btn = $("<input type='button'>").addClass("btn").addClass(item.className).css("margin-left", "20px").val(item.text).appendTo(foot);
+				let btn = $("<input type='button'>").addClass("btn").css("margin-left", "20px").val(item.text).appendTo(foot);
+				if (item.btnClass.indexOf("-") > 0) {
+					btn.addClass(item.btnClass)
+				} else {
+					btn.addClass("btn-" + item.btnClass)
+				}
 				if (item.disabled === true) {
 					btn.prop("disabled", true);
 				}
@@ -393,7 +398,7 @@
 	
 	//属性
 	$.fn.panel.defaults = $.extend({}, $.fn.panel.event, {
-		className : $.bootstrapClass.DEFAULT,	//面板的css
+		panelClass : $.bootstrapClass.DEFAULT,	//面板的css
 		style : {},						//面板的样式
 		headClassName : null,			//面板头部css
 		headStyle : {},					//面板头部样式
@@ -407,12 +412,22 @@
 		content : "",					//内容
 		url : "",						//从远端加载内容
 		queryParams : {},				//从远端加载内容传递的参数
+		
+		/**
+		 * 包含属性
+		 * text
+		 * btnClass
+		 * disabled
+		 * id
+		 * onclick
+		 */
 		buttons : [],					//底部的按钮
 		footContent : "",				//底部内容（footContent>buttons）
 		showFooter : false,				//是否显示底
 		closeAble : false,				//是否可以关闭
 		collapseAble : false	,			//是否可折叠
 		collapse : "open",				//折叠状态（open-打开；close-关闭）
-		usePanelCollapse : false			//是否使用panel-collapse 代替 panel-body（只有在accordion中才会使用）
+		usePanelCollapse : false,		//是否使用panel-collapse 代替 panel-body（只有在accordion中才会使用）
+		paneElementSuffix : ""			//折叠用的element的id后缀
 	});
 })(jQuery);

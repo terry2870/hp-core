@@ -34,9 +34,9 @@
 <script>
 	$(function() {
 		$("#loginDiv").panel({
-			className : $.bootstrapClass.PRIMARY,
+			panelClass : $.bootstrapClass.PRIMARY,
 			title : "用户登录",
-			selector : "#loginForm",
+			content : $("#loginForm"),
 			footContent : "<div id='messageAlert'></div>",
 			showFooter : true
 		});

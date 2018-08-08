@@ -5,15 +5,15 @@
  */
 (function($) {
 	$.fn.accordion = function(options, param) {
-		var self = this;
+		let self = this;
 		if (typeof (options) == "string") {
-			var method = $.fn.accordion.methods[options];
+			let method = $.fn.accordion.methods[options];
 			if (method){
 				return method.call(this, param);
 			}
 		}
 		return this.each(function() {
-			var opt = $.extend({}, $.fn.accordion.defaults, $.fn.accordion.events, options);
+			let opt = $.extend({}, $.fn.accordion.defaults, $.fn.accordion.events, options);
 			self.data("accordion", opt);
 			if (opt.ajaxParam && opt.ajaxParam.url) {
 				$.ajax($.extend({}, {
@@ -44,48 +44,58 @@
 	 * 生成菜单（适用于bootstrap）
 	 */
 	function _createAccordionMenu() {
-		var self = this;
-		var opt = $(self).data("accordion");
-		var parentNode = _findChild(self, opt.rootPid);
-		var childNode = [], div, ul, panelHead, headA, bodyDiv;
-		if (parentNode && parentNode.length > 0) {
-			self.addClass("panel-group");
-			$(parentNode).each(function(i, pItem) {
-				div = $("<div>").addClass("panel").appendTo(self);
-				if (opt.panelClass) {
-					div.addClass(opt.panelClass);
-				}
-				panelHead = $("<div>").addClass("panel-heading").appendTo(div);
-				headA = $("<a>").addClass("panel-title collapsed").attr({
-					"data-toggle" : "collapse",
-					"data-parent" : self.attr("id"),
-					"href" : "#panel-element-" + pItem[opt.idField]
-				}).html(pItem[opt.textField]).appendTo(panelHead);
-				
-				childNode = _findChild(self, pItem[opt.idField]);
-				if (childNode && childNode.length > 0) {
-					bodyDiv = $("<div>").addClass("panel-collapse collapse").attr({
-						"id" : "panel-element-" + pItem[opt.idField]
-					}).appendTo(div);
-					ul = $("<ul>").addClass("nav nav-list").appendTo(bodyDiv);
-					$(childNode).each(function(j, childItem) {
-						$("<li>").append($("<a href='#'>").html(childItem[opt.textField])).click(function() {
-							opt.onClickMenu.call(self, childItem, pItem);
-						}).appendTo(ul);
-					});
-				}
+		let self = this;
+		let opt = $(self).data("accordion");
+		let parentNode = _findChild(self, opt.rootPid);
+		//let childNode = [], div, ul, panelHead, headA, bodyDiv;
+		let childNode = [], panel, ul;
+		if (!parentNode || parentNode.length == 0) {
+			return;
+		}
+		
+		self.addClass("panel-group");
+		for (let i = 0; i < parentNode.length; i++) {
+			let parentItem = parentNode[i];
+			panel = $("<div>").appendTo(self);
+			//查找该节点的子节点
+			childNode = _findChild(self, parentItem[opt.idField]);
+			if (!childNode || childNode.length == 0) {
+				continue;
+			}
+			ul = $("<ul>").addClass("nav nav-list");
+			for (let j = 0; j < childNode.length; j++) {
+				let childItem = childNode[j];
+				let li = $("<li>").appendTo(ul);
+				let a = $("<a>").appendTo(li);
+				a.attr({
+					href : "#"
+				}).click(function() {
+					opt.onClickMenu.call(self, childItem, parentItem);
+				}).html(childItem[opt.textField]);
+			}
+			
+			panel.panel({
+				panelClass : opt.panelClass,
+				headStyle : {
+					padding : "5px 8px"
+				},
+				title : parentItem[opt.textField],
+				content : ul,
+				collapseAble : true,
+				collapse : (opt.selected != null && opt.selected === i ? "open" : "close"),
+				usePanelCollapse : true,
+				paneElementSuffix : parentItem[opt.idField]
 			});
 		}
-//		$(self).removeData("accordion");
 	}
 	/**
 	 * 查找子结点
 	 */
 	function _findChild(target, id) {
-		var opt = $(target).data("accordion");
-		var arr = [];
+		let opt = $(target).data("accordion");
+		let arr = [];
 		if (opt.dataList && opt.dataList.length > 0) {
-			for ( var i = 0; i < opt.dataList.length; i++) {
+			for (let i = 0; i < opt.dataList.length; i++) {
 				if (opt.dataList[i][opt.pidField] == id) {
 					arr.push(opt.dataList.splice(i, 1)[0]);
 					i--;
@@ -115,7 +125,8 @@
 		}
 	};
 	$.fn.accordion.defaults = $.extend({}, $.fn.accordion.events, {
-		panelClass : "panel-default",	//标题面板 的样式 （primary,success,info,warning,danger）
+		panelClass : $.bootstrapClass.DEFAULT,
+		selected : null,								//选择的索引
 		rootPid : 0,
 		idField : "id",
 		pidField : "pid",

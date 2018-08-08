@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.hp.core.common.utils;
+package com.hp.core.freemarker.utils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,6 +10,8 @@ import java.io.FileWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
+
+import com.hp.core.common.utils.SpringContextUtil;
 
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;

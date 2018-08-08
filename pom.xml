@@ -101,6 +101,11 @@
 				<artifactId>hp-core-webjars</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.hp.core</groupId>
+				<artifactId>hp-core-freemarker</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -188,5 +193,6 @@
 		<module>queue</module>
 		<module>jsptags</module>
 		<module>webjars</module>
+		<module>freemarker</module>
   </modules>
 </project>
