@@ -24,7 +24,7 @@
 	</div>
 	<div class="form-group">
 		<input type="text" class="form-control input-lg" style="width:80%;display:inline" id="checkCode" name="checkCode" maxlength="4" placeholder="验证码">
-		<img id="checkCodeImg" src="${request.contextPath}/LoginController/refeshCheckCode" style="cursor:pointer" />
+		<img id="checkCodeImg" src="${request.contextPath}/refeshCheckCode" style="cursor:pointer" />
 	</div>
 	<div class="form-group">
 		<input type="button" value="立刻登录" id="loginBtn" class="btn btn-primary btn-lg btn-block" name="loginBtn"/>
@@ -41,7 +41,7 @@
 			showFooter : true
 		});
 		$("#checkCodeImg").click(function() {
-			this.src = "${request.contextPath}/LoginController/refeshCheckCode?t=" + new Date();
+			this.src = "${request.contextPath}/refeshCheckCode?t=" + new Date();
 		});
 		$("#loginBtn").click(function() {
 			$(this).prop("disabled", "disabled");
@@ -75,7 +75,7 @@
 				checkCode.focus();
 				return;
 			}
-			$.post("${request.contextPath}/LoginController/doLogin", {
+			$.post("${request.contextPath}/doLogin", {
 				loginName : loginName.val(),
 				loginPwd : loginPwd.val(),
 				checkCode : checkCode.val()
@@ -98,7 +98,7 @@
 					$("#checkCodeImg").click();
 					return;
 				}
-				location.href = "${request.contextPath}/RedirectController/forward?redirectUrl=index";
+				location.href = "${request.contextPath}/index";
 			});
 		});
 	});

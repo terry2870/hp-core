@@ -59,7 +59,7 @@ public class CreateController {
 		sb.append("	 * @param pageRequest\r\n");
 		sb.append("	 * @return\r\n");
 		sb.append("	 */\r\n");
-		sb.append("	@RequestMapping(\"/queryAll").append(table.getModelName()).append(".do\")\r\n");
+		sb.append("	@RequestMapping(\"/queryAll").append(table.getModelName()).append("\")\r\n");
 		sb.append("	public Response<PageResponse<").append(table.getModelName()).append("ResponseBO>> queryAll").append(table.getModelName()).append("(").append(table.getModelName()).append("RequestBO request, PageRequest pageRequest) {\r\n");
 		sb.append("		log.info(\"queryAll").append(table.getModelName()).append(" with request={}, page={}\", request, pageRequest);\r\n");
 		sb.append("		PageResponse<").append(table.getModelName()).append("ResponseBO> list = ").append(table.getModelNameFirstLow()).append("Service.query").append(table.getModelName()).append("PageList(request, pageRequest);\r\n");
@@ -75,7 +75,7 @@ public class CreateController {
 		sb.append("	 * @param request\r\n");
 		sb.append("	 * @return\r\n");
 		sb.append("	 */\r\n");
-		sb.append("	@RequestMapping(\"/save").append(table.getModelName()).append(".do\")\r\n");
+		sb.append("	@RequestMapping(\"/save").append(table.getModelName()).append("\")\r\n");
 		sb.append("	public Response<Object> save").append(table.getModelName()).append("(").append(table.getModelName()).append("RequestBO request) {\r\n");
 		sb.append("		log.info(\"save").append(table.getModelName()).append(" with request={}\", request);\r\n");
 		sb.append("		").append(table.getModelNameFirstLow()).append("Service.save").append(table.getModelName()).append("(request);\r\n");
@@ -88,7 +88,7 @@ public class CreateController {
 		sb.append("	 * @param id\r\n");
 		sb.append("	 * @return\r\n");
 		sb.append("	 */\r\n");
-		sb.append("	@RequestMapping(\"/delete").append(table.getModelName()).append(".do\")\r\n");
+		sb.append("	@RequestMapping(\"/delete").append(table.getModelName()).append("\")\r\n");
 		sb.append("	public Response<Object> delete").append(table.getModelName()).append("(Integer id) {\r\n");
 		sb.append("		log.info(\"delete").append(table.getModelName()).append(" with id={}\", id);\r\n");
 		sb.append("		").append(table.getModelNameFirstLow()).append("Service.delete").append(table.getModelName()).append("(id);\r\n");
@@ -101,7 +101,7 @@ public class CreateController {
 		sb.append("	 * @param id\r\n");
 		sb.append("	 * @return\r\n");
 		sb.append("	 */\r\n");
-		sb.append("	@RequestMapping(\"/query").append(table.getModelName()).append("ById.do\")\r\n");
+		sb.append("	@RequestMapping(\"/query").append(table.getModelName()).append("ById\")\r\n");
 		sb.append("	public Response<").append(table.getModelName()).append("ResponseBO> query").append(table.getModelName()).append("ById(Integer id) {\r\n");
 		sb.append("		log.info(\"query").append(table.getModelName()).append("ById with id={}\", id);\r\n");
 		sb.append("		").append(table.getModelName()).append("ResponseBO bo = ").append(table.getModelNameFirstLow()).append("Service.query").append(table.getModelName()).append("ById(id);\r\n");

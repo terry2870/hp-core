@@ -6,15 +6,15 @@
  */
 (function($) {
 	$.fn.table = function(options, param) {
-		var self = this;
+		let self = this;
 		if (typeof (options) == "string") {
-			var method = $.fn.table.methods[options];
+			let method = $.fn.table.methods[options];
 			if (method){
 				return method.call(this, param);
 			}
 		}
 		return this.each(function() {
-			var opt = $.extend({}, $.fn.table.defaults, $.fn.table.events, options);
+			let opt = $.extend({}, $.fn.table.defaults, $.fn.table.events, options);
 			if (!opt.columns || opt.columns.length == 0) {
 				return;
 			}
@@ -27,8 +27,11 @@
 	 * 生成（适用于bootstrap）
 	 */
 	function _createtTable() {
-		var jq = this;
-		var opt = $(jq).data("table");
+		let jq = this;
+		let opt = $(jq).data("table");
+		
+		jq.attr("randomCode", Math.random());
+		
 		//清空table
 		jq.empty();
 		jq.addClass("panel");
@@ -40,7 +43,7 @@
 		if (opt.title) {
 			$("<div>").html(opt.title).addClass("panel-heading").appendTo(jq);
 		}
-		var body, table, thead, headTR, th;
+		let body, table, thead, headTR, th;
 		body = $("<div>").addClass("panel-body").appendTo(jq).attr("tableRole", "body");
 		table = $("<table>").addClass("table").appendTo(body).attr("tableRole", "table");
 		if (opt.columnAutoWidth !== true) {
@@ -116,7 +119,7 @@
 	function _loadRemote(jq, param) {
 		//显示正在加载
 		_showLoading(jq);
-		var opt = $(jq).data("table");
+		let opt = $(jq).data("table");
 		
 		_removeTbody(jq);
 		if (!opt || !opt.url) {
@@ -131,7 +134,7 @@
 				return;
 			}
 		}
-		var lastQueryParam = $.extend({}, opt.queryParams, jq.data("lastQueryParam"), param);
+		let lastQueryParam = $.extend({}, opt.queryParams, jq.data("lastQueryParam"), param);
 		jq.data("lastQueryParam", lastQueryParam);
 		$.ajax($.extend({}, {
 			url : opt.url,
@@ -180,9 +183,9 @@
 	 * 取去总条数和行记录
 	 */
 	function _getTotalAndData(jq) {
-		var opt = jq.data("table");
-		var d = opt.data;
-		var total = 0;
+		let opt = jq.data("table");
+		let d = opt.data;
+		let total = 0;
 		if ($.type(d) === "object") {
 			total = d.total;
 			d = d.rows;
@@ -199,9 +202,9 @@
 	 * 显示正在加载的效果
 	 */
 	function _showLoading(jq) {
-		var div = $("<div>").attr("tableSelector", jq.selector).addClass("modal-backdrop fade in").appendTo($("body")).hide();
-		var tableOffset = jq.offset();
-		var tableWidth = jq.outerWidth(true), tableHeight = jq.outerHeight(true);
+		let div = $("<div>").attr("tableSelector", jq.attr("randomCode")).addClass("modal-backdrop fade in").appendTo($("body")).hide();
+		let tableOffset = jq.offset();
+		let tableWidth = jq.outerWidth(true), tableHeight = jq.outerHeight(true);
 		div.append($("<div>").addClass("table-loading").css({
 			left : (tableWidth - 124) / 2,
 			top : (tableHeight - 124) / 2
@@ -219,7 +222,7 @@
 	 * 隐藏正在加载效果
 	 */
 	function _hideLoading(jq) {
-		$("body").find("div[tableSelector='"+ jq.selector +"']").remove();
+		$("body").find("div[tableSelector='"+ jq.attr("randomCode") +"']").remove();
 	}
 	
 	/**
@@ -268,13 +271,13 @@
 	 * 生成分页部分
 	 */
     function _createPage(jq, currentPage) {
-		var opt = jq.data("table");
-		var totalAndRow = _getTotalAndData(jq);
+		let opt = jq.data("table");
+		let totalAndRow = _getTotalAndData(jq);
 		if (opt.pagination !== true) {
 			return;
 		}
 		_getPagination(jq).remove();
-		var pageDiv = $("<div>").appendTo(_getBody(jq));
+		let pageDiv = $("<div>").appendTo(_getBody(jq));
 		pageDiv.pagination({
 			totalCount : totalAndRow.total,
 			currentPage : currentPage ? currentPage : 1,
@@ -282,7 +285,7 @@
 			onSelectPage : function(currentPage, pageSize) {
 				//显示正在加载
 				_showLoading(jq);
-				var lastQueryParam = jq.data("lastQueryParam");
+				let lastQueryParam = jq.data("lastQueryParam");
 				$.ajax($.extend({}, {
 					url : opt.url,
 					data : $.extend({}, lastQueryParam, {
@@ -330,32 +333,32 @@
 	 * @param opt
 	 */
 	function _createTbody(jq) {
-		var opt = jq.data("table");
+		let opt = jq.data("table");
 		if (!opt.data) {
 			return;
 		}
-		var totalAndRow = _getTotalAndData(jq);
+		let totalAndRow = _getTotalAndData(jq);
 		if (!totalAndRow.rows || totalAndRow.rows.length == 0) {
 			return;
 		}
-		var tbody = $("<tbody>").css({
+		let tbody = $("<tbody>").css({
 			overflow : "auto"
 		}).appendTo(_getTable(jq));
 		//设置table的主体
 		$(totalAndRow.rows).each(function(rowIndex, rowData) {
 			if (opt.formatterRow) {
-				var formatterRowResult = opt.formatterRow(rowData, rowIndex);
+				let formatterRowResult = opt.formatterRow(rowData, rowIndex);
 				if (formatterRowResult) {
 					tbody.append(formatterRowResult);
 					return true;
 				}
 			}
-			var bodyTR = $("<tr>").data("rowData", rowData).appendTo(tbody).css("cursor", "pointer");
+			let bodyTR = $("<tr>").data("rowData", rowData).appendTo(tbody).css("cursor", "pointer");
 			if (opt.idField) {
 				bodyTR.attr("table_rowDataId", rowData[opt.idField]);
 			}
 			bodyTR.click(function() {
-				var chk = bodyTR.find("input:checkbox[name='bootstrap-table-checkbox']");
+				let chk = bodyTR.find("input:checkbox[name='bootstrap-table-checkbox']");
 				if (chk) {
 					//chk.prop("checked", !chk.prop("checked"));
 					//_clickChk.call(chk.get(0), jq, rowIndex, rowData);
@@ -370,7 +373,7 @@
 			}
 			//行样式
 			if (opt.rowStyler) {
-				var rowStyler = opt.rowStyler(rowData, rowIndex);
+				let rowStyler = opt.rowStyler(rowData, rowIndex);
 				if ($.type(rowStyler) === "object") {
 					bodyTR.css(rowStyler);
 				} else if ($.type(rowStyler) === "string") {
@@ -378,12 +381,12 @@
 				}
 			}
 			$(opt.columns).each(function(columnIndex, columnData) {
-				var bodyTD = $("<td>").css({
+				let bodyTD = $("<td>").css({
 					"text-align" : columnData.align ? columnData.align : "left"
 				}).appendTo(bodyTR);
 				//列样式
 				if (columnData.styler) {
-					var styler = columnData.styler(rowData[columnData.field], rowData, rowIndex);
+					let styler = columnData.styler(rowData[columnData.field], rowData, rowIndex);
 					if ($.type(styler) === "object") {
 						bodyTD.css(styler);
 					} else if ($.type(styler) === "string") {
@@ -397,7 +400,7 @@
 					}).appendTo(bodyTD);
 				} else {
 					if (columnData.formatter) {
-						var formatter = columnData.formatter(rowData[columnData.field], rowData, rowIndex);
+						let formatter = columnData.formatter(rowData[columnData.field], rowData, rowIndex);
 						if ($.type(formatter) === "object") {
 							bodyTD.append(formatter);
 						} else {
@@ -418,8 +421,8 @@
 		//阻止冒泡
 		event.stopPropagation();
 		//点击选择，当不是全部都选中时候，把上面的全选框去掉选中状态
-		var opt = jq.data("table");
-		var thead = _getThead(jq);
+		let opt = jq.data("table");
+		let thead = _getThead(jq);
 		if (!this.checked) {
 			//当有一个没有选中时，去掉全选框
 			thead.find("#bootstrap-table-checkAll").prop("checked", false);
@@ -434,8 +437,8 @@
 				//this.checked = true;
 				this.checked = true;
 			} else {
-				var chedkeds = _getTbody(jq).find("input:checked[name='bootstrap-table-checkbox']");
-				var totalAndRow = _getTotalAndData(jq);
+				let chedkeds = _getTbody(jq).find("input:checked[name='bootstrap-table-checkbox']");
+				let totalAndRow = _getTotalAndData(jq);
 				thead.find("#bootstrap-table-checkAll").prop("checked", chedkeds.length == totalAndRow.rows.length);
 			}
 			
@@ -449,8 +452,8 @@
 	 * 获取选中的行数据
 	 */
 	function _getCheckedData(jq) {
-		var arr = [];
-		var checked = jq.find("input:checked[name='bootstrap-table-checkbox']");
+		let arr = [];
+		let checked = jq.find("input:checked[name='bootstrap-table-checkbox']");
 		if (!checked || checked.length == 0) {
 			return arr;
 		}
@@ -464,13 +467,13 @@
 	 * 点击全选
 	 */
 	function _clickCheckAll(jq, checked) {
-		var opt = jq.data("table");
+		let opt = jq.data("table");
 		if (checked === true && opt.singleSelect === true) {
 			//如果只能单选，那就不处理
 			return;
 		}
-		var rows = _getRows(jq);
-		for (var i = 0; i < rows.length; i++) {
+		let rows = _getRows(jq);
+		for (let i = 0; i < rows.length; i++) {
 			if (checked === true) {
 				_checkRow(jq, i);
 			} else {
@@ -478,7 +481,7 @@
 			}
 		}
 		
-		var check = jq.find("input:checkbox[name='bootstrap-table-checkbox']");
+		let check = jq.find("input:checkbox[name='bootstrap-table-checkbox']");
 		check.prop("checked", checked);
 	}
 	
@@ -486,7 +489,7 @@
 	 * 加载本地数据
 	 */
 	function _loadLoaclData(jq) {
-		var opt = jq.data("table");
+		let opt = jq.data("table");
 		_removeTbody(jq);
 		//opt.data = data;
 		_createTbody(jq);
@@ -501,8 +504,8 @@
 	 * 选中一行
 	 */
 	function _checkRow(jq, index) {
-		var row = $(_getRow(jq, index));
-		var chk = row.find("input:checkbox[name='bootstrap-table-checkbox']");
+		let row = $(_getRow(jq, index));
+		let chk = row.find("input:checkbox[name='bootstrap-table-checkbox']");
 		chk.prop("checked", true);
 		_clickChk.call(chk.get(0), jq, index, row.data("rowData"));
 	}
@@ -511,8 +514,8 @@
 	 * 反选中一行
 	 */
 	function _unCheckRow(jq, index) {
-		var row = $(_getRow(jq, index));
-		var chk = row.find("input:checkbox[name='bootstrap-table-checkbox']");
+		let row = $(_getRow(jq, index));
+		let chk = row.find("input:checkbox[name='bootstrap-table-checkbox']");
 		chk.prop("checked", false);
 		_clickChk.call(chk.get(0), jq, index, row.data("rowData"));
 	}
@@ -535,10 +538,10 @@
 	 * 获取表格中的每一行数据
 	 */
 	function _getData(jq) {
-		var rows = _getRows(jq);
+		let rows = _getRows(jq);
 		if (rows) {
-			var data = [];
-			for (var i = 0; i < rows.length; i++) {
+			let data = [];
+			for (let i = 0; i < rows.length; i++) {
 				data.push($(rows[i]).data("rowData"));
 			}
 			return data;
@@ -547,7 +550,7 @@
 	}
 	
 	function _reload(jq, param) {
-		var page = _getPagination(jq).data("pagination");
+		let page = _getPagination(jq).data("pagination");
 		_loadRemote(jq, $.extend({}, param, {
 			currentPage : page.currentPage
 		}));
@@ -572,7 +575,7 @@
 		 * @param data
 		 */
 		loadLoaclData : function(data) {
-			var jq = this;
+			let jq = this;
 			return jq.each(function() {
 				_loadLoaclData(jq);
 			});
@@ -582,14 +585,14 @@
 		 * @param param
 		 */
 		load : function(param) {
-			var jq = this;
+			let jq = this;
 			_loadRemote(jq, param);
 		},
 		/**
 		 * 从远端请求数据（并且留在当前页）
 		 */
 		reload : function(param) {
-			var jq = this;
+			let jq = this;
 			return this.each(function() {
 				_reload(jq, param);
 			});
@@ -625,7 +628,7 @@
 		 * @param param
 		 */
 		checkRow : function(index) {
-			var jq = this;
+			let jq = this;
 			return jq.each(function() {
 				_checkRow(jq, index);
 			});
@@ -635,7 +638,7 @@
 		 * @param param
 		 */
 		unCheckRow : function(index) {
-			var jq = this;
+			let jq = this;
 			return jq.each(function() {
 				_unCheckRow(jq, index);
 			});

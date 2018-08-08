@@ -5,28 +5,28 @@
  */
 (function($) {
 	$.fn.breadcrumb = function(options, param) {
-		var self = this;
+		let self = this;
 		if (typeof (options) == "string") {
-			var method = $.fn.breadcrumb.methods[options];
+			let method = $.fn.breadcrumb.methods[options];
 			if (method){
 				return method.call(this, param);
 			}
 		}
 		return this.each(function() {
-			var opt = $.extend({}, $.fn.breadcrumb.defaults, options);
+			let opt = $.extend({}, $.fn.breadcrumb.defaults, options);
 			self.data("breadcrumb", opt);
 			_createBreadcrumb.call(self, opt);
 		});
 	};
 
 	function _createBreadcrumb(opt) {
-		var jq = this;
+		let jq = this;
 		jq.empty();
 		jq.addClass("breadcrumb");
 		if (!opt.data || opt.data.length == 0) {
 			return;
 		}
-		var li;
+		let li;
 		$(opt.data).each(function(index, item) {
 			li = $("<li>").appendTo(jq);
 			if (index === opt.data.length - 1) {

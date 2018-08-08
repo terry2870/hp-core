@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hp.core.common.beans.Response;
-import com.hp.core.common.exceptions.CommonException;
 import com.hp.core.webjars.constants.BaseConstant;
 import com.hp.core.webjars.enums.IdentityEnum;
 import com.hp.core.webjars.interceptor.UrlInterceptor;
@@ -39,7 +38,6 @@ import com.hp.core.webjars.utils.SessionUtil;
  * @author hp 2014-03-11
  */
 @Controller
-@RequestMapping("/LoginController")
 public class LoginController {
 
 	private static Logger log = LoggerFactory.getLogger(LoginController.class);
@@ -59,6 +57,15 @@ public class LoginController {
 	public String login(HttpServletRequest request) {
 		log.info("login start ");
 		return "login";
+	}
+	
+	/**
+	 * 首页
+	 * @return
+	 */
+	@RequestMapping("/index")
+	public String index() {
+		return "index";
 	}
 	
 	/**
@@ -165,19 +172,6 @@ public class LoginController {
 		} catch (Exception e) {
 			log.error("error to create checkCode!", e);
 		}
-	}
-
-	/**
-	 * 获取登录的用户信息
-	 * 
-	 * @return
-	 * @throws CommonException
-	 */
-	@RequestMapping("/getUserInfo")
-	@ResponseBody
-	public Response<SysUserResponseBO> getUserInfo(HttpSession session) throws CommonException {
-		SysUserResponseBO bo = (SysUserResponseBO) session.getAttribute(BaseConstant.USER_SESSION);
-		return new Response<>(bo);
 	}
 
 }

@@ -33,7 +33,7 @@ public class SysRoleController {
 	 * @param pageRequest
 	 * @return
 	 */
-	@RequestMapping("/queryAllSysRole.do")
+	@RequestMapping("/queryAllSysRole")
 	public Response<PageResponse<SysRoleResponseBO>> queryAllSysRole(SysRoleRequestBO request, PageRequest pageRequest) {
 		log.info("queryAllSysRole with request={}, page={}", request, pageRequest);
 		PageResponse<SysRoleResponseBO> list = sysRoleService.querySysRolePageList(request, pageRequest);
@@ -49,7 +49,7 @@ public class SysRoleController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping("/saveSysRole.do")
+	@RequestMapping("/saveSysRole")
 	public Response<Object> saveSysRole(SysRoleRequestBO request) {
 		log.info("saveSysRole with request={}", request);
 		sysRoleService.saveSysRole(request);
@@ -62,7 +62,7 @@ public class SysRoleController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping("/deleteSysRole.do")
+	@RequestMapping("/deleteSysRole")
 	public Response<Object> deleteSysRole(Integer id) {
 		log.info("deleteSysRole with id={}", id);
 		sysRoleService.deleteSysRole(id);
@@ -75,7 +75,7 @@ public class SysRoleController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping("/querySysRoleById.do")
+	@RequestMapping("/querySysRoleById")
 	public Response<SysRoleResponseBO> querySysRoleById(Integer id) {
 		log.info("querySysRoleById with id={}", id);
 		SysRoleResponseBO bo = sysRoleService.querySysRoleById(id);

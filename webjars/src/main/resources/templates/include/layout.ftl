@@ -29,7 +29,7 @@
 				type: "POST"
 			},
 			onClickMenu : function(item, parent) {
-				alert(item.menuName + "____" + parent.menuName);
+				window.location.href = "${request.contextPath}" + item.menuUrl;
 			},
 			loadFilter : function(data) {
 				return defaultLoadFilter(data);
