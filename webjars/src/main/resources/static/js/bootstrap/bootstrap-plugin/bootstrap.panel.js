@@ -57,6 +57,14 @@
 			bodyDiv.addClass("panel-body");
 		}
 		
+		if (opt.scrollBar === true) {
+			//自动滚动条
+			bodyDiv.css({
+				height : "auto",
+				"overflow" : "auto"
+			});
+		}
+		
 		$("<div>").addClass("panel-footer").appendTo(jq);
 		
 		
@@ -383,6 +391,18 @@
 			return this.each(function() {
 				_destory(jq, option);
 			});
+		},
+		/**
+		 * 获取body
+		 */
+		getBodyObject : function() {
+			return _getBody(this);
+		},
+		/**
+		 * 获取footer
+		 */
+		getFooterObject : function() {
+			return _getFooter(this);
 		}
 	};
 	
@@ -399,6 +419,7 @@
 	//属性
 	$.fn.panel.defaults = $.extend({}, $.fn.panel.event, {
 		panelClass : $.bootstrapClass.DEFAULT,	//面板的css
+		scrollBar : true,				//是否自动滚动条
 		style : {},						//面板的样式
 		headClassName : null,			//面板头部css
 		headStyle : {},					//面板头部样式

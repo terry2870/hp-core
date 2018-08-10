@@ -9,5 +9,7 @@ package com.hp.core.mybatis.enums;
 public enum QueryTypeEnum {
 
 	EQUALS,
-	LIKE;
+	LIKE,
+	IN,
+	NOT_IN;
 }

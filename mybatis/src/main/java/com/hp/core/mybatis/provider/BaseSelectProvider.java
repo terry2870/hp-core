@@ -164,7 +164,7 @@ public class BaseSelectProvider {
 			for (DynamicColumnBean column : entity.getColumns()) {
 				key = column.getFieldName();
 				value = BeanUtils.getProperty(params, key);
-				if (value == null) {
+				if (checkNull(column, value)) {
 					//为空，跳过
 					continue;
 				}
@@ -184,12 +184,40 @@ public class BaseSelectProvider {
 						.append(".")
 						.append(column.getFieldName())
 						.append("}) > 0");
+				} else if (QueryTypeEnum.IN.equals(column.getQueryType())) {
+					sql.append(" AND ")
+					.append(column.getColumnName())
+					.append(" IN #{")
+					.append(SQLProviderConstant.TARGET_OBJECT_ALIAS)
+					.append(".")
+					.append(column.getFieldName())
+					.append("}");
+				} else if (QueryTypeEnum.NOT_IN.equals(column.getQueryType())) {
+					sql.append(" AND ")
+					.append(column.getColumnName())
+					.append(" NOT IN #{")
+					.append(SQLProviderConstant.TARGET_OBJECT_ALIAS)
+					.append(".")
+					.append(column.getFieldName())
+					.append("}");
 				}
 				
 			}
 		} catch (Exception e) {
 			log.error("get setSQLByParams sql error. with params is {}", params, e);
 		}
+	}
+	
+	private static boolean checkNull(DynamicColumnBean column, Object value) {
+		if (value == null) {
+			//null
+			return true;
+		}
+		if (String.class.getName().equals(column.getJavaType().getName()) && StringUtils.isEmpty((String) value)) {
+			//空字符串
+			return true;
+		}
+		return false;
 	}
 	
 }

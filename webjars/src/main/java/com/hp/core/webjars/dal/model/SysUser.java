@@ -3,6 +3,8 @@ package com.hp.core.webjars.dal.model;
 import javax.persistence.Id;
 
 import com.hp.core.common.beans.BaseBean;
+import com.hp.core.mybatis.annotation.QueryType;
+import com.hp.core.mybatis.enums.QueryTypeEnum;
 
 /**
  * @author huangping
@@ -21,11 +23,13 @@ public class SysUser extends BaseBean {
 	/**
 	 * 用户名
 	 */
+	@QueryType(QueryTypeEnum.LIKE)
 	private String userName;
 
 	/**
 	 * 登录名
 	 */
+	@QueryType(QueryTypeEnum.LIKE)
 	private String loginName;
 
 	/**
@@ -82,7 +86,7 @@ public class SysUser extends BaseBean {
 	 * 用户身份（1-超级管理员；2-店长；3-店员）
 	 */
 	private Integer identity;
-
+	
 	public Integer getId() {
 		return id;
 	}

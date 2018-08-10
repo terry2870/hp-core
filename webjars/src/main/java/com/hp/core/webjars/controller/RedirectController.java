@@ -14,8 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.hp.core.webjars.constants.BaseConstant;
-
 /**
  * 公共的跳转控制器
  * 

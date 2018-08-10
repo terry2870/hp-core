@@ -34,17 +34,8 @@
 		
 		//清空table
 		jq.empty();
-		jq.addClass("panel");
-		//设置panel的样式
-		if (opt.panelClass) {
-			jq.addClass(opt.panelClass);
-		}
-		//设置panel标题
-		if (opt.title) {
-			$("<div>").html(opt.title).addClass("panel-heading").appendTo(jq);
-		}
-		let body, table, thead, headTR, th;
-		body = $("<div>").addClass("panel-body").appendTo(jq).attr("tableRole", "body");
+		
+		let table, thead, headTR, th;
 		table = $("<table>").addClass("table").appendTo(body).attr("tableRole", "table");
 		if (opt.columnAutoWidth !== true) {
 			table.css({
@@ -89,6 +80,14 @@
 			}
 		});
 		
+		jq.panel({
+			panelClass : opt.panelClass,
+			title : opt.title,
+			content : table,
+			collapseAble : opt.collapseAble,
+			showFooter : opt.pagination === true
+		});
+		
 		if (opt && opt.url) {
 			_loadRemote(jq);
 		} else {
@@ -111,6 +110,7 @@
 			//设置已经加载完成
 			jq.attr("loadStatus", "1");
 		}
+		
 	}
 	
 	/**
@@ -229,7 +229,8 @@
 	 * 获取body部分
 	 */
 	function _getBody(jq) {
-		return jq.find("div.panel-body[tableRole='body']");
+		return jq.panel("getBodyObject");
+		//return jq.find("div.panel-body[tableRole='body']");
 	}
 	
 	/**
@@ -277,7 +278,8 @@
 			return;
 		}
 		_getPagination(jq).remove();
-		let pageDiv = $("<div>").appendTo(_getBody(jq));
+		let pageDiv = $("<div>").appendTo(jq.panel("getFooterObject"));
+		jq.panel("setFooter", pageDiv);
 		pageDiv.pagination({
 			totalCount : totalAndRow.total,
 			currentPage : currentPage ? currentPage : 1,
@@ -679,6 +681,7 @@
 	};
 	$.fn.table.defaults = $.extend({}, $.fn.table.events, {
 		columnAutoWidth : false,//列是否自动宽度
+		scrollBar : true,		//是否自动滚动条
 		url : "",				//远端调用的url
 		queryParams : {},		//调用url传递的参数
 		type : "POST",			//提交方式
@@ -687,13 +690,14 @@
 		pageSize : 10,			//分页时，每页条数
 		data : null,			//如果不用url，则可以直接传入data
 		striped : false,		//是否显示条纹
-		panelClass : "panel-default",	//标题面板 的样式 （primary,success,info,warning,danger）
+		panelClass : $.bootstrapClass.DEFAULT,	//标题面板 的样式 （primary,success,info,warning,danger）
 		title : "",						//表格标题
 		hover : true,					//是否悬停显示
 		border : true,					//是否显示边框
 		columns : [],					//表格列字段
 		idField : null,					//表示id值的字段
 		singleSelect : false,			//是否单选
+		collapseAble : false,			//是否可折叠
 		loadFilter : function(data) {	//对返回值进行特殊处理
 			return data;
 		},

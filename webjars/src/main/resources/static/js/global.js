@@ -1,4 +1,4 @@
-
+var DEFAULT_PANEL_CLASS = $.bootstrapClass.PRIMARY;
 var CODE_SUCCESS = 200;
 $.ajaxSetup({
 	cache : false,
@@ -15,7 +15,7 @@ $.ajaxSetup({
 		} else if (status == 901) {
 			//session超时
 			$.message.alert("错误", "登录超时了！", function() {
-				window.top.location.href = "/";
+				window.top.location.href = "/logout";
 			});
 		} else {
 			//其他异常

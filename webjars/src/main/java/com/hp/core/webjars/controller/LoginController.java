@@ -53,9 +53,21 @@ public class LoginController {
 	 * 打开登录页面
 	 * @return
 	 */
-	@RequestMapping("/login")
+	@RequestMapping({"/", "/login"})
 	public String login(HttpServletRequest request) {
 		log.info("login start ");
+		return "login";
+	}
+	
+	/**
+	 * 登出
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/logout")
+	public String logout(HttpServletRequest request) {
+		log.info("logout start ");
+		request.getSession().invalidate();
 		return "login";
 	}
 	
@@ -64,7 +76,8 @@ public class LoginController {
 	 * @return
 	 */
 	@RequestMapping("/index")
-	public String index() {
+	public String index(HttpServletRequest request) {
+		request.setAttribute("hhh", "asdasdasd");
 		return "index";
 	}
 	
@@ -78,7 +91,6 @@ public class LoginController {
 	@ResponseBody
 	public Response<Object> login(SysUserRequestBO request, HttpSession session) throws Exception {
 		log.info("doLogin start with request={}", request);
-
 		// 检查验证码
 		if (StringUtils.isEmpty(request.getCheckCode())) {
 			log.warn("doLogin error. checkCode is null. with request={}", request);

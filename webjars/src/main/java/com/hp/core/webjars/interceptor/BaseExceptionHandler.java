@@ -55,7 +55,7 @@ public class BaseExceptionHandler implements HandlerExceptionResolver {
 	/**
 	 * 使用FastJson提供的FastJsonJsonView视图返回，不需要捕获异常
 	 */
-	public static ModelAndView getErrorJsonView(int code, String message) {
+	private ModelAndView getErrorJsonView(int code, String message) {
 		ModelAndView modelAndView = new ModelAndView();
 		FastJsonJsonView jsonView = new FastJsonJsonView();
 		Map<String, Object> errorInfoMap = new HashMap<>();
