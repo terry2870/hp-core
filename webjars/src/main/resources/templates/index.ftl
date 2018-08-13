@@ -85,9 +85,9 @@
 					id : iframeId
 				});
 				if (item.menuUrl.indexOf("?") > 0) {
-					iframe.attr("src", "<t:path />"+ item.menuUrl +"&menuId="+ item.menuId + "&iframeId=" + iframeId);
+					iframe.attr("src", "${request.contextPath}"+ item.menuUrl +"&menuId="+ item.menuId + "&iframeId=" + iframeId);
 				} else {
-					iframe.attr("src", "<t:path />"+ item.menuUrl +"?menuId="+ item.menuId + "&iframeId=" + iframeId);
+					iframe.attr("src", "${request.contextPath}"+ item.menuUrl +"?menuId="+ item.menuId + "&iframeId=" + iframeId);
 				}
 				$("#right").tabs("add", {
 					title : item.menuName,
