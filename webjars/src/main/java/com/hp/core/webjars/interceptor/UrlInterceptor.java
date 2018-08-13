@@ -67,6 +67,10 @@ public class UrlInterceptor implements HandlerInterceptor {
 		if (StringUtils.isEmpty(url)) {
 			url = request.getRequestURI();
 		}
+		
+		//url中去掉contextPath
+		url = url.substring(request.getContextPath().length());
+		
 		// 第一层免过滤
 		if (StringUtils.isEmpty(url) || contains(defaultFirstNoFilterList, url) || contains(firstNoFilterList, url)) {
 			return true;

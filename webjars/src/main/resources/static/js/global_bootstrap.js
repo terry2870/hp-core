@@ -1,3 +1,4 @@
+var DEFAULT_PANEL_CLASS = $.bootstrapClass.PRIMARY;
 var CODE_SUCCESS = 200;
 $.ajaxSetup({
 	cache : false,
@@ -10,17 +11,17 @@ $.ajaxSetup({
 		}
 		if (status == 900) {
 			//数据库超时
-			window.top.$.messager.alert("失败", "查询超时了", "error");
+			$.message.alert("失败", "查询超时了");
 		} else if (status == 901) {
 			//session超时
-			window.top.$.messager.alert("错误", "登录超时了！", "error", function() {
+			$.message.alert("错误", "登录超时了！", function() {
 				window.top.location.href = "/logout";
 			});
 		} else {
 			//其他异常
 			var text = XMLHttpRequest.responseText;
 			text = JSON.parse(text);
-			window.top.$.messager.alert("失败", text.message, "error");
+			$.message.alert("失败", text.message);
 		}
 	}
 });

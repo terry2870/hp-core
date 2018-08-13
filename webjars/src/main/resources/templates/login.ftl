@@ -1,113 +1,95 @@
 <#include "include/head.ftl">
-<div class="container">
-	<h1 style="line-height: 2em;"></h1>
-	<br>
-	<br>
-	<br>
-	<br>
-	<div class="row">
-		<div class="col-sm-3"></div>
-		<div class="col-sm-6">
-			<div id="loginDiv">
-				
-			</div>
+<body style="background-color: #428bca;text-align: center;overflow: hidden;">
+	<div class="login_div">
+		<div class="login_top"></div>
+		<div class="login_bg">
+			<form id="f1" method="post">
+				<div>
+					<input type="text" id="loginName" name="loginName" class="easyui-textbox" style="width:80%;height:40px;padding:12px" data-options="
+						prompt : '登录名',
+						required : true,
+						iconCls : 'icon-man',
+						iconWidth : 38,
+						cls : 'login_input',
+						missingMessage : '请输入登录账号名！'
+					" />
+				</div>
+				<div>
+					<input type="password" id="loginPwd" name="loginPwd" class="easyui-textbox" style="width:80%;height:40px;padding:12px" data-options="
+						prompt : 'password',
+						required : true,
+						iconCls : 'icon-lock',
+						iconWidth : 38,
+						cls : 'login_input',
+						missingMessage : '请输入登录密码！'
+					" />
+				</div>
+				<div>
+					<input type="text" id="checkCode" name="checkCode" class="easyui-textbox" style="width:80%;height:40px;padding:12px" data-options="
+						prompt : '请输入验证码',
+						required : true,
+						cls : 'login_input',
+						missingMessage : '请输入验证码',
+						validType : 'length[4,4]',
+						invalidMessage : '验证码长度为4个字符！'
+					" />
+				</div>
+				<div style="margin-top: 10px;text-align: left;margin-left: 30px">
+					<img src="${request.contextPath}/refeshCheckCode" id="codeImg" title="点击刷新验证码" style="cursor:pointer;">
+					<a href="#" id="refeshImg">看不清楚，换个一个</a>
+				</div>
+				<div style="margin-top: 10px;text-align: left;margin-left: 30px">
+					<input type="image" src="${request.contextPath}/css/images/login/login_1_08.png" id="submitBtn" />
+				</div>
+			</form>
 		</div>
-		<div class="col-sm-3"></div>
+		<div class="login_bottom"></div>
 	</div>
-</div>
-<form class="" name="loginForm" id="loginForm">
-	<div class="form-group">
-		<input type="text" class="form-control input-lg" id="loginName" name="loginName" placeholder="登录名" />
-	</div>
-	<div class="form-group">
-		<input type="password" class="form-control input-lg" id="loginPwd" name="loginPwd" placeholder="登录密码" />
-	</div>
-	<div class="form-group">
-		<input type="text" class="form-control input-lg" style="width:80%;display:inline" id="checkCode" name="checkCode" maxlength="4" placeholder="验证码" />
-		<img id="checkCodeImg" src="${request.contextPath}/refeshCheckCode" style="cursor:pointer" />
-	</div>
-	<div class="form-group">
-		<input type="button" value="立刻登录" id="loginBtn" class="btn btn-primary btn-lg btn-block" name="loginBtn"/>
-		<!-- <span><a href="#">找回密码</a></span> <span></span> -->
-	</div>
-</form>
-<script>
+	<script>
 	$(function() {
-	
-		$("#loginForm").keydown(function(e) {
-			if (e.keyCode == 13) {
-				$("#loginBtn").click();
+		
+		$("#submitBtn").hover(
+			function() {
+				$(this).attr("src", "${request.contextPath}/css/images/login/login_1_08a.png");
+			},
+			function() {
+				$(this).attr("src", "${request.contextPath}/css/images/login/login_1_08.png");
 			}
-		});
-	
-		$("#loginDiv").panel({
-			panelClass : DEFAULT_PANEL_CLASS,
-			title : "用户登录",
-			content : $("#loginForm"),
-			footContent : "<div id='messageAlert'></div>",
-			showFooter : true
-		});
-		$("#checkCodeImg").click(function() {
-			this.src = "${request.contextPath}/refeshCheckCode?t=" + new Date();
-		});
-		$("#loginBtn").click(function() {
-			$(this).prop("disabled", "disabled");
-			var loginName = $("#loginName");
-			var loginPwd = $("#loginPwd");
-			var checkCode = $("#checkCode");
-			if (loginName.val() == "") {
-				$("#messageAlert").alerts({
-					content : "请输入登录名。",
-					type : "danger"
-				});
-				$(this).removeAttr("disabled");
-				loginName.focus();
-				return;
-			}
-			if (loginPwd.val() == "") {
-				$("#messageAlert").alerts({
-					content : "请输入密码。",
-					type : "danger"
-				});
-				$(this).removeAttr("disabled");
-				loginPwd.focus();
-				return;
-			}
-			if (checkCode.val() == "") {
-				$("#messageAlert").alerts({
-					content : "请输入验证码。",
-					type : "danger"
-				});
-				$(this).removeAttr("disabled");
-				checkCode.focus();
-				return;
-			}
-			$.post("${request.contextPath}/doLogin", {
-				loginName : loginName.val(),
-				loginPwd : loginPwd.val(),
-				checkCode : checkCode.val()
-			}, function(data) {
-				if (!data) {
-					$("#messageAlert").alerts({
-						content : "登录失败",
-						type : "danger"
-					});
-					$("#loginBtn").removeAttr("disabled");
-					$("#checkCodeImg").click();
-					return;
+		);
+
+		$("form").form({
+			url : "${request.contextPath}/doLogin",
+			onSubmit : function() {
+				if (!$("form").form("validate")) {
+					return false;
 				}
-				if (data.code != 200) {
-					$("#messageAlert").alerts({
-						content : data.message,
-						type : "danger"
+				return true;
+			},
+			success : function(data) {
+				if (data) {
+					data = JSON.parse(data);
+					if (data.code == CODE_SUCCESS) {
+						window.location.href = "${request.contextPath}/index";
+					} else {
+						$.messager.alert("登录失败", data.message, "error", function() {
+							refreshCode();
+						});
+					}
+				} else {
+					$.messager.alert("登录失败", data.message, "error", function() {
+						refreshCode();
 					});
-					$("#loginBtn").removeAttr("disabled");
-					$("#checkCodeImg").click();
-					return;
 				}
-				location.href = "${request.contextPath}/index";
-			});
+			}
+		});
+		
+		function refreshCode() {
+			$("#codeImg").attr("src", "${request.contextPath}/refeshCheckCode?" + Math.random());
+		}
+		$("#codeImg,#refeshImg").click(function() {
+			refreshCode();
 		});
 	});
 </script>
+</body>
 <#include "include/footer.ftl">

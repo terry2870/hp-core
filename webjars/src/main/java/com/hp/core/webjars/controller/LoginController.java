@@ -4,12 +4,14 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Random;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -63,12 +65,14 @@ public class LoginController {
 	 * 登出
 	 * @param request
 	 * @return
+	 * @throws IOException 
+	 * @throws ServletException 
 	 */
 	@RequestMapping("/logout")
-	public String logout(HttpServletRequest request) {
+	public void logout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		log.info("logout start ");
 		request.getSession().invalidate();
-		return "login";
+		response.sendRedirect("/login");
 	}
 	
 	/**

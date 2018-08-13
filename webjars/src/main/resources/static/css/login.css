@@ -1,0 +1,39 @@
+A:link, A:visited {
+	font-size: 12px;
+	color: #858585;
+	text-decoration: none;
+}
+
+A:hover {
+	font-size: 12px;
+	color: #858585;
+	text-decoration: underline;
+}
+
+.login_div {
+	width: 310px;
+	height: 300px;
+	margin: 100 auto 0 auto;
+}
+
+.login_input {
+	border: 1px solid #bac5d4;
+	background-color: #eef3f8;
+	margin-top: 30px;
+}
+
+.login_top {
+	background-image: url("images/login/login_1_03.png");
+	height: 42px;
+	background-repeat: no-repeat;
+}
+
+.login_bg {
+	background-image: url("images/login/login_1_05.png");
+	height: 100%;
+}
+.login_bottom {
+	background-image: url("images/login/login_1_11.png");
+	height: 15px;
+	background-repeat: no-repeat;
+}
