@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hp.core.webjars.dal.ISysUserRoleDAO">
+	<resultMap id="BaseResultMap" type="com.hp.core.webjars.dal.model.SysUserRole">
+	</resultMap>
+	
+	<select id="selectRoleByUserId" resultType="Integer">
+		select role_id from sys_user_role where user_id=#{userId}
+	</select>
+	
+	<delete id="deleteByUserId">
+		delete from sys_user_role where user_id=#{userId}
+	</delete>
+
+</mapper>

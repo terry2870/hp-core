@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hp.core.webjars.dal.ISysRoleMenuDAO">
+	<resultMap id="BaseResultMap" type="com.hp.core.webjars.dal.model.SysRoleMenu">
+	</resultMap>
+	
+	<select id="selectMenuByRoleId" resultType="Integer">
+		select distinct menu_id from sys_role_menu where role_id=#{roleId}
+	</select>
+	<delete id="deleteByRoleId">
+		delete from sys_role_menu where role_id=#{roleId}
+	</delete>
+	
+	
+	
+	<select id="selectByMenuId" resultMap="BaseResultMap">
+		select * from sys_role_menu where menu_id=#{menuId}
+	</select>
+	<select id="selectByUserId" resultType="java.lang.Integer">
+		select DISTINCT t1.menu_id from sys_role_menu t1 where t1.role_id IN (SELECT t2.role_id FROM sys_user_role t2 WHERE t2.user_id=#{userId})
+	</select>
+</mapper>

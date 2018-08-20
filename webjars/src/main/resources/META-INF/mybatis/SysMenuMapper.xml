@@ -11,13 +11,13 @@
 	
 	<!-- 查询超级管理员看到的菜单 -->
 	<select id="selectMenuForSuperAdmin" resultMap="BaseResultMap">
-		select * from sys_menu where status=1 and menu_type in (1,2) order by sort_number
+		select * from sys_menu where status=1 order by sort_number
 	</select>
 	
 	<!-- 查询菜单，向上递归 -->
 	<select id="selectSysMenu" resultMap="BaseResultMap">
 		SELECT DISTINCT menu.* from sys_menu menu where menu.status=1
-		AND FIND_IN_SET(menu_id, getParentsMenuIdByMenuId(#{menuIds})) &gt; 0
+		AND FIND_IN_SET(id, getParentsMenuIdByMenuId(#{menuIds})) &gt; 0
 		ORDER BY menu.sort_number
 	</select>
 	

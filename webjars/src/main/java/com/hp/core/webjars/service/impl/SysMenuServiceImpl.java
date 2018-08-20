@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hp.core.common.utils.DateUtil;
 import com.hp.core.webjars.convert.SysMenuConvert;
 import com.hp.core.webjars.dal.ISysMenuDAO;
 import com.hp.core.webjars.dal.model.SysMenu;
@@ -38,9 +39,13 @@ public class SysMenuServiceImpl implements ISysMenuService {
 		SysMenu dal = SysMenuConvert.boRequest2Dal(request);
 		if (request.getId() == null || request.getId().intValue() == 0) {
 			//新增
+			dal.setCreateTime(DateUtil.getCurrentTimeSeconds());
+			dal.setUpdateTime(dal.getCreateTime());
+			dal.setCreateUserId(SessionUtil.getSessionUser().getId());
 			sysMenuDAO.insertSelective(dal);
 		} else {
 			//修改
+			dal.setUpdateTime(DateUtil.getCurrentTimeSeconds());
 			sysMenuDAO.updateByPrimaryKeySelective(dal);
 		}
 		log.info("saveSysMenu success with request={}", request);
@@ -51,17 +56,6 @@ public class SysMenuServiceImpl implements ISysMenuService {
 		log.info("deleteSysMenu with id={}", id);
 		sysMenuDAO.deleteByPrimaryKey(id);
 		log.info("deleteSysMenu success with id={}", id);
-	}
-
-	@Override
-	public SysMenuResponseBO querySysMenuById(Integer id) {
-		log.info("querySysMenuById with id={}", id);
-		SysMenu dal = sysMenuDAO.selectByPrimaryKey(id);
-		if (dal == null) {
-			log.warn("querySysMenuById error. with result is null. with id={}", id);
-			return null;
-		}
-		return SysMenuConvert.dal2BOResponse(dal);
 	}
 
 	@Override

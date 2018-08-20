@@ -12,12 +12,16 @@ import org.springframework.stereotype.Service;
 import com.hp.core.common.beans.page.PageModel;
 import com.hp.core.common.beans.page.PageRequest;
 import com.hp.core.common.beans.page.PageResponse;
+import com.hp.core.common.enums.StatusEnum;
+import com.hp.core.common.exceptions.CommonException;
+import com.hp.core.common.utils.DateUtil;
 import com.hp.core.webjars.convert.SysRoleConvert;
 import com.hp.core.webjars.dal.ISysRoleDAO;
 import com.hp.core.webjars.dal.model.SysRole;
 import com.hp.core.webjars.model.request.SysRoleRequestBO;
 import com.hp.core.webjars.model.response.SysRoleResponseBO;
 import com.hp.core.webjars.service.ISysRoleService;
+import com.hp.core.webjars.utils.SessionUtil;
 
 /**
  * 系统角色表业务操作接口实现
@@ -36,11 +40,19 @@ public class SysRoleServiceImpl implements ISysRoleService {
 	public void saveSysRole(SysRoleRequestBO request) {
 		log.info("saveSysRole with request={}", request);
 		SysRole dal = SysRoleConvert.boRequest2Dal(request);
+		
+		//检查参数
+		saveSysRoleCheck(request);
+		
 		if (request.getId() == null || request.getId().intValue() == 0) {
 			//新增
+			dal.setCreateTime(DateUtil.getCurrentTimeSeconds());
+			dal.setUpdateTime(dal.getCreateTime());
+			dal.setCreateUserId(SessionUtil.getSessionUser().getId());
 			sysRoleDAO.insertSelective(dal);
 		} else {
 			//修改
+			dal.setUpdateTime(DateUtil.getCurrentTimeSeconds());
 			sysRoleDAO.updateByPrimaryKeySelective(dal);
 		}
 		log.info("saveSysRole success with request={}", request);
@@ -81,7 +93,12 @@ public class SysRoleServiceImpl implements ISysRoleService {
 	@Override
 	public void deleteSysRole(Integer id) {
 		log.info("deleteSysRole with id={}", id);
-		sysRoleDAO.deleteByPrimaryKey(id);
+		SysRole role = new SysRole();
+		role.setId(id);
+		role.setStatus(StatusEnum.DELETE.getValue());
+		sysRoleDAO.updateByPrimaryKeySelective(role);
+		
+		//sysRoleDAO.deleteByPrimaryKey(id);
 		log.info("deleteSysRole success with id={}", id);
 	}
 
@@ -94,5 +111,28 @@ public class SysRoleServiceImpl implements ISysRoleService {
 			return null;
 		}
 		return SysRoleConvert.dal2BOResponse(dal);
+	}
+	
+	/**
+	 * 保存前的检查参数
+	 * @param request
+	 */
+	public void saveSysRoleCheck(SysRoleRequestBO request) {
+		SysRole role = new SysRole();
+		role.setRoleName(request.getRoleName());
+		List<SysRole> list = sysRoleDAO.selectListByParams(role);
+		if (CollectionUtils.isNotEmpty(list)) {
+			if (request.getId() == null || request.getId().intValue() == 0) {
+				//新增
+				log.warn("saveSysRole error. roleName is exists. with request={}", request);
+				throw new CommonException(500, "角色名已经存在");
+			} else {
+				//修改
+				if (!list.get(0).getId().equals(request.getId())) {
+					log.warn("saveSysRole error. roleName is exists. with request={}", request);
+					throw new CommonException(500, "角色名已经存在");
+				}
+			}
+		}
 	}
 }

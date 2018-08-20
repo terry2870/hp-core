@@ -40,14 +40,14 @@ public class UrlInterceptor implements HandlerInterceptor {
 	private List<String> firstNoFilterList;
 		
 	//默认的第一免过滤
-	private static final List<String> defaultFirstNoFilterList = Lists.newArrayList("/doLogin", "/login", "/logout", "/refeshCheckCode", "/forward");
+	private static final List<String> defaultFirstNoFilterList = Lists.newArrayList("/doLogin", "/login", "/logout", "/refeshCheckCode");
 
 	// 第二级免过滤列表（只要有session就都可以访问）
 	@Value("#{'${hp.core.secondNoFilterList:}'.split(',')}")
 	private List<String> secondNoFilterList;
 	
 	//默认的第二免过滤
-	private static final List<String> defaultSecondNoFilterList = Lists.newArrayList("");
+	private static final List<String> defaultSecondNoFilterList = Lists.newArrayList("/index", "/NoFilterController", "/RedirectController");
 
 	// 超级管理员账号
 	private List<String> superManagerList;
@@ -70,7 +70,7 @@ public class UrlInterceptor implements HandlerInterceptor {
 		
 		//url中去掉contextPath
 		url = url.substring(request.getContextPath().length());
-		
+				
 		// 第一层免过滤
 		if (StringUtils.isEmpty(url) || contains(defaultFirstNoFilterList, url) || contains(firstNoFilterList, url)) {
 			return true;
@@ -101,6 +101,10 @@ public class UrlInterceptor implements HandlerInterceptor {
 		//按照权限过滤
 		String[] arr = null;
 		List<SysMenuResponseBO> userMenu = (List<SysMenuResponseBO>) request.getSession().getAttribute(BaseConstant.USER_MENU);
+		String lastUrl = url;
+		if (lastUrl.indexOf("/") >= 0) {
+			lastUrl = url.substring(url.lastIndexOf("/") + 1);
+		}
 		for (SysMenuResponseBO bo : userMenu) {
 			if (StringUtils.isNotEmpty(bo.getMenuUrl()) && bo.getMenuUrl().equals(url)) {
 				return true;
@@ -108,7 +112,7 @@ public class UrlInterceptor implements HandlerInterceptor {
 			if (StringUtils.isNotEmpty(bo.getExtraUrl())) {
 				arr = bo.getExtraUrl().split(",");
 				for (String s : arr) {
-					if (s.equals(url)) {
+					if (s.equals(lastUrl)) {
 						return true;
 					}
 				}

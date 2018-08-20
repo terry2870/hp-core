@@ -29,6 +29,8 @@ public class SysRoleResponseBO extends BaseBean {
 	 * 角色状态
 	 */
 	private Integer status;
+	
+	private String statusStr;
 
 	/**
 	 * 创建者ID
@@ -99,6 +101,14 @@ public class SysRoleResponseBO extends BaseBean {
 
 	public void setUpdateTime(Integer updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public String getStatusStr() {
+		return statusStr;
+	}
+
+	public void setStatusStr(String statusStr) {
+		this.statusStr = statusStr;
 	}
 
 }

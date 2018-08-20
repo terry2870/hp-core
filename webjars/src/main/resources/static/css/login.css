@@ -1,3 +1,4 @@
+@charset "utf-8";
 A:link, A:visited {
 	font-size: 12px;
 	color: #858585;
@@ -13,7 +14,9 @@ A:hover {
 .login_div {
 	width: 310px;
 	height: 300px;
-	margin: 100 auto 0 auto;
+	margin-top: 100px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .login_input {

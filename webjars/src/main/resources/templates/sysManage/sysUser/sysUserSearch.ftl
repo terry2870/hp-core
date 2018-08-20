@@ -1,34 +1,53 @@
-<div class="form-inline">
-	<div class="form-group">
-		<label class="sr-only" for="id">id</label>
-		<input type="text" class="form-control" id="id" name="id" placeholder="id" />
-	</div>
-	<div class="form-group">
-		<label class="sr-only" for="id">登录名</label>
-		<input type="text" class="form-control" id="loginName" name="loginName" placeholder="登录名" />
-	</div>
-	<div class="form-group">
-		<label class="sr-only" for="id">用户名</label>
-		<input type="text" class="form-control" id="userName" name="userName" placeholder="用户名" />
-	</div>
-	<button type="button" id="searchBtn" class="btn btn-success">搜索</button>
-</div>
+<input class="easyui-textbox" id="loginName" data-options="prompt:'登录名'" />
+<input class="easyui-textbox" id="userName" data-options="prompt:'用户名'" />
+<input type="text" id="status" />
+<a id="sysUserSearchBtn">搜索</a>
+<a id="sysUserAddBtn">新增</a>
 <script>
 	$(function() {
-		$("#sysUserQueryDiv").keydown(function(e) {
-			console.log('111');
-			if (e.keyCode == 13) {
-				$("#sysUserQueryDiv #searchBtn").click();
+	
+		//状态
+		$("#sysUserListToolbar #status").myCombobox({
+			prompt : "状态",
+			width : 150,
+			url : "${request.contextPath}/NoFilterController",
+			queryParams : {
+				method : 'getEnumForSelect',
+				className : 'com.hp.core.common.enums.StatusEnum'
+			},
+			value : 1,
+			panelHeight : 100,
+			editable : false,
+			loadFilter : function(data) {
+				return defaultLoadFilter(data);
 			}
 		});
 	
-		$("#sysUserQueryDiv #searchBtn").click(function() {
-			$("#sysUserListDiv").table("load", {
-				id : $("#sysUserQueryDiv #id").val(),
-				loginName : $("#sysUserQueryDiv #loginName").val(),
-				userName : $("#sysUserQueryDiv #userName").val()
-			});
+		//支持回车键
+		$("#sysUserListToolbar").keydown(function(e) {
+			if (e.keyCode == 13) {
+				$("#sysUserListToolbar #sysUserSearchBtn").click();
+			}
 		});
 		
+		//搜索按钮
+		$("#sysUserSearchBtn").linkbutton({
+			iconCls : "icon-search",
+			onClick : function() {
+				$("#sysUserListTable").myDatagrid("load", {
+					loginName : $("#sysUserListToolbar #loginName").val(),
+					userName : $("#sysUserListToolbar #userName").val(),
+					status : $("#sysUserListToolbar #status").myCombobox("getValue")
+				});
+			}
+		});
+		
+		//新增按钮
+		$("#sysUserAddBtn").linkbutton({
+			iconCls : "icon-add",
+			onClick : function() {
+				editSysUser(0);
+			}
+		});
 	});
 </script>

@@ -54,6 +54,8 @@ public class SysUserResponseBO extends BaseBean {
 	 * 用户状态（1-正常；2-已删除；3-无效）
 	 */
 	private Integer status;
+	
+	private String statusStr;
 
 	/**
 	 * 创建者ID
@@ -69,6 +71,8 @@ public class SysUserResponseBO extends BaseBean {
 	 * 创建时间
 	 */
 	private Integer createTime;
+	
+	private String createTimeStr;
 
 	/**
 	 * 更新时间
@@ -200,6 +204,22 @@ public class SysUserResponseBO extends BaseBean {
 
 	public void setIdentityStr(String identityStr) {
 		this.identityStr = identityStr;
+	}
+
+	public String getStatusStr() {
+		return statusStr;
+	}
+
+	public void setStatusStr(String statusStr) {
+		this.statusStr = statusStr;
+	}
+
+	public String getCreateTimeStr() {
+		return createTimeStr;
+	}
+
+	public void setCreateTimeStr(String createTimeStr) {
+		this.createTimeStr = createTimeStr;
 	}
 
 }

@@ -1,18 +1,16 @@
 package com.hp.core.webjars.controller;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.hp.core.common.beans.Response;
-import com.hp.core.webjars.constants.BaseConstant;
 import com.hp.core.webjars.model.request.SysMenuRequestBO;
 import com.hp.core.webjars.model.response.SysMenuResponseBO;
 import com.hp.core.webjars.service.ISysMenuService;
@@ -22,7 +20,7 @@ import com.hp.core.webjars.service.ISysMenuService;
  * @author huangping
  * 2018-08-06
  */
-@RestController
+@Controller
 @RequestMapping("/SysMenuController")
 public class SysMenuController {
 
@@ -31,20 +29,29 @@ public class SysMenuController {
 	@Autowired
 	private ISysMenuService sysMenuService;
 
-	
 	/**
-	 * 查询用户的权限菜单（从session中获取）
-	 * @param session
+	 * 菜单首页
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	@RequestMapping("/queryUserMenuFromSession")
+	@RequestMapping("/sysMenuList")
+	public String sysMenuList() {
+		return "sysManage/sysMenu/sysMenuList";
+	}
+	
+	/**
+	 * 查询当前登录用户所能看到的菜单
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryAllSysMenu")
 	@ResponseBody
-	public Response<List<SysMenuResponseBO>> queryUserMenuFromSession(HttpSession session) {
-		log.info("queryUserSessionMenu start");
-		List<SysMenuResponseBO> list = (List<SysMenuResponseBO>) session.getAttribute(BaseConstant.USER_MENU);
-		log.info("queryUserSessionMenu success");
-		return new Response<>(list);
+	public List<SysMenuResponseBO> queryAllSysMenu() throws Exception {
+		log.info("queryAllSysMenu start");
+		List<SysMenuResponseBO> list = sysMenuService.queryAllSysMenu();
+		if (list == null) {
+			return new ArrayList<>();
+		}
+		log.info("queryAllSysMenu success");
+		return list;
 	}
 
 	/**
@@ -53,6 +60,7 @@ public class SysMenuController {
 	 * @return
 	 */
 	@RequestMapping("/saveSysMenu")
+	@ResponseBody
 	public Response<Object> saveSysMenu(SysMenuRequestBO request) {
 		log.info("saveSysMenu with request={}", request);
 		sysMenuService.saveSysMenu(request);
@@ -66,23 +74,11 @@ public class SysMenuController {
 	 * @return
 	 */
 	@RequestMapping("/deleteSysMenu")
+	@ResponseBody
 	public Response<Object> deleteSysMenu(Integer id) {
 		log.info("deleteSysMenu with id={}", id);
 		sysMenuService.deleteSysMenu(id);
 		log.info("deleteSysMenu success. with id={}", id);
 		return new Response<>();
-	}
-
-	/**
-	 * 根据id，查询系统菜单表
-	 * @param id
-	 * @return
-	 */
-	@RequestMapping("/querySysMenuById")
-	public Response<SysMenuResponseBO> querySysMenuById(Integer id) {
-		log.info("querySysMenuById with id={}", id);
-		SysMenuResponseBO bo = sysMenuService.querySysMenuById(id);
-		log.info("querySysMenuById success. with id={}", id);
-		return new Response<>(bo);
 	}
 }

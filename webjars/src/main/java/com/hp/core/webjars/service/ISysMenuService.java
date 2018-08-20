@@ -30,11 +30,4 @@ public interface ISysMenuService {
 	 */
 	public void deleteSysMenu(Integer id);
 
-	/**
-	 * 根据id，查询系统菜单表
-	 * @param id
-	 * @return
-	 */
-	public SysMenuResponseBO querySysMenuById(Integer id);
-
 }

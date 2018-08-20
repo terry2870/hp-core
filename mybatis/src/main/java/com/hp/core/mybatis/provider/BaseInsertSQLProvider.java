@@ -57,10 +57,12 @@ public class BaseInsertSQLProvider {
 		sql.append(") \n VALUES \n");
 		
 		List<Object> list = (List<Object>) params.get("list");
+		DynamicColumnBean column = null;
 		for (int i = 0; i < list.size(); i++) {
 			sql.append("(");
 			for (int j = 0; j < entity.getInsertColumnsList().size(); j++) {
-				sql.append("#{list[").append(i).append("].").append(entity.getInsertColumnsList().get(j).getFieldName()).append("}");
+				column = entity.getInsertColumnsList().get(j);
+				sql.append("#{list[").append(i).append("].").append(column.getFieldName()).append("}");
 				if (j != entity.getInsertColumnsList().size() - 1) {
 					sql.append(", ");
 				}

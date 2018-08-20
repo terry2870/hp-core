@@ -1,6 +1,8 @@
 package com.hp.core.webjars.controller;
 
-import javax.servlet.http.HttpSession;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,11 +14,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.hp.core.common.beans.Response;
 import com.hp.core.common.beans.page.PageRequest;
 import com.hp.core.common.beans.page.PageResponse;
-import com.hp.core.common.exceptions.CommonException;
-import com.hp.core.webjars.constants.BaseConstant;
 import com.hp.core.webjars.model.request.SysUserRequestBO;
 import com.hp.core.webjars.model.response.SysUserResponseBO;
+import com.hp.core.webjars.service.ISysUserRoleService;
 import com.hp.core.webjars.service.ISysUserService;
+import com.hp.core.webjars.utils.SessionUtil;
 
 /**
  * 系统用户表控制器
@@ -31,27 +33,28 @@ public class SysUserController {
 
 	@Autowired
 	private ISysUserService sysUserService;
+	@Autowired
+	private ISysUserRoleService sysUserRoleService;
 
 	/**
 	 * 用户列表
 	 * @return
 	 */
 	@RequestMapping("/sysUserList")
-	public String sysUserList() {
+	public String sysUserList(HttpServletRequest request) {
+		request.setAttribute("menuId", request.getParameter("menuId"));
+		request.setAttribute("iframeId", request.getParameter("iframeId"));
 		return "sysManage/sysUser/sysUserList";
 	}
 	
 	/**
-	 * 获取登录的用户信息
-	 * 
+	 * 修改密码页面
 	 * @return
-	 * @throws CommonException
 	 */
-	@RequestMapping("/getUserInfo")
-	@ResponseBody
-	public Response<SysUserResponseBO> getUserInfo(HttpSession session) throws CommonException {
-		SysUserResponseBO bo = (SysUserResponseBO) session.getAttribute(BaseConstant.USER_SESSION);
-		return new Response<>(bo);
+	@RequestMapping("/modifyPwdPage")
+	public String modifyPwdPage(HttpServletRequest request) {
+		request.setAttribute("loginName", SessionUtil.getSessionUser().getLoginName());
+		return "sysManage/pwdManage/modifyPwd";
 	}
 	
 	/**
@@ -112,5 +115,33 @@ public class SysUserController {
 		SysUserResponseBO bo = sysUserService.querySysUserById(id);
 		log.info("querySysUserById success. with id={}", id);
 		return new Response<>(bo);
+	}
+	
+	/**
+	 * 查询该用户已经分配的角色
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping("/selectRoleByUserId")
+	@ResponseBody
+	public Response<List<Integer>> selectRoleByUserId(Integer userId) {
+		log.info("selectRoleByUserId with userId={}", userId);
+		List<Integer> list = sysUserRoleService.selectRoleByUserId(userId);
+		return new Response<>(list);
+	}
+	
+	/**
+	 * 修改密码
+	 * @param oldPwd
+	 * @param newPwd
+	 * @return
+	 */
+	@RequestMapping("/modifyPwd")
+	@ResponseBody
+	public Response<Object> modifyPwd(String oldPwd, String newPwd) {
+		Integer userId = SessionUtil.getSessionUser().getId();
+		log.info("modifyPwd with userId={}", userId);
+		sysUserService.modifyPwd(userId, oldPwd, newPwd);
+		return new Response<>();
 	}
 }

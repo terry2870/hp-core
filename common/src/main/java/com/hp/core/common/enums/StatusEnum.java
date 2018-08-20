@@ -37,7 +37,10 @@ public enum StatusEnum {
 	 * @param value
 	 * @return
 	 */
-	public static StatusEnum getEnumByValue(int value) {
+	public static StatusEnum getEnumByValue(Integer value) {
+		if (value == null) {
+			return null;
+		}
 		for (StatusEnum e : values()) {
 			if (value == e.getValue()) {
 				return e;
@@ -47,15 +50,8 @@ public enum StatusEnum {
 	}
 	
 	public static String getTextByValue(Integer value) {
-		if (value == null) {
-			return null;
-		}
-		for (StatusEnum e : values()) {
-			if (value.byteValue() == e.getValue()) {
-				return e.getText();
-			}
-		}
-		return null;
+		StatusEnum e = getEnumByValue(value);
+		return e == null ? "" : e.getText();
 	}
 
 	public int getValue() {

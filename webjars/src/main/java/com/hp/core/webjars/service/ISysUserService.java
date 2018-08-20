@@ -44,5 +44,13 @@ public interface ISysUserService {
 	 * @param request
 	 */
 	public SysUserResponseBO login(SysUserRequestBO request);
+	
+	/**
+	 * 修改密码
+	 * @param userId
+	 * @param oldPwd
+	 * @param newPwd
+	 */
+	public void modifyPwd(Integer userId, String oldPwd, String newPwd);
 
 }

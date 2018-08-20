@@ -39,4 +39,3 @@ function defaultLoadFilter(data) {
 		return data || [];
 	}
 }
-

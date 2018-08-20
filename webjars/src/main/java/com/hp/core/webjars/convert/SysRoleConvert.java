@@ -2,6 +2,7 @@ package com.hp.core.webjars.convert;
 
 import org.springframework.beans.BeanUtils;
 
+import com.hp.core.common.enums.StatusEnum;
 import com.hp.core.webjars.dal.model.SysRole;
 import com.hp.core.webjars.model.request.SysRoleRequestBO;
 import com.hp.core.webjars.model.response.SysRoleResponseBO;
@@ -39,6 +40,7 @@ public class SysRoleConvert {
 		}
 		SysRoleResponseBO bo = new SysRoleResponseBO();
 		BeanUtils.copyProperties(dal, bo);
+		bo.setStatusStr(StatusEnum.getTextByValue(dal.getStatus()));
 		return bo;
 	}
 }

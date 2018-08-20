@@ -22,7 +22,9 @@ import com.hp.core.webjars.dal.ISysUserDAO;
 import com.hp.core.webjars.dal.model.SysUser;
 import com.hp.core.webjars.model.request.SysUserRequestBO;
 import com.hp.core.webjars.model.response.SysUserResponseBO;
+import com.hp.core.webjars.service.ISysUserRoleService;
 import com.hp.core.webjars.service.ISysUserService;
+import com.hp.core.webjars.utils.SessionUtil;
 
 /**
  * 系统用户表业务操作接口实现
@@ -36,18 +38,37 @@ public class SysUserServiceImpl implements ISysUserService {
 
 	@Autowired
 	private ISysUserDAO sysUserDAO;
+	@Autowired
+	private ISysUserRoleService sysUserRoleService;
 
 	@Override
 	public void saveSysUser(SysUserRequestBO request) {
 		log.info("saveSysUser with request={}", request);
 		SysUser dal = SysUserConvert.boRequest2Dal(request);
+		
+		//检查唯一性
+		saveSysUserCheck(request);
+		
 		if (request.getId() == null || request.getId().intValue() == 0) {
 			//新增
+			dal.setCreateTime(DateUtil.getCurrentTimeSeconds());
+			dal.setUpdateTime(dal.getCreateTime());
+			dal.setCreateUserId(SessionUtil.getSessionUser().getId());
+			
+			//密码加密
+			dal.setLoginPwd(MD5Util.getMD5(dal.getLoginPwd()));
 			sysUserDAO.insertSelective(dal);
 		} else {
 			//修改
+			dal.setUpdateTime(DateUtil.getCurrentTimeSeconds());
+			
+			//修改的时候，这里不修改密码
+			dal.setLoginPwd(null);
 			sysUserDAO.updateByPrimaryKeySelective(dal);
 		}
+		
+		//保存该用户的角色
+		sysUserRoleService.insertUserRole(dal.getId(), request.getRoleIds());
 		log.info("saveSysUser success with request={}", request);
 	}
 
@@ -86,7 +107,13 @@ public class SysUserServiceImpl implements ISysUserService {
 	@Override
 	public void deleteSysUser(Integer id) {
 		log.info("deleteSysUser with id={}", id);
-		sysUserDAO.deleteByPrimaryKey(id);
+		
+		SysUser user = new SysUser();
+		user.setId(id);
+		user.setStatus(StatusEnum.DELETE.getValue());
+		sysUserDAO.updateByPrimaryKeySelective(user);
+		
+		//sysUserDAO.deleteByPrimaryKey(id);
 		log.info("deleteSysUser success with id={}", id);
 	}
 
@@ -133,5 +160,67 @@ public class SysUserServiceImpl implements ISysUserService {
 		SysUserResponseBO response = SysUserConvert.dal2BOResponse(userList.get(0));
 		log.info("login success with request={}", request);
 		return response;
+	}
+	
+	@Override
+	public void modifyPwd(Integer userId, String oldPwd, String newPwd) {
+		log.info("enter modifyPwd with userId={}", userId);
+		
+		//根据userId查询用户信息
+		SysUser user = sysUserDAO.selectByPrimaryKey(userId);
+		if (user == null) {
+			log.warn("modifyPwd error. user is not exitst. with userId={}", userId);
+			throw new CommonException(500, "用户不存在");
+		}
+		if (!user.getLoginPwd().equals(MD5Util.getMD5(oldPwd))) {
+			log.warn("modifyPwd error. with oldPwd error. with userId={}", userId);
+			throw new CommonException(500, "原密码错误");
+		}
+		user = new SysUser();
+		user.setId(userId);
+		user.setLoginPwd(MD5Util.getMD5(newPwd));
+		sysUserDAO.updateByPrimaryKeySelective(user);
+	}
+	
+	/**
+	 * 保存前的检查
+	 * @param request
+	 */
+	private void saveSysUserCheck(SysUserRequestBO request) {
+		//检查登录名
+		SysUser user = new SysUser();
+		user.setLoginName(request.getLoginName());
+		List<SysUser> list = sysUserDAO.selectListByParams(user);
+		if (CollectionUtils.isNotEmpty(list)) {
+			if (request.getId() == null || request.getId().intValue() == 0) {
+				//新增
+				log.warn("saveSysUser error. loginName is exists. with request={}", request);
+				throw new CommonException(500, "登录名已经存在");
+			} else {
+				//修改
+				if (!list.get(0).getId().equals(request.getId())) {
+					log.warn("saveSysUser error. loginName is exists. with request={}", request);
+					throw new CommonException(500, "登录名已经存在");
+				}
+			}
+		}
+		
+		//检查用户名
+		user = new SysUser();
+		user.setUserName(request.getUserName());
+		list = sysUserDAO.selectListByParams(user);
+		if (CollectionUtils.isNotEmpty(list)) {
+			if (request.getId() == null || request.getId().intValue() == 0) {
+				//新增
+				log.warn("saveUser error. userName is exists. with request={}", request);
+				throw new CommonException(500, "用户名已经存在");
+			} else {
+				//修改
+				if (!list.get(0).getId().equals(request.getId())) {
+					log.warn("saveUser error. userName is exists. with request={}", request);
+					throw new CommonException(500, "用户名已经存在");
+				}
+			}
+		}
 	}
 }

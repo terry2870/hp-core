@@ -1,16 +1,22 @@
 package com.hp.core.webjars.controller;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hp.core.common.beans.Response;
 import com.hp.core.common.beans.page.PageRequest;
 import com.hp.core.common.beans.page.PageResponse;
 import com.hp.core.webjars.model.request.SysRoleRequestBO;
 import com.hp.core.webjars.model.response.SysRoleResponseBO;
+import com.hp.core.webjars.service.ISysRoleMenuService;
 import com.hp.core.webjars.service.ISysRoleService;
 
 /**
@@ -18,7 +24,7 @@ import com.hp.core.webjars.service.ISysRoleService;
  * @author huangping
  * 2018-08-06
  */
-@RestController
+@Controller
 @RequestMapping("/SysRoleController")
 public class SysRoleController {
 
@@ -26,7 +32,16 @@ public class SysRoleController {
 
 	@Autowired
 	private ISysRoleService sysRoleService;
+	@Autowired
+	private ISysRoleMenuService sysRoleMenuService;
 
+	@RequestMapping("/sysRoleList")
+	public String sysRoleList(HttpServletRequest request) {
+		request.setAttribute("menuId", request.getParameter("menuId"));
+		request.setAttribute("iframeId", request.getParameter("iframeId"));
+		return "sysManage/sysRole/sysRoleList";
+	}
+	
 	/**
 	 * 查询系统角色表列表
 	 * @param request
@@ -34,6 +49,7 @@ public class SysRoleController {
 	 * @return
 	 */
 	@RequestMapping("/queryAllSysRole")
+	@ResponseBody
 	public Response<PageResponse<SysRoleResponseBO>> queryAllSysRole(SysRoleRequestBO request, PageRequest pageRequest) {
 		log.info("queryAllSysRole with request={}, page={}", request, pageRequest);
 		PageResponse<SysRoleResponseBO> list = sysRoleService.querySysRolePageList(request, pageRequest);
@@ -50,6 +66,7 @@ public class SysRoleController {
 	 * @return
 	 */
 	@RequestMapping("/saveSysRole")
+	@ResponseBody
 	public Response<Object> saveSysRole(SysRoleRequestBO request) {
 		log.info("saveSysRole with request={}", request);
 		sysRoleService.saveSysRole(request);
@@ -63,6 +80,7 @@ public class SysRoleController {
 	 * @return
 	 */
 	@RequestMapping("/deleteSysRole")
+	@ResponseBody
 	public Response<Object> deleteSysRole(Integer id) {
 		log.info("deleteSysRole with id={}", id);
 		sysRoleService.deleteSysRole(id);
@@ -76,10 +94,37 @@ public class SysRoleController {
 	 * @return
 	 */
 	@RequestMapping("/querySysRoleById")
+	@ResponseBody
 	public Response<SysRoleResponseBO> querySysRoleById(Integer id) {
 		log.info("querySysRoleById with id={}", id);
 		SysRoleResponseBO bo = sysRoleService.querySysRoleById(id);
 		log.info("querySysRoleById success. with id={}", id);
 		return new Response<>(bo);
+	}
+	
+	/**
+	 * 查询该角色的菜单
+	 * @param roleId
+	 * @return
+	 */
+	@RequestMapping("/selectMenuByRoleId")
+	@ResponseBody
+	public Response<List<Integer>> selectMenuByRoleId(Integer roleId) {
+		log.info("selectMenuByRoleId with roleId={}", roleId);
+		List<Integer> list = sysRoleMenuService.selectMenuByRoleId(roleId);
+		return new Response<>(list);
+	}
+	
+	/**
+	 * 保存角色菜单
+	 * @param roleId
+	 * @param menuIds
+	 */
+	@RequestMapping("/saveSysRoleMenu")
+	@ResponseBody
+	public Response<Object> saveSysRoleMenu(Integer roleId, String menuIds) {
+		log.info("saveSysRoleMenu with roleId={}, menuIds={}", roleId, menuIds);
+		sysRoleMenuService.saveSysRoleMenu(roleId, menuIds);
+		return new Response<>();
 	}
 }

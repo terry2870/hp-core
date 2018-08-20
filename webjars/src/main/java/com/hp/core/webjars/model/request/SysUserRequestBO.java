@@ -81,6 +81,8 @@ public class SysUserRequestBO extends BaseRequestBO {
 	private Integer identity;
 	
 	private String checkCode;
+	
+	private String roleIds;
 
 	public Integer getId() {
 		return id;
@@ -200,6 +202,14 @@ public class SysUserRequestBO extends BaseRequestBO {
 
 	public void setCheckCode(String checkCode) {
 		this.checkCode = checkCode;
+	}
+
+	public String getRoleIds() {
+		return roleIds;
+	}
+
+	public void setRoleIds(String roleIds) {
+		this.roleIds = roleIds;
 	}
 
 }

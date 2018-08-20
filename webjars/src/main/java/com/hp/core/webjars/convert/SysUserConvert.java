@@ -2,6 +2,8 @@ package com.hp.core.webjars.convert;
 
 import org.springframework.beans.BeanUtils;
 
+import com.hp.core.common.enums.StatusEnum;
+import com.hp.core.common.utils.DateUtil;
 import com.hp.core.webjars.dal.model.SysUser;
 import com.hp.core.webjars.enums.IdentityEnum;
 import com.hp.core.webjars.model.request.SysUserRequestBO;
@@ -41,6 +43,8 @@ public class SysUserConvert {
 		SysUserResponseBO bo = new SysUserResponseBO();
 		BeanUtils.copyProperties(dal, bo);
 		bo.setIdentityStr(IdentityEnum.getNameByValue(bo.getIdentity()));
+		bo.setStatusStr(StatusEnum.getTextByValue(dal.getStatus()));
+		bo.setCreateTimeStr(DateUtil.int2DateStr(dal.getCreateTime()));
 		return bo;
 	}
 }

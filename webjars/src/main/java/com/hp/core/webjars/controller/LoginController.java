@@ -121,9 +121,6 @@ public class LoginController {
 		session.setAttribute(BaseConstant.USER_SESSION, user);
 		session.setAttribute(BaseConstant.USER_MENU, menuList);
 
-		
-		
-		
 		log.info("doLogin success with request={}", request);
 		return new Response<>();
 	}

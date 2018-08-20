@@ -3,6 +3,8 @@ package com.hp.core.webjars.dal.model;
 import javax.persistence.Id;
 
 import com.hp.core.common.beans.BaseBean;
+import com.hp.core.mybatis.annotation.QueryType;
+import com.hp.core.mybatis.enums.QueryTypeEnum;
 
 /**
  * @author huangping
@@ -21,6 +23,7 @@ public class SysRole extends BaseBean {
 	/**
 	 * 角色名称
 	 */
+	@QueryType(QueryTypeEnum.LIKE)
 	private String roleName;
 
 	/**

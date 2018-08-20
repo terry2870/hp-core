@@ -1,4 +1,10 @@
-
+@charset "utf-8";
+html,body{ 
+	height:100%;
+	margin: 0px;
+	padding: 0px;
+	font-size: 12px;
+}
 
 .top_bg01 {
 	background-color: #87CEFA;
@@ -9,4 +15,27 @@
 .top_banner {
 	font-size:30px;
 	font-family:cursive;
+}
+
+.table_btn {
+	margin-left : 10px;
+}
+
+.edit_form {
+	margin-top: 40px;
+}
+.edit_form input {
+	width: 200px;
+}
+
+.edit_form input[type='checkbox'] {
+	width: auto;
+}
+
+.edit_form input[type='radio'] {
+	width: auto;
+}
+
+.edit_form > table {
+	width : 90%;
 }
