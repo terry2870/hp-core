@@ -3,7 +3,7 @@
  */
 package com.hp.core.mybatis.autocreate;
 
-import com.hp.core.common.utils.FreeMarkerUtil;
+import com.hp.core.freemarker.utils.FreeMarkerUtil;
 import com.hp.core.mybatis.autocreate.helper.TableBean;
 
 /**

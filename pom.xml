@@ -9,8 +9,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<spring.version>4.3.16.RELEASE</spring.version>
+		<spring.version>5.0.8.RELEASE</spring.version>
 		<junit.version>4.12</junit.version>
 		<fastjson.version>1.2.47</fastjson.version>
 		<logback.version>1.2.3</logback.version>
@@ -27,6 +26,7 @@
 		<javax.mail.version>1.6.1</javax.mail.version>
 		<ognl.version>3.2.1</ognl.version>
 		<freemarker.version>2.3.28</freemarker.version>
+		<hp.core.version>0.0.1-SNAPSHOT</hp.core.version>
 	</properties>
 
 	<dependencyManagement>
@@ -34,77 +34,77 @@
 			<dependency>
 				<groupId>com.hp.core</groupId>
 				<artifactId>hp-core-api</artifactId>
-				<version>${project.version}</version>
+				<version>${hp.core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.hp.core</groupId>
 				<artifactId>hp-core-common</artifactId>
-				<version>${project.version}</version>
+				<version>${hp.core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.hp.core</groupId>
 				<artifactId>hp-core-netty</artifactId>
-				<version>${project.version}</version>
+				<version>${hp.core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.hp.core</groupId>
 				<artifactId>hp-core-redis</artifactId>
-				<version>${project.version}</version>
+				<version>${hp.core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.hp.core</groupId>
 				<artifactId>hp-core-test</artifactId>
-				<version>${project.version}</version>
+				<version>${hp.core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.hp.core</groupId>
 				<artifactId>hp-core-zookeeper</artifactId>
-				<version>${project.version}</version>
+				<version>${hp.core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.hp.core</groupId>
 				<artifactId>hp-core-task</artifactId>
-				<version>${project.version}</version>
+				<version>${hp.core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.hp.core</groupId>
 				<artifactId>hp-core-limiter</artifactId>
-				<version>${project.version}</version>
+				<version>${hp.core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.hp.core</groupId>
 				<artifactId>hp-core-plugins</artifactId>
-				<version>${project.version}</version>
+				<version>${hp.core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.hp.core</groupId>
 				<artifactId>hp-core-mybatis</artifactId>
-				<version>${project.version}</version>
+				<version>${hp.core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.hp.core</groupId>
 				<artifactId>hp-core-mail</artifactId>
-				<version>${project.version}</version>
+				<version>${hp.core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.hp.core</groupId>
 				<artifactId>hp-core-queue</artifactId>
-				<version>${project.version}</version>
+				<version>${hp.core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.hp.core</groupId>
 				<artifactId>hp-core-jsptags</artifactId>
-				<version>${project.version}</version>
+				<version>${hp.core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.hp.core</groupId>
 				<artifactId>hp-core-webjars</artifactId>
-				<version>${project.version}</version>
+				<version>${hp.core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.hp.core</groupId>
 				<artifactId>hp-core-freemarker</artifactId>
-				<version>${project.version}</version>
+				<version>${hp.core.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
