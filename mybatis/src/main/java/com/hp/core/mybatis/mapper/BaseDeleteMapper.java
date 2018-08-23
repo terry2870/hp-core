@@ -4,7 +4,9 @@
 package com.hp.core.mybatis.mapper;
 
 import org.apache.ibatis.annotations.DeleteProvider;
+import org.apache.ibatis.annotations.Param;
 
+import com.hp.core.mybatis.constant.SQLProviderConstant;
 import com.hp.core.mybatis.provider.BaseDeleteSQLProvider;
 
 /**
@@ -30,4 +32,12 @@ public interface BaseDeleteMapper<T> {
 	 */
 	@DeleteProvider(type = BaseDeleteSQLProvider.class, method = "deleteByPrimaryKeys")
 	public Integer deleteByPrimaryKeys(Object... ids);
+	
+	/**
+	 * 根据传入的参数，删除
+	 * @param target
+	 * @return
+	 */
+	@DeleteProvider(type = BaseDeleteSQLProvider.class, method = "deleteByParams")
+	public Integer deleteByParams(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target);
 }

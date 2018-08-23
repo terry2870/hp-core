@@ -52,6 +52,14 @@ public interface BaseSelectMapper<T> {
 	public List<T> selectListByParams(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target);
 	
 	/**
+	 * 根据条件，查询单个
+	 * @param params
+	 * @return
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectOneByParams")
+	public T selectOneByParams(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target);
+	
+	/**
 	 * 根据条件，查询list（分页）
 	 * @param params
 	 * @param page

@@ -11,11 +11,15 @@ package com.hp.core.mybatis.provider;
 
 import java.util.Map;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.ibatis.jdbc.SQL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.core.mybatis.bean.DynamicColumnBean;
 import com.hp.core.mybatis.bean.DynamicEntityBean;
+import com.hp.core.mybatis.constant.SQLProviderConstant;
+import com.hp.core.mybatis.exceptions.ProviderSQLException;
 
 public class BaseDeleteSQLProvider {
 
@@ -55,5 +59,60 @@ public class BaseDeleteSQLProvider {
 		sql.append(")");
 		log.debug("deleteByPrimaryKey get sql \r\nsql={} \r\narr={} \r\nentity={}", sql, arr.length, entity);
 		return sql.toString();
+	}
+	
+	/**
+	 * 根据传入的参数，删除
+	 * @param params
+	 * @return
+	 */
+	public static String deleteByParams(Map<String, Object> params) {
+		if (params == null) {
+			log.error("deleteByParams error. with params is null.");
+			throw new ProviderSQLException("params is null");
+		}
+		DynamicEntityBean entity = BaseSQLProviderFactory.getEntity();
+		StringBuilder sql = new StringBuilder("DELETE ")
+				.append(" FROM ")
+				.append(entity.getTableName())
+				.append(" WHERE 1=1");
+		
+		StringBuilder where = getDeleteSQLByParams(params.get(SQLProviderConstant.TARGET_OBJECT_ALIAS), entity);
+		if (where == null || where.length() == 0) {
+			log.error("deleteByParams error. with where sql is empty. not allow. with \r\nparams={}, \r\nentity={}", params, entity);
+			throw new ProviderSQLException("deleteByParams error. with where sql is empty");
+		}
+		
+		log.debug("deleteByParams get sql \r\nsql={} \r\nparams={}, \r\nentity={}", sql, params, entity);
+		return sql.append(where.toString()).toString();
+	}
+	
+	private static StringBuilder getDeleteSQLByParams(Object params, DynamicEntityBean entity) {
+		if (params == null) {
+			return null;
+		}
+		String key = null;
+		Object value = null;
+		StringBuilder sql = new StringBuilder();
+		try {
+			for (DynamicColumnBean column : entity.getColumns()) {
+				key = column.getFieldName();
+				value = BeanUtils.getProperty(params, key);
+				if (value == null) {
+					//为空，跳过
+					continue;
+				}
+				sql.append(" AND ")
+					.append(column.getColumnName())
+					.append(" = #{")
+					.append(SQLProviderConstant.TARGET_OBJECT_ALIAS)
+					.append(".")
+					.append(column.getFieldName())
+					.append("}");
+			}
+		} catch (Exception e) {
+			log.error("get getDeleteSQLByParams sql error. with params is {}", params, e);
+		}
+		return sql;
 	}
 }

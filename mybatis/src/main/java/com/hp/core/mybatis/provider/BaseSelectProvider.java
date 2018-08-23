@@ -131,6 +131,30 @@ public class BaseSelectProvider {
 	}
 	
 	/**
+	 * 根据条件，查询单个
+	 * @param target
+	 * @return
+	 */
+	public static String selectOneByParams(Map<String, Object> target) {
+		if (target == null) {
+			log.error("selectOneByParams error. with params is null.");
+			throw new ProviderSQLException("params is null");
+		}
+		DynamicEntityBean entity = BaseSQLProviderFactory.getEntity();
+		StringBuilder sql = new StringBuilder("SELECT ")
+				.append(entity.getSelectColumns())
+				.append(" FROM ")
+				.append(entity.getTableName())
+				.append(" WHERE 1=1");
+		setSQLByParams(target.get(SQLProviderConstant.TARGET_OBJECT_ALIAS), entity, sql);
+		
+		sql.append(" limit 1");
+		
+		log.debug("selectOneByParams get sql \r\nsql={} \r\nparams={}, \r\nentity={}", sql, target, entity);
+		return sql.toString();
+	}
+	
+	/**
 	 * 获取分页sql
 	 * (由于mybatis的SQL对象不支持 append 方法，所以这里只能这样处理)
 	 * @param page
