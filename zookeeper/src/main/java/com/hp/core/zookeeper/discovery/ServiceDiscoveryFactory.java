@@ -60,7 +60,7 @@ public class ServiceDiscoveryFactory implements Closeable {
 	 * @throws Exception
 	 */
 	public ServiceInstance<RegisterInstanceDetail> discoveryService(String serviceName) throws Exception {
-		log.info("discoveryService start with serviceName={}", serviceName);
+		log.debug("discoveryService start with serviceName={}", serviceName);
 		ServiceProvider<RegisterInstanceDetail> provider = providers.get(serviceName);
 		if (provider == null) {
 			synchronized (lock) {
@@ -76,7 +76,7 @@ public class ServiceDiscoveryFactory implements Closeable {
 				}
 			}
 		}
-		log.info("discoveryService success with serviceName={}", serviceName);
+		log.debug("discoveryService success with serviceName={}", serviceName);
 		return provider.getInstance();
 	}
 
