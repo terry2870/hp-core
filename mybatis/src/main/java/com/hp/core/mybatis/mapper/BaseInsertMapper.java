@@ -3,7 +3,7 @@
  */
 package com.hp.core.mybatis.mapper;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Options;
@@ -48,5 +48,5 @@ public interface BaseInsertMapper<T> {
 	 * @return
 	 */
 	@InsertProvider(type = BaseInsertSQLProvider.class, method = "insertBatch")
-	public Integer insertBatch(Collection<T> list);
+	public Integer insertBatch(List<T> list);
 }

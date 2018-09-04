@@ -63,7 +63,7 @@ public class BaseSelectProvider {
 	 */
 	public static String selectByPrimaryKeys(Map<String, Object> params) {
 		DynamicEntityBean entity = BaseSQLProviderFactory.getEntity();
-		List<?> list = (List) params.get("list");
+		List<?> list = (List<?>) params.get("list");
 		StringBuilder sql = new StringBuilder("SELECT ")
 				.append("\n")
 				.append(entity.getSelectColumns())
@@ -82,6 +82,21 @@ public class BaseSelectProvider {
 		sql.append(")");
 		log.debug("selectByPrimaryKeys get sql \r\nsql={} \r\nlist={}  \r\nentity={}", sql, list.size(), entity);
 		return sql.toString();
+	}
+	
+	/**
+	 * 根据主键，批量查询（并且按照list里面id顺序排序）
+	 * @param params
+	 * @return
+	 */
+	public static String selectByPrimaryKeysWithInSort(Map<String, Object> params) {
+		DynamicEntityBean entity = BaseSQLProviderFactory.getEntity();
+		String sql = selectByPrimaryKeys(params);
+		List<?> list = (List<?>) params.get("list");
+		sql += "order by field ("+ entity.getPrimaryKeyColumnName() +", "+ StringUtils.join(list, ",") +")";
+		
+		log.info("selectByPrimaryKeysWithInSort get sql \r\nsql={} \r\nlist={}  \r\nentity={}", sql, list.size(), entity);
+		return sql;
 	}
 	
 	/**

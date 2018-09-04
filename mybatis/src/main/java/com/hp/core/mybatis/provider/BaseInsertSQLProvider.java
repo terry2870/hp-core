@@ -48,7 +48,6 @@ public class BaseInsertSQLProvider {
 	 * @param params
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public static String insertBatch(Map<String, Object> params) {
 		DynamicEntityBean entity = BaseSQLProviderFactory.getEntity();
 		StringBuilder sql = new StringBuilder("INSERT INTO ").append(entity.getTableName());
@@ -56,7 +55,7 @@ public class BaseInsertSQLProvider {
 		sql.append(entity.getInsertColumnString());
 		sql.append(") \n VALUES \n");
 		
-		List<Object> list = (List<Object>) params.get("list");
+		List<?> list = (List<?>) params.get("list");
 		DynamicColumnBean column = null;
 		for (int i = 0; i < list.size(); i++) {
 			sql.append("(");

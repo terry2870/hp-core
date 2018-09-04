@@ -3,6 +3,8 @@
  */
 package com.hp.core.mybatis.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.Param;
 
@@ -31,7 +33,7 @@ public interface BaseDeleteMapper<T> {
 	 * @return
 	 */
 	@DeleteProvider(type = BaseDeleteSQLProvider.class, method = "deleteByPrimaryKeys")
-	public Integer deleteByPrimaryKeys(Object... ids);
+	public Integer deleteByPrimaryKeys(List<?> ids);
 	
 	/**
 	 * 根据传入的参数，删除

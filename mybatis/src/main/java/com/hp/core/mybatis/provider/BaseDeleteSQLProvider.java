@@ -9,6 +9,7 @@ package com.hp.core.mybatis.provider;
  * 2018年5月29日
  */
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -46,18 +47,18 @@ public class BaseDeleteSQLProvider {
 	 */
 	public static String deleteByPrimaryKeys(Map<String, Object> params) {
 		DynamicEntityBean entity = BaseSQLProviderFactory.getEntity();
-		Object[] arr = (Object[]) params.get("array");
+		List<?> list = (List<?>) params.get("list");
 		StringBuilder sql = new StringBuilder("DELETE FROM ").append(entity.getTableName());
 		sql.append("\n");
 		sql.append(" WHERE ").append(entity.getPrimaryKeyColumnName()).append(" IN (");
-		for (int i = 0; i < arr.length; i++) {
-			sql.append("#{array[").append(i).append("]}");
-			if (i != arr.length - 1) {
+		for (int i = 0; i < list.size(); i++) {
+			sql.append("#{list[").append(i).append("]}");
+			if (i != list.size() - 1) {
 				sql.append(", ");
 			}
 		}
 		sql.append(")");
-		log.debug("deleteByPrimaryKey get sql \r\nsql={} \r\narr={} \r\nentity={}", sql, arr.length, entity);
+		log.debug("deleteByPrimaryKey get sql \r\nsql={} \r\narr={} \r\nentity={}", sql, list.size(), entity);
 		return sql.toString();
 	}
 	

@@ -74,5 +74,13 @@ public interface BaseSelectMapper<T> {
 	 * @return
 	 */
 	@SelectProvider(type = BaseSelectProvider.class, method = "selectByPrimaryKeys")
-	public List<T> selectByPrimaryKeys(Object... ids);
+	public List<T> selectByPrimaryKeys(List<?> ids);
+	
+	/**
+	 * 根据主键，批量查询（并且按照list里面id顺序排序）
+	 * @param ids
+	 * @return
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectByPrimaryKeysWithInSort")
+	public List<T> selectByPrimaryKeysWithInSort(List<?> ids);
 }
