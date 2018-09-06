@@ -68,7 +68,7 @@ public class Test extends BaseJUnitTest {
 		list = billInfoDAO.selectPageListByParams(bill, page);
 		System.out.println("list2 = " + JSON.toJSONString(list));
 		
-		list = billInfoDAO.selectByPrimaryKeys(2);
+		//list = billInfoDAO.selectByPrimaryKeys(2);
 		System.out.println("list3 = " + JSON.toJSONString(list));
 		
 //		TestTable test = new TestTable();
