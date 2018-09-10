@@ -4,4 +4,7 @@
 	<resultMap id="BaseResultMap" type="com.hp.core.webjars.dal.model.SysUser">
 	</resultMap>
 
+	<select id="selectUserByLoginNameAndPwd" resultMap="BaseResultMap">
+		select * from sys_user where login_name=#{loginName} and login_pwd=#{loginPwd} and status=1
+	</select>
 </mapper>

@@ -103,6 +103,8 @@ public class LoginController {
 		String sessionCheckCode = (String) session.getAttribute(BaseConstant.CHECK_CODE);
 		if (!sessionCheckCode.equals(request.getCheckCode())) {
 			log.warn("doLogin error. checkCode is error. with request={}", request);
+			//旧验证码清掉
+			session.removeAttribute(BaseConstant.CHECK_CODE);
 			return new Response<>(201, "验证码错误");
 		}
 

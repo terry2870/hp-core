@@ -141,23 +141,19 @@ public class SysUserServiceImpl implements ISysUserService {
 			throw new CommonException(500, "密码为空");
 		}
 				
-		SysUser user = new SysUser();
-		user.setLoginName(request.getLoginName());
-		user.setLoginPwd(MD5Util.getMD5(request.getLoginPwd()));
-		user.setStatus(StatusEnum.OPEN.getValue());
-		List<SysUser> userList = sysUserDAO.selectListByParams(user);
-		if (CollectionUtils.isEmpty(userList)) {
+		SysUser user = sysUserDAO.selectUserByLoginNameAndPwd(request.getLoginName(), MD5Util.getMD5(request.getLoginPwd()));
+		if (user == null) {
 			log.warn("login error with login error. with request={}", request);
 			throw new CommonException(500, "用户名或密码错误");
 		}
 		
 		//更新最后登录时间
 		SysUser u = new SysUser();
-		u.setId(userList.get(0).getId());
+		u.setId(user.getId());
 		u.setLastLoginTime(DateUtil.getCurrentTimeSeconds());
 		sysUserDAO.updateByPrimaryKeySelective(u);
 		
-		SysUserResponseBO response = SysUserConvert.dal2BOResponse(userList.get(0));
+		SysUserResponseBO response = SysUserConvert.dal2BOResponse(user);
 		log.info("login success with request={}", request);
 		return response;
 	}
