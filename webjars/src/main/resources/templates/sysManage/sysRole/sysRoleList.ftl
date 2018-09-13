@@ -2,7 +2,7 @@
 <body>
 	<table id="sysRoleListTable"></table>
 	<div id="sysRoleListToolbar">
-		<#include "sysRoleSearch.ftl">
+		<#include "${request.contextPath}/sysManage/sysRole/sysRoleSearch.ftl">
 	</div>
 <script>
 

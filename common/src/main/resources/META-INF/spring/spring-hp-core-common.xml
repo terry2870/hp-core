@@ -12,8 +12,28 @@
 	http://www.springframework.org/schema/mvc/spring-mvc.xsd
 	http://www.springframework.org/schema/aop
 	http://www.springframework.org/schema/aop/spring-aop.xsd">
-	
+
 	<bean id="SpringContextUtil" class="com.hp.core.common.utils.SpringContextUtil" />
+
+	<!-- 线程调用链，调用堆栈拦截器 -->
+	<bean id="threadProfileInterceptor" class="com.hp.core.common.threadprofile.ThreadProfileInterceptor">
+		<property name="threshold" value="${hp.core.service.profile.threshold:200}" />
+	</bean>
+
+	<!--service线程调用链，调用堆栈 接口调用拦截器 -->
+	<bean id="serviceMethodInterceptor" class="com.hp.core.common.threadprofile.MethodProfileInterceptor" />
+	<aop:config>
+		<aop:pointcut id="serviceMethodPoint" expression="${hp.core.service.profile.execution:}" />
+		<aop:advisor pointcut-ref="serviceMethodPoint" advice-ref="serviceMethodInterceptor" />
+	</aop:config>
+	
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<mvc:exclude-mapping path="/favicon.ico"/>
+			<ref bean="threadProfileInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
 
 </beans>
 

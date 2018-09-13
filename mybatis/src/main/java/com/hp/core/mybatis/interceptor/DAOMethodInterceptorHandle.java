@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ClassUtils;
 
+import com.hp.core.common.threadprofile.ThreadProfile;
 import com.hp.core.mybatis.bean.DAOInterfaceInfoBean;
 import com.hp.core.mybatis.bean.DAOInterfaceInfoBean.DBDelayInfo;
 
@@ -71,6 +72,7 @@ public class DAOMethodInterceptorHandle {
 	 */
 	private void entry() {
 		DAOInterfaceInfoBean bean = getRouteDAOInfo();
+		ThreadProfile.enter(bean.getMapperNamespace(), bean.getStatementId());
 		DBDelayInfo delay = bean.new DBDelayInfo();
 		delay.setBeginTime(System.currentTimeMillis());
 		bean.setDelay(delay);
@@ -83,7 +85,7 @@ public class DAOMethodInterceptorHandle {
 		DAOInterfaceInfoBean bean = getRouteDAOInfo();
 		DBDelayInfo delay = bean.getDelay();
 		delay.setEndTime(System.currentTimeMillis());
-		
+		ThreadProfile.exit();
 		//输入调用数据库的时间
 		if (delay.getEndTime() - delay.getBeginTime() >= MAX_DB_DELAY_TIME) {
 			log.warn("execute db expire time. {}", delay);

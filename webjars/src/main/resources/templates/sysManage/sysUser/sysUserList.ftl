@@ -2,7 +2,7 @@
 <body>
 	<table id="sysUserListTable"></table>
 	<div id="sysUserListToolbar">
-		<#include "sysUserSearch.ftl">
+		<#include "${request.contextPath}/sysManage/sysUser/sysUserSearch.ftl">
 	</div>
 <script>
 
