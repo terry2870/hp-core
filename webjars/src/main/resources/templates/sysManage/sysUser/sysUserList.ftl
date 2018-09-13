@@ -1,8 +1,8 @@
-<#include "${request.contextPath}/include/head.ftl">
+<#include "/include/head.ftl">
 <body>
 	<table id="sysUserListTable"></table>
 	<div id="sysUserListToolbar">
-		<#include "${request.contextPath}/sysManage/sysUser/sysUserSearch.ftl">
+		<#include "/sysManage/sysUser/sysUserSearch.ftl">
 	</div>
 <script>
 
@@ -197,4 +197,4 @@
 	});
 </script>
 </body>
-<#include "${request.contextPath}/include/footer.ftl">
+<#include "/include/footer.ftl">

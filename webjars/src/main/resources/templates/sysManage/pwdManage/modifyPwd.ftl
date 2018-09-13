@@ -1,4 +1,4 @@
-<#include "${request.contextPath}/include/head.ftl">
+<#include "/include/head.ftl">
 <body>
 <div id="panel">
 	<form name="pwdForm" id="pwdForm" method="post" class="edit_form">
@@ -84,4 +84,4 @@
 	});
 </script>
 </body>
-<#include "${request.contextPath}/include/footer.ftl">
+<#include "/include/footer.ftl">

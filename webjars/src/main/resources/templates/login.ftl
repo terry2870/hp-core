@@ -1,4 +1,4 @@
-<#include "include/head.ftl">
+<#include "/include/head.ftl">
 <link rel="stylesheet" type="text/css" href="${request.contextPath}/css/login.css" />
 <body style="background-color: #428bca;text-align: center;overflow: hidden;">
 	<div class="login_div">
@@ -93,4 +93,4 @@
 	});
 </script>
 </body>
-<#include "include/footer.ftl">
+<#include "/include/footer.ftl">

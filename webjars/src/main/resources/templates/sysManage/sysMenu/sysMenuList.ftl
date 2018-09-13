@@ -1,4 +1,4 @@
-<#include "${request.contextPath}/include/head.ftl">
+<#include "/include/head.ftl">
 <body class="easyui-layout">
 	<div region="west" style="width: 300px;">
 		<ul id="menuLeft"></ul>
@@ -32,4 +32,4 @@
 	});
 </script>
 </body>
-<#include "${request.contextPath}/include/footer.ftl">
+<#include "/include/footer.ftl">

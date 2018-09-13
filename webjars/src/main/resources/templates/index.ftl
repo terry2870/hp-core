@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<#include "include/head.ftl">
+<#include "/include/head.ftl">
 <body class="easyui-layout" id="ff"  data-options="fit:true">
 	<div data-options="region:'north'" style="height: 50px;border-style: none;overflow: hidden;">
 		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="top_bg01" style="back">
@@ -129,4 +129,4 @@
 		}
 	</script>
 </body>
-<#include "include/footer.ftl">
+<#include "/include/footer.ftl">

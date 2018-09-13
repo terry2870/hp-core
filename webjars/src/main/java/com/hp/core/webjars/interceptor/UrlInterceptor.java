@@ -40,7 +40,7 @@ public class UrlInterceptor implements HandlerInterceptor {
 	private List<String> firstNoFilterList;
 		
 	//默认的第一免过滤
-	private static final List<String> defaultFirstNoFilterList = Lists.newArrayList("/doLogin", "/login", "/logout", "/refeshCheckCode");
+	private static final List<String> defaultFirstNoFilterList = Lists.newArrayList("/actuator", "/health", "/doLogin", "/login", "/logout", "/refeshCheckCode");
 
 	// 第二级免过滤列表（只要有session就都可以访问）
 	@Value("#{'${hp.core.secondNoFilterList:}'.split(',')}")
