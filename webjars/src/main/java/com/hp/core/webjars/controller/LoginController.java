@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.hp.core.common.beans.Response;
 import com.hp.core.webjars.constants.BaseConstant;
 import com.hp.core.webjars.enums.IdentityEnum;
-import com.hp.core.webjars.interceptor.UrlInterceptor;
+import com.hp.core.webjars.interceptor.WebJarsUrlInterceptor;
 import com.hp.core.webjars.model.request.SysUserRequestBO;
 import com.hp.core.webjars.model.response.SysMenuResponseBO;
 import com.hp.core.webjars.model.response.SysUserResponseBO;
@@ -49,7 +49,7 @@ public class LoginController {
 	@Resource
 	private ISysMenuService sysMenuService;
 	@Resource
-	private UrlInterceptor urlInterceptor;
+	private WebJarsUrlInterceptor urlInterceptor;
 
 	/**
 	 * 打开登录页面

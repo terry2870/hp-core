@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.hp.core.webjars.interceptor.UrlInterceptor;
+import com.hp.core.webjars.interceptor.WebJarsUrlInterceptor;
 import com.hp.core.webjars.model.OperaBean;
 import com.hp.core.webjars.model.response.SysUserResponseBO;
 
@@ -32,7 +32,7 @@ public class SessionUtil {
 	 * @return
 	 */
 	public static OperaBean getOperater() {
-		OperaBean opera = UrlInterceptor.getOperater();
+		OperaBean opera = WebJarsUrlInterceptor.getOperater();
 		return opera == null ? new OperaBean() : opera;
 	}
 	

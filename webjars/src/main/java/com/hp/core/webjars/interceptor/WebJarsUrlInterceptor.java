@@ -29,8 +29,8 @@ import com.hp.core.webjars.model.response.SysUserResponseBO;
 /**
  * @author huangping 2016年8月21日 下午11:01:25
  */
-@Component("UrlInterceptor")
-public class UrlInterceptor implements HandlerInterceptor {
+@Component("WebJarsUrlInterceptor")
+public class WebJarsUrlInterceptor implements HandlerInterceptor {
 
 	// 保存当前用户的对象
 	private static final ThreadLocal<OperaBean> localUser = new ThreadLocal<>();
@@ -55,7 +55,7 @@ public class UrlInterceptor implements HandlerInterceptor {
 	//默认的超级管理员
 	private static final List<String> defaultSuperManagerList = Lists.newArrayList("admin");
 
-	private static Logger log = LoggerFactory.getLogger(UrlInterceptor.class);
+	private static Logger log = LoggerFactory.getLogger(WebJarsUrlInterceptor.class);
 
 	@SuppressWarnings("unchecked")
 	@Override
