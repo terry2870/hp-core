@@ -17,6 +17,7 @@
 		return this.each(function() {
 			var opt = $.extend({}, $.fn.myDatagrid.defaults, options);
 			self.data("myDatagrid", opt);
+			var o = {};
 			if (opt.selectColumn == true) {
 				var div = $("<div>").click(function(e1) {
 					e1.stopPropagation();
@@ -63,7 +64,7 @@
 				$(document).click(function() {
 					div.panel("close");
 				});
-				var o = $.extend({}, opt, {
+				o = {
 					striped : false,
 					onHeaderContextMenu : function(e, field) {
 						e.preventDefault();
@@ -82,9 +83,9 @@
 						}
 						div.panel("close");
 					}
-				});
+				};
 			}
-			$(self).datagrid(o);
+			$(self).datagrid($.extend({}, opt, o));
 			if (opt.enableColumnMove === true) {
 				$(self).myDatagrid("columnMoving");
 			}
@@ -160,7 +161,7 @@
 					onDragOver : function(e, source) {
 						var columns = $(target).datagrid('options').columns;
 						var frozenColumns = $(target).datagrid('options').frozenColumns;
-						var columnsClone = frozenColumns[0].slice(0);
+						var columnsClone = (frozenColumns && frozenColumns.length > 0) ? frozenColumns[0].slice(0) : [];
 						columnsClone = columnsClone.concat(columns[0]);
 						var toField = $(this).attr('field');
 						var tdData = null;
@@ -186,7 +187,7 @@
 						$(this).css('border-left', 0);
 						var columns = $(target).datagrid('options').columns;
 						var frozenColumns = $(target).datagrid('options').frozenColumns;
-						var columnsClone = frozenColumns[0].slice(0);
+						var columnsClone = (frozenColumns && frozenColumns.length > 0) ? frozenColumns[0].slice(0) : [];
 						columnsClone = columnsClone.concat(columns[0]);
 						var fromField = $(source).attr('field');
 						var toField = $(this).attr('field');
