@@ -9,7 +9,6 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Random;
 
-import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +18,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,7 +27,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.hp.core.common.beans.Response;
 import com.hp.core.webjars.constants.BaseConstant;
 import com.hp.core.webjars.enums.IdentityEnum;
-import com.hp.core.webjars.interceptor.WebJarsUrlInterceptor;
 import com.hp.core.webjars.model.request.SysUserRequestBO;
 import com.hp.core.webjars.model.response.SysMenuResponseBO;
 import com.hp.core.webjars.model.response.SysUserResponseBO;
@@ -44,12 +44,12 @@ public class LoginController {
 
 	private static Logger log = LoggerFactory.getLogger(LoginController.class);
 
-	@Resource
+	@Autowired
 	private ISysUserService sysUserService;
-	@Resource
+	@Autowired
 	private ISysMenuService sysMenuService;
-	@Resource
-	private WebJarsUrlInterceptor urlInterceptor;
+	@Value("${project.name:}")
+	private String projectName;
 
 	/**
 	 * 打开登录页面
@@ -58,6 +58,7 @@ public class LoginController {
 	@RequestMapping({"/", "/login"})
 	public String login(HttpServletRequest request) {
 		log.info("login start ");
+		request.setAttribute("projectName", projectName); 
 		return "login";
 	}
 	
@@ -81,7 +82,7 @@ public class LoginController {
 	 */
 	@RequestMapping("/index")
 	public String index(HttpServletRequest request) {
-		request.setAttribute("hhh", "asdasdasd");
+		request.setAttribute("projectName", projectName); 
 		return "index";
 	}
 	

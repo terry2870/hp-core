@@ -25,13 +25,13 @@ public class HPRedisTemplate extends StringRedisTemplate {
 	 * @param key
 	 * @param value
 	 */
-	public void delete(String key) {
+	public Boolean delete(String key) {
 		if (key == null) {
 			log.warn("HPRedisTemplate delete redis error with key is empty");
-			return;
+			return Boolean.FALSE;
 		}
 		try {
-			super.delete(key);
+			return super.delete(key);
 		} catch (Exception e) {
 			log.error("RedisValueHelper delete redis error. with key={}", key, e);
 			//删除失败，重试一次
@@ -41,19 +41,20 @@ public class HPRedisTemplate extends StringRedisTemplate {
 				log.error("RedisValueHelper delete redis again error. with key={}", key, e);
 				throw e2;
 			}
+			return Boolean.FALSE;
 		}
 	}
 	
 	/**
 	 * 批量删除
 	 */
-	public void delete(Collection<String> keys) {
+	public Long delete(Collection<String> keys) {
 		if (CollectionUtils.isEmpty(keys)) {
 			log.warn("HPRedisTemplate delete redis error with key is empty");
-			return;
+			return 0L;
 		}
 		try {
-			super.delete(keys);
+			return super.delete(keys);
 		} catch (Exception e) {
 			log.error("RedisValueHelper delete redis error. with key={}s", keys, e);
 			//删除失败，重试一次
@@ -63,6 +64,7 @@ public class HPRedisTemplate extends StringRedisTemplate {
 				log.error("RedisValueHelper delete redis again error. with keys={}", keys, e);
 				throw e2;
 			}
+			return 0L;
 		}
 	}
 	

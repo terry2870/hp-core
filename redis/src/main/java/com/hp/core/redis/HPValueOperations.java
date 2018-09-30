@@ -259,6 +259,27 @@ public class HPValueOperations {
 	}
 	
 	/**
+	 * 获取list格式
+	 * @param key
+	 * @param clazz
+	 * @return
+	 */
+	public <T> List<T> getList(String key, Class<T> clazz) {
+		String v = null;
+		try {
+			v = valueOperationsReadOnly.get(key);
+			if (v == null) {
+				log.warn("RedisValueHelper getList redis error key={}", key);
+				return null;
+			}
+			return JSON.parseArray(v, clazz);
+		} catch (Exception e) {
+			log.error("RedisValueHelper getList error. with key={}, e={}", key, e.toString());
+		}
+		return null;
+	}
+	
+	/**
 	 * 部分获取
 	 * @param key
 	 * @param start

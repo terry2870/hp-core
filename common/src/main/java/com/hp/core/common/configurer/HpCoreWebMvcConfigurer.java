@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.hp.core.webjars.interceptor;
+package com.hp.core.common.configurer;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import com.hp.core.common.utils.SpringContextUtil;
  * 2018年9月17日
  */
 @Configuration
-public class WebJarsWebMvcConfigurer implements WebMvcConfigurer {
+public class HpCoreWebMvcConfigurer implements WebMvcConfigurer {
 
 	private static final List<String> DEFAULT_STATIC_PATTERN = Lists.newArrayList("/error", "/static/**", "/html/**", "/js/**", "/css/**", "/images/**"
 			, "/favicon.ico", "*.html", "*.js", "*.css", "*.jpg", "*.png", "*.gif");
@@ -48,8 +48,10 @@ public class WebJarsWebMvcConfigurer implements WebMvcConfigurer {
 	
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		if (CollectionUtils.isEmpty(interceptorBeanNameList) || interceptorBeanNameList.size() == 1 && StringUtils.isEmpty(interceptorBeanNameList.get(0))) {
-			return;
+		if (CollectionUtils.isEmpty(interceptorBeanNameList) || (interceptorBeanNameList.size() == 1 && StringUtils.isEmpty(interceptorBeanNameList.get(0)))) {
+			interceptorBeanNameList = Lists.newArrayList("threadProfileInterceptor");
+		} else {
+			interceptorBeanNameList.add("threadProfileInterceptor");
 		}
 		if (CollectionUtils.isEmpty(staticPatternList) || (staticPatternList.size() == 1 && StringUtils.isEmpty(staticPatternList.get(0)))) {
 			//如果没有配置静态资源，则使用默认

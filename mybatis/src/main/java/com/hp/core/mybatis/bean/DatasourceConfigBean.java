@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.hp.core.common.beans.BaseBean;
 import com.hp.core.mybatis.enums.ConnectionPoolFactoryEnum;
-import com.hp.core.mybatis.enums.DatabaseEnum;
+import com.hp.core.mybatis.enums.DatabaseTypeEnum;
 
 /**
  * 动态数据库基础bean
@@ -21,7 +21,7 @@ public class DatasourceConfigBean extends BaseBean {
 	private String poolName = ConnectionPoolFactoryEnum.DBCP.name();
 	
 	//数据库类型
-	private String databaseType = DatabaseEnum.MYSQL.name();
+	private String databaseType = DatabaseTypeEnum.MYSQL.name();
 	
 	//别名（暂时用不到）
 	private String alias;

@@ -11,11 +11,13 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.hp.core.common.utils.SpringContextUtil;
+import com.hp.core.mybatis.autocreate.helper.AutoCreateBean;
 import com.hp.core.mybatis.autocreate.helper.TableBean;
 import com.hp.core.mybatis.autocreate.helper.TableBeanHelper;
 import com.hp.core.mybatis.datasource.DynamicDatasource;
@@ -46,7 +48,8 @@ public class CreateFile {
 	public static String CONTROLLER_MAVEN_MODULE = "";
 	
 	public static final String BASE_BEAN_PACKAGE = "com.hp.core.common.beans.BaseBean";
-	public static final String BASE_REQUEST_BO_PACKAGE = "com.base.model.request.BaseRequestBO";
+	public static final String BASE_REQUEST_BO_PACKAGE = "com.hp.core.common.beans.BaseRequestBO";
+	public static final String BASE_RESPONSE_BO_PACKAGE = "com.hp.core.common.beans.BaseResponseBO";
 	public static final String BASE_MAPPER_PACKAGE = "com.hp.core.mybatis.mapper.BaseMapper";
 	public static final String BASE_RESPONSE_PACKAGE = "com.hp.core.common.beans.Response";
 	public static final String BASE_PAGE_REQUEST_PACKAGE = "com.hp.core.common.beans.page.PageRequest";
@@ -62,40 +65,23 @@ public class CreateFile {
 	
 	public static List<String> tableList = new ArrayList<>();
 	
-	public static void main(String[] args) {
-		String[] tableArr = args[0].split(",");
-		if (args.length > 1) {
-			MAIN_PATH_DIR = args[1];
+	public static void main(AutoCreateBean bean) {
+		if (CollectionUtils.isEmpty(bean.getTableNameList())) {
+			log.error("auto create error. with table is empty.");
+			return;
 		}
-		if (args.length > 2) {
-			JAVA_DIR = args[2];
-		}
-		if (args.length > 3) {
-			PROJECT_PACKAGE = args[3];
-		}
-		if (args.length > 4) {
-			SERVICE_MAVEN_MODULE = args[4];
-		}
-		if (args.length > 5) {
-			CONTROLLER_MAVEN_MODULE = args[5];
-		}
-		if (args.length > 6) {
-			MAPPING_DIR = args[6];
-		}
-		if (args.length > 7) {
-			is_create_JSP = args[7];
-		}
-		if (args.length > 8) {
-			JSP_FILE_PATH = args[8];
-		}
-		try (
-				ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/spring-*.xml");
-		) {
-			DataSource datasource = context.getBean(DynamicDatasource.class);
+		MAIN_PATH_DIR = bean.getMainPathDir();
+		JAVA_DIR = bean.getJavaDir();
+		PROJECT_PACKAGE = bean.getProjectPackage();
+		SERVICE_MAVEN_MODULE = bean.getServiceMavenModule();
+		CONTROLLER_MAVEN_MODULE = bean.getControllerMavenModule();
+		MAPPING_DIR = bean.getMappingDir();
+		try {
+			DataSource datasource = SpringContextUtil.getBean(DynamicDatasource.class);
 			Connection conn = datasource.getConnection();
 			TableBean table = null;
 			
-			for (String tableName : tableArr) {
+			for (String tableName : bean.getTableNameList()) {
 				table = TableBeanHelper.getTableInfoByTableName(conn, tableName);
 				
 				//生成model

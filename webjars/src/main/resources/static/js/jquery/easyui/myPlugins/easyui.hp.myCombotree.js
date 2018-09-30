@@ -40,7 +40,7 @@
 		var data = _createChildRen(target, id);
 		$(target).combotree($.extend({}, opt, {
 			icons : [{
-				iconCls : "icon-no",
+				iconCls : "icon-clear",
 				handler : function(e) {
 					$(e.data.target).myCombotree("clear");
 				}

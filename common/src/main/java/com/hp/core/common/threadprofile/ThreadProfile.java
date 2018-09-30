@@ -128,13 +128,13 @@ public class ThreadProfile {
 		}
 	}
 
-	public static void asynCall(Future future, String className, String methodName){
+	public static void asynCall(Future<?> future, String className, String methodName){
 		if( ( isStart.get() != null ) && ( stackTrace.get() != null ) ){
 			stackTrace.get().asynCall(future, new Entry(className, methodName, "enter"));
 		}
 	}
 
-	public static void asynReturn(Future future){
+	public static void asynReturn(Future<?> future){
 		if( (isStart.get() != null ) && ( stackTrace.get() != null ) ){
 			stackTrace.get().asynReturn(future);
 		}
@@ -149,7 +149,7 @@ public class ThreadProfile {
 	public static final class StackTrace{
 		
 		private List<Entry> entryList = new ArrayList<Entry>(32);
-		Stack entryStack = new Stack();
+		Stack<Entry> entryStack = new Stack<>();
 		ConcurrentHashMap<Integer,Entry> hashMap = new ConcurrentHashMap<>() ;
 
 		/**
@@ -212,7 +212,7 @@ public class ThreadProfile {
 		 * 记录方法的进入
 		 * @param entry
 		 */
-		public void asynCall(Future future, Entry entry){
+		public void asynCall(Future<?> future, Entry entry){
 
 			entry.level = this.currentStackLevel + 1;
 			entryList.add(entry);
@@ -223,7 +223,7 @@ public class ThreadProfile {
 		/**
 		 * 记录方法的返回
 		 */
-		public void asynReturn(Future future){
+		public void asynReturn(Future<?> future){
 
 			Entry entry = hashMap.get(future.hashCode());
 			if(entry!=null){//多线程情况下entry会出现空指针,需要做个不为空判断

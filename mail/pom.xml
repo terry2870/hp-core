@@ -22,7 +22,6 @@
 		<dependency>
 			<groupId>com.sun.mail</groupId>
 			<artifactId>javax.mail</artifactId>
-			<version>${javax.mail.version}</version>
 		</dependency>
 	</dependencies>
 </project>

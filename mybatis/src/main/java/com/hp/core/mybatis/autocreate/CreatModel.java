@@ -29,7 +29,7 @@ public class CreatModel {
 			//response
 			packageUrl = CreateFile.PROJECT_PACKAGE + ".model.response";
 			fileName = table.getModelName() + "ResponseBO";
-			baseBeanName = "BaseBean";
+			baseBeanName = "BaseResponseBO";
 		}
 		filePath = CreateFile.MAIN_PATH_DIR + CreateFile.MODEL_DIR_NAME +"/" + CreateFile.JAVA_DIR + "/" + packageUrl.replace(".", "/");
 		sb.append("package ").append(packageUrl).append(";\r\n");
@@ -38,7 +38,7 @@ public class CreatModel {
 			sb.append("import ").append(CreateFile.BASE_REQUEST_BO_PACKAGE).append(";\r\n");
 			sb.append("\r\n");
 		} else {
-			sb.append("import ").append(CreateFile.BASE_BEAN_PACKAGE).append(";\r\n");
+			sb.append("import ").append(CreateFile.BASE_RESPONSE_BO_PACKAGE).append(";\r\n");
 			sb.append("\r\n");
 		}
 		sb.append("/**\r\n");

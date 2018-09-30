@@ -228,6 +228,7 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 		return fromMaster ? buildMasterDatasourceKey(databaseName, random) : buildSlaveDatasourceKey(databaseName, random);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void afterPropertiesSet() {
 		//设置targetDataSources 值

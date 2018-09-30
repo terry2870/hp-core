@@ -70,7 +70,12 @@ public class WebJarsUrlInterceptor implements HandlerInterceptor {
 		
 		//url中去掉contextPath
 		url = url.substring(request.getContextPath().length());
-				
+		
+		if ("".equals(url) || "/".equals(url)) {
+			//首页，放行
+			return true;
+		}
+		
 		// 第一层免过滤
 		if (StringUtils.isEmpty(url) || contains(defaultFirstNoFilterList, url) || contains(firstNoFilterList, url)) {
 			return true;
@@ -79,7 +84,10 @@ public class WebJarsUrlInterceptor implements HandlerInterceptor {
 		SysUserResponseBO user = (SysUserResponseBO) request.getSession().getAttribute(BaseConstant.USER_SESSION);
 		if (user == null) {
 			log.warn("访问url={}， session 过期，重新登录", url);
-			response.sendRedirect(request.getContextPath() + "/logout");
+			//response.sendRedirect(request.getContextPath() + "/logout");
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("text/html; charset=UTF-8");
+			response.getWriter().write("<script>alert('登录超时，请重新登录');window.top.location.href='"+ request.getContextPath() +"/logout';</script>");
 			return false;
 		}
 		opera.setSuperUser(IdentityEnum.checkIsSuperUser(user.getIdentity()));

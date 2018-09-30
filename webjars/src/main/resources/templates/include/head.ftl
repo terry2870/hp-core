@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>后台管理系统</title>
+<title>${projectName}-后台管理系统</title>
 <script src="${request.contextPath}/js/jquery/jquery.min.js"></script>
 <script src="${request.contextPath}/js/jquery/plugins/jquery.hp.plugin.js"></script>
 <script src="${request.contextPath}/js/jquery/easyui/jquery.easyui.min.js"></script>

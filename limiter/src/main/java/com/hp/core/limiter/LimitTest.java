@@ -3,8 +3,6 @@
  */
 package com.hp.core.limiter;
 
-import java.io.Closeable;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

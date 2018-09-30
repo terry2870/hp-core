@@ -51,7 +51,7 @@ public class MysqlDatabaseImpl implements AbstDatabase {
 	@Override
 	public String dbTypeToJavaType(String jdbcType) {
 		String dataType = jdbcType.toLowerCase();
-		if (dataType.indexOf("int") >= 0) {
+		if (dataType.indexOf("int") >= 0 || dataType.equalsIgnoreCase("bit")) {
 			return "Integer";
 		} else if (dataType.indexOf("long") >= 0) {
 			return "Long";

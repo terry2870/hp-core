@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -27,7 +26,6 @@ import io.netty.handler.codec.string.StringDecoder;
 public class Client {
 
 	private EventLoopGroup workerGroup;
-	private ChannelFuture channel;
 	private int workerGroupThreads;
 
 	public void connect(String host, int port) throws Exception {
@@ -45,7 +43,7 @@ public class Client {
 						ch.pipeline().addLast(new TimeClientHandler());
 					}
 				});
-		channel = bootstrap.connect(host, port).sync();
+		bootstrap.connect(host, port).sync();
 	}
 
 	public static class TimeClientHandler extends SimpleChannelInboundHandler<String> {

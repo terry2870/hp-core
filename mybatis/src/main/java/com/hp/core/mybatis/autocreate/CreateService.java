@@ -160,7 +160,8 @@ public class CreateService {
 		sb.append("			respList.add(").append(table.getModelName()).append("Convert.dal2BOResponse(a));\r\n");
 		sb.append("		}\r\n");
 		sb.append("		log.info(\"query").append(table.getModelName()).append("PageList success. with request={}\", request);\r\n");
-		sb.append("		return new PageResponse<>(total, respList, page.getCurrentPage(), page.getPageSize());\r\n");
+		sb.append("		resp.setRows(respList);\r\n");
+		sb.append("		return resp;\r\n");
 		sb.append("	}\r\n");
 		sb.append("\r\n");
 		sb.append("	@Override\r\n");

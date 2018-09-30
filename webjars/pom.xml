@@ -20,6 +20,10 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.hp.core</groupId>
+			<artifactId>hp-core-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.hp.core</groupId>
 			<artifactId>hp-core-mybatis</artifactId>
 		</dependency>
 		<dependency>

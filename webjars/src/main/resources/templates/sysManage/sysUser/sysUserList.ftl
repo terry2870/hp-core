@@ -76,34 +76,6 @@
 			}]
 		});
 	}
-	
-	//删除用户
-	function delSysUser(index) {
-		var data = $("#sysUserListTable").myDatagrid("getRowDataByIndex", index);
-		window.top.$.messager.confirm("确认", "您确定要删除该用户吗？", function(flag) {
-			if (!flag) {
-				return;
-			}
-			window.top.$.messager.progress({
-				title : "正在执行",
-				msg : "正在执行，请稍后..."
-			});
-			$.post("<t:path />/SysUserController/deleteSysUser.do", {
-				userId : data.userId
-			}, function(data) {
-				window.top.$.messager.progress("close");
-				if (data.code == "<%=CodeEnum.SUCCESS.getCode()%>") {
-					$("#sysUserListTable").datagrid("reload");
-					window.top.$.messager.show({
-						title : "提示",
-						msg : "删除用户成功！"
-					});
-				} else {
-					window.top.$.messager.alert("失败", data.message, "error");
-				}
-			});
-		});
-	}
 
 	$(function() {
 		$("#sysUserListTable").myDatagrid({
@@ -158,8 +130,8 @@
 				align : "center",
 				formatter : function(value, rowData, rowIndex) {
 					var str = "<a role='view' class='table_btn' style='display:none' rowid='"+ rowData.id +"' id='sysUserViewBtn_"+ rowData.id +"'>查看</a>";
-					str += "<a role='edit' class='table_btn' style='display:none;display:none' rowid='"+ rowData.id +"' id='sysUserEditBtn_"+ rowData.id +"'>修改</a>";
-					str += "<a role='del' class='table_btn' style='display:none;display:none' rowid='"+ rowData.id +"' id='sysUserDelBtn_"+ rowData.id +"'>删除</a>";
+					str += "<a role='edit' class='table_btn' style='display:none;' rowid='"+ rowData.id +"' id='sysUserEditBtn_"+ rowData.id +"'>修改</a>";
+					str += "<a role='del' class='table_btn' style='display:none;' rowid='"+ rowData.id +"' id='sysUserDelBtn_"+ rowData.id +"'>删除</a>";
 					return str;
 				}
 			}]],

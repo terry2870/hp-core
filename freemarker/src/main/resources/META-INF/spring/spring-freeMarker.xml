@@ -23,6 +23,7 @@
 
 	<bean id="local_freeMarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
 		<property name="templateLoaderPath" value="${hp.core.freeMarker.templateLoaderPath:classpath:/templates}"/>
+		<property name="preferFileSystemAccess" value="false" />
 		<property name="defaultEncoding" value="UTF-8" />
 		<property name="freemarkerSettings" ref="freemarkerConfig" />
 	</bean>

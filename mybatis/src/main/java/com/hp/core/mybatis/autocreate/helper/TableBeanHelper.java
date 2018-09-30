@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.core.common.utils.NameDefineUtil;
 import com.hp.core.mybatis.datasource.AbstDatabase;
-import com.hp.core.mybatis.enums.DatabaseEnum;
+import com.hp.core.mybatis.enums.DatabaseTypeEnum;
 
 public class TableBeanHelper {
 
@@ -39,7 +39,7 @@ public class TableBeanHelper {
 		table.setModelNameFirstLow(NameDefineUtil.underlineToCamelCase(tableName, false));
 		
 		try {
-			AbstDatabase database = DatabaseEnum.getDatabaseByDatabaseType(conn.getMetaData().getDatabaseProductName());
+			AbstDatabase database = DatabaseTypeEnum.getDatabaseByDatabaseType(conn.getMetaData().getDatabaseProductName());
 			String catalog = conn.getCatalog();
 			String schema = conn.getSchema();
 			DatabaseMetaData dbmd = conn.getMetaData();

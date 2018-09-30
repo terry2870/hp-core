@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.core.mybatis.bean.DatasourceConfigBean;
 import com.hp.core.mybatis.bean.DynamicDatasourceBean;
-import com.hp.core.mybatis.enums.DatabaseEnum;
+import com.hp.core.mybatis.enums.DatabaseTypeEnum;
 import com.hp.core.mybatis.exceptions.MasterUrlNotFoundException;
 
 public interface AbstConnectionPoolFactory {
@@ -38,7 +38,7 @@ public interface AbstConnectionPoolFactory {
 		
 		DynamicDatasourceBean result = new DynamicDatasourceBean();
 		DataSource ds = null;
-		AbstDatabase database = DatabaseEnum.getDatabaseByDatabaseType(bean.getDatabaseType());
+		AbstDatabase database = DatabaseTypeEnum.getDatabaseByDatabaseType(bean.getDatabaseType());
 		
 		List<DataSource> masterDatasource = new ArrayList<>(bean.getMasterIpPort().size());
 		

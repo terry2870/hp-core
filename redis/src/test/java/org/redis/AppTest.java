@@ -1,9 +1,5 @@
 package org.redis;
 
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletionService;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

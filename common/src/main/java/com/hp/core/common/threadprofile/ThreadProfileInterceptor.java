@@ -6,8 +6,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -19,7 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
  *
  * Created by chunhua.zhang@yoho.cn on 2016/2/23.
  */
-public class ThreadProfileInterceptor implements HandlerInterceptor, ApplicationEventPublisherAware {
+public class ThreadProfileInterceptor implements HandlerInterceptor {
 
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -36,9 +34,6 @@ public class ThreadProfileInterceptor implements HandlerInterceptor, Application
 
     //本服务内的方法名称
     private final static ThreadLocal<String> localServiceNameThreadLocal = new ThreadLocal<>();
-
-    //publisher
-    private ApplicationEventPublisher publisher;
 
 
     @Override
@@ -76,7 +71,6 @@ public class ThreadProfileInterceptor implements HandlerInterceptor, Application
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
 
         /**remove all threadlocal */
-        final String srcServiceName =  ThreadProfileInterceptor.getServiceName();
         serviceNameThreadLocal.remove();
         localServiceNameThreadLocal.remove();
 
@@ -84,10 +78,6 @@ public class ThreadProfileInterceptor implements HandlerInterceptor, Application
         ThreadProfile.stop();
     }
 
-    @Override
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        this.publisher = applicationEventPublisher;
-    }
 
     public void setThreshold(int threshold) {
         this.threshold = threshold;
