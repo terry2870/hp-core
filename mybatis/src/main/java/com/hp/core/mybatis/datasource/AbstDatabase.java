@@ -28,23 +28,15 @@ public interface AbstDatabase {
 	public String getDriverClassName(DatasourceConfigBean bean);
 	
 	/**
-	 * 获取所有表的sql
-	 * @param findTableName
-	 * @return
-	 */
-	public String getAllTableSql(String findTableName);
-	
-	/**
-	 * 根据表名，获取所有字段sql
-	 * @param tableName
-	 * @return
-	 */
-	public String getColumnByTableNameSql(String tableName);
-	
-	/**
 	 * 根据数据库字段类型，转换为java字段类型
 	 * @param jdbcType
 	 * @return
 	 */
 	public String dbTypeToJavaType(String jdbcType);
+	
+	/**
+	 * 获取检查sql语句
+	 * @return
+	 */
+	public String getCheckSql();
 }

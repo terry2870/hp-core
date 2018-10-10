@@ -10,9 +10,7 @@
 		</table>
 	</div>
 	<div data-options="region:'west',iconCls:'icon-reload',split:true,title:'导航菜单',minWidth:200" style="width: 200px;">
-		<div id="left">
-			
-		</div>
+		<#include "/include/leftMenu.ftl">
 	</div>
 	<div data-options="region:'center'" style="overflow:hidden">
 		<div id="right">
