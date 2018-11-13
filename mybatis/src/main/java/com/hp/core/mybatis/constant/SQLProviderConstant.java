@@ -10,6 +10,9 @@ package com.hp.core.mybatis.constant;
 public class SQLProviderConstant {
 
 	public static final String TARGET_OBJECT_ALIAS = "target";
+	
+	public static final String SQL_OBJECT_ALIAS = "sql";
+	
 	public static final String PAGE_OBJECT_ALIAS = "page";
 	
 	public static final String KEY_PROPERTY_ID = "id";

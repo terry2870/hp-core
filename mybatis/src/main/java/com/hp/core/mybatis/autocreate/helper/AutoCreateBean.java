@@ -20,7 +20,7 @@ public class AutoCreateBean extends BaseBean {
 	private static final long serialVersionUID = 9054161024845693362L;
 
 	private List<String> tableNameList;
-	String mainPathDir = "../";//文件生成的主路径
+	String mainPathDir = "./";//文件生成的主路径
     String javaDir = "src/main/java";//java文件存放主目录
     String serviceMavenModule = "none";//service所在项目名称
     String controllerMavenModule = "none";//controller所在项目名称

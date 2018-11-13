@@ -29,7 +29,7 @@
 		jq = $(jq);
 		var opt = jq.data("multiImageUpload");
 		jq.addClass("multi_image_upload").css({
-			width : "100%",
+			width : opt.pluginWidth,
 			height : opt.pluginHeight
 		});
 		
@@ -307,10 +307,17 @@
 				_closeFile(this, jq);
 			}).addClass("file_close"));
 		}
+		
+		createText(jq, opt, imageLi);
+		
+		_setDraggable(jq, imageLi);
+	}
+	
+	function createText(jq, opt, imageLi) {
 		if (opt.text) {
 			var textDiv = $("<div role='text'>").css({
 				width : "100%",
-				height : "20%"
+				height : opt.textHeight
 			}).appendTo(imageLi);
 			if ($.type(opt.text) == "object") {
 				textDiv.append(opt.text);
@@ -318,9 +325,6 @@
 				textDiv.html(opt.text);
 			}
 		}
-		
-		
-		_setDraggable(jq, imageLi);
 	}
 
 	function _checkMaxFileSize(jq) {
@@ -413,17 +417,7 @@
 		}));
 		
 		
-		if (opt.text) {
-			var textDiv = $("<div role='text'>").css({
-				width : "100%",
-				height : "20%"
-			}).appendTo(imageLi);
-			if ($.type(opt.text) == "object") {
-				textDiv.append(opt.text);
-			} else {
-				textDiv.html(opt.text);
-			}
-		}
+		createText(jq, opt, imageLi);
 	}
 	
 	$.fn.multiImageUpload.methods = {
@@ -441,14 +435,30 @@
 		}
 	};
 	$.fn.multiImageUpload.event = {
-		onBeforeSubmit : function(value) {},
-		onLoadSuccess : function(data) {},
+		onBeforeSubmit : function(value) {
+			window.top.$.messager.progress({
+				title : "正在执行",
+				msg : "正在执行，请稍后..."
+			});
+		},
+		onLoadSuccess : function(data) {
+			window.top.$.messager.progress("close");
+			if (data.code != 200) {
+				window.top.$.messager.alert("失败", "上传失败", "error");
+				return;
+			}
+			window.top.$.messager.show({
+				title : "提示",
+				msg : "上传成功！"
+			});
+		},
 		onCreate : function() {}
 	};
 	$.fn.multiImageUpload.defaults = $.extend({}, $.fn.multiImageUpload.event, {
 		width : 120,						//图片宽度
 		height : 150,						//图片高度
 		pluginHeight : 300,					//控件高度
+		pluginWidth : "100%",				//控件宽度
 		maxFileNum : 10,					//最多文件数量
 		readonly : false,					//是否禁用
 		multiple : true,					//是否可以多选

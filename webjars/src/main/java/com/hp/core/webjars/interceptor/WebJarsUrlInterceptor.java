@@ -69,7 +69,7 @@ public class WebJarsUrlInterceptor implements HandlerInterceptor {
 		}
 		
 		//url中去掉contextPath
-		url = url.substring(request.getContextPath().length());
+		url = StringUtils.substringAfter(url, request.getContextPath());
 		
 		if ("".equals(url) || "/".equals(url)) {
 			//首页，放行

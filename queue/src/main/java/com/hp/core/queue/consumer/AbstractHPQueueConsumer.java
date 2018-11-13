@@ -33,7 +33,7 @@ public abstract class AbstractHPQueueConsumer {
 	 * 具体处理方法
 	 * @param message
 	 */
-	public abstract void execute(Object message);
+	protected abstract void execute(Object message);
 	
 	/**
 	 * 获取消费者数量（默认一个）
@@ -47,7 +47,7 @@ public abstract class AbstractHPQueueConsumer {
 	 * 消费
 	 */
 	@PostConstruct
-	public void init() {
+	protected void init() {
 		log.info("init HPQueueConsumer start. with topic={}", getTopic());
 		if (StringUtils.isEmpty(getTopic())) {
 			log.warn("init error. with topic is empty.");

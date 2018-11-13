@@ -4,7 +4,7 @@
 	<div data-options="region:'north'" style="height: 50px;border-style: none;overflow: hidden;">
 		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="top_bg01" style="back">
 			<tr>
-				<td width="20%" align="center" class="top_banner">管理后台系统</td>
+				<td width="50%" align="center" class="top_banner">${projectName}管理后台系统</td>
 				<td height="26" valign="middle"><div align="right" style="margin-right: 100px">你好，<span id="userName"></span>&nbsp;&nbsp; |&nbsp; <a href="#" id="logout">注销</a></div></td>
 			</tr>
 		</table>

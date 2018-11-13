@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.jdbc.SQL;
 
 import com.hp.core.common.beans.page.PageModel;
 import com.hp.core.mybatis.constant.SQLProviderConstant;
@@ -50,6 +51,14 @@ public interface BaseSelectMapper<T> {
 	 */
 	@SelectProvider(type = BaseSelectProvider.class, method = "selectListByParams")
 	public List<T> selectListByParams(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target);
+	
+	/**
+	 * 自定义sql，查询列表
+	 * @param sql
+	 * @return
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectListBySQL")
+	public List<T> selectList(@Param(SQLProviderConstant.SQL_OBJECT_ALIAS) SQL sql);
 	
 	/**
 	 * 根据条件，查询单个

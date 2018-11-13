@@ -169,6 +169,13 @@ public class BaseSelectProvider {
 		return sql.toString();
 	}
 	
+	public static String selectListBySQL(Map<String, Object> params) {
+		log.info("params= {}", params);
+		
+		
+		return "";
+	}
+	
 	/**
 	 * 获取分页sql
 	 * (由于mybatis的SQL对象不支持 append 方法，所以这里只能这样处理)
