@@ -308,23 +308,34 @@
 			}).addClass("file_close"));
 		}
 		
-		createText(jq, opt, imageLi);
-		
 		_setDraggable(jq, imageLi);
 	}
 	
+	/**
+	 * 生成底部文字
+	 */
 	function createText(jq, opt, imageLi) {
-		if (opt.text) {
-			var textDiv = $("<div role='text'>").css({
-				width : "100%",
-				height : opt.textHeight
-			}).appendTo(imageLi);
-			if ($.type(opt.text) == "object") {
-				textDiv.append(opt.text);
-			} else {
-				textDiv.html(opt.text);
-			}
+		if (!opt.text) {
+			return;
 		}
+		
+		let textDiv = $("<div role='text'>").css({
+			width : "100%",
+			height : opt.textHeight,
+			display : "flex"
+		}).appendTo(imageLi);
+		if ($.type(opt.text) == "function") {
+			let txt = opt.text(jq, opt);
+			textDiv.append(txt);
+		} else if ($.type(opt.text) == "object") {
+			textDiv.append(opt.text);
+		} else {
+			textDiv.html(opt.text);
+		}
+	}
+	
+	function _getText(jq) {
+		return jq.find("div[role='text']");
 	}
 
 	function _checkMaxFileSize(jq) {
@@ -360,7 +371,7 @@
 	}
 	
 	function _getUL(jq) {
-		return jq.find("ul");
+		return jq.find("ul.filelist");
 	}
 	
 	function _getUploadForm(jq) {
@@ -417,7 +428,7 @@
 		}));
 		
 		
-		createText(jq, opt, imageLi);
+		createText(jq, opt, ul);
 	}
 	
 	$.fn.multiImageUpload.methods = {

@@ -44,7 +44,7 @@ public class BaseExceptionHandler implements HandlerExceptionResolver {
 		}
 		if (exception instanceof CommonException) {
 			CommonException commonException = (CommonException) exception;
-			response.setStatus(commonException.getCode());
+			response.setStatus(CodeEnum.SUCCESS.getCode());
 			return getErrorJsonView(commonException.getCode(), commonException.getMessage());
 		}
 		log.error("enter resolveException with", exception);

@@ -5,7 +5,7 @@
 
 .multi_image_upload .multi_image_upload_image {
 	border: 2px dashed #ccc;
-	cursor: pointer;
+	/* cursor: pointer; */
 	float: left;
 }
 
@@ -41,7 +41,7 @@
 	cursor: pointer;
 }
 
-.multi_image_upload .multi_image_upload_image input {
+.multi_image_upload .multi_image_upload_image input[type='file'] {
 	width: 100% !important;
 	height: 100% !important;
 	position: absolute;
