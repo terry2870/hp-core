@@ -20,6 +20,10 @@
 			<artifactId>hp-core-freemarker</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.hp.core</groupId>
+			<artifactId>hp-core-database</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
 		</dependency>

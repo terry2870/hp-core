@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.jdbc.SQL;
 
 import com.hp.core.common.beans.page.PageModel;
+import com.hp.core.database.dao.BaseSelectDAO;
 import com.hp.core.mybatis.constant.SQLProviderConstant;
 import com.hp.core.mybatis.provider.BaseSelectProvider;
 
@@ -19,7 +20,7 @@ import com.hp.core.mybatis.provider.BaseSelectProvider;
  * @author huangping
  * 2018年5月21日
  */
-public interface BaseSelectMapper<T> {
+public interface BaseSelectMapper<T> extends BaseSelectDAO<T> {
 
 	/**
 	 *  无条件查询所有总数

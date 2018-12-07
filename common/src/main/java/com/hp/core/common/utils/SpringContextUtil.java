@@ -15,6 +15,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 /**
@@ -22,6 +23,7 @@ import org.springframework.util.Assert;
  * @author huangping <br />
  *         2012-12-1
  */
+@Component("SpringContextUtil")
 public class SpringContextUtil implements ApplicationContextAware {
 	
 	private static Logger log = LoggerFactory.getLogger(SpringContextUtil.class);

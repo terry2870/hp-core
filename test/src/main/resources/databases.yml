@@ -2,17 +2,9 @@ datasources:
    eie:
       servers:
          master:
-           - 127.0.0.1:3306
+           - 192.168.102.17:3306
          slave:
-           - 127.0.0.1:3306
+           - 192.168.102.17:3306
       username: yh_test
       password: yh_test
       maxTotal: 100
-   information_schema:
-      servers:
-        master:
-           - 127.0.0.1:3306
-      username: yh_test
-      password: yh_test
-      daos:
-        - com.hp.core.test.dal.ITablesDAO

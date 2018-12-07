@@ -18,36 +18,10 @@
 	<context:component-scan base-package="com.hp" />
 	
 	<!-- 装在properties文件 -->
-	<context:property-placeholder location="classpath*:config.properties" />
-	
-	<!-- <bean class="com.hp.core.test.annotation.HelloWorldContext" init-method="init" /> -->
-
-	<bean id="LimiterInterceptPlugin" class="com.hp.core.plugins.intercept.LimiterInterceptPlugin" init-method="init">
-		<property name="permitsPerSecond" value="2" />
-		<property name="limitType" value="2" />
-		<property name="permits" value="5" />
-	</bean>
-
-	<aop:config>
-		<aop:aspect ref="LimiterInterceptPlugin">
-			<aop:pointcut expression="execution(* com.hp.core.test.service.HelloService.*(..))" id="LimiterInterceptPointcut"/>
-			<aop:around method="around" pointcut-ref="LimiterInterceptPointcut" />
-		</aop:aspect>
-	</aop:config>
-	
-	<bean id="RedisInterceptPlugin" class="com.hp.core.plugins.intercept.RedisInterceptPlugin">
-		<property name="keyPrefix" value="YH:MARSTEST:" />
-	</bean>
-
-	<aop:config>
-		<aop:aspect ref="RedisInterceptPlugin">
-			<aop:pointcut expression="execution(* com.hp.core.test.service.HelloService.*(..))" id="RedisInterceptPluginPointcut"/>
-			<aop:around method="around" pointcut-ref="RedisInterceptPluginPointcut" />
-		</aop:aspect>
-	</aop:config>
+	<context:property-placeholder location="classpath:config.properties" />
 	
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="com.hp.core.test.dal" />
+		<property name="basePackage" value="com.hp.core.test.dal,com.hp.core.database.dao" />
 	</bean>
 
 </beans>
