@@ -11,8 +11,9 @@ import org.apache.ibatis.jdbc.SQL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.core.mybatis.bean.DynamicColumnBean;
-import com.hp.core.mybatis.bean.DynamicEntityBean;
+import com.hp.core.database.bean.DynamicColumnBean;
+import com.hp.core.database.bean.DynamicEntityBean;
+import com.hp.core.database.interceptor.BaseSQLAOPFactory;
 
 
 /**
@@ -49,7 +50,7 @@ public class BaseInsertSQLProvider {
 	 * @return
 	 */
 	public static String insertBatch(Map<String, Object> params) {
-		DynamicEntityBean entity = BaseSQLProviderFactory.getEntity();
+		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
 		StringBuilder sql = new StringBuilder("INSERT INTO ").append(entity.getTableName());
 		sql.append("\n (");
 		sql.append(entity.getInsertColumnString());
@@ -82,7 +83,7 @@ public class BaseInsertSQLProvider {
 	 * @return
 	 */
 	private static String getInsertSQL(Object target, boolean all) {
-		DynamicEntityBean entity = BaseSQLProviderFactory.getEntity();
+		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
 		SQL sql = new SQL().INSERT_INTO(entity.getTableName());
 		Object value = null;
 		try {

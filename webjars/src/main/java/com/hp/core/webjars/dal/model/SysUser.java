@@ -3,8 +3,8 @@ package com.hp.core.webjars.dal.model;
 import javax.persistence.Id;
 
 import com.hp.core.common.beans.BaseBean;
-import com.hp.core.mybatis.annotation.QueryType;
-import com.hp.core.mybatis.enums.QueryTypeEnum;
+import com.hp.core.database.annotation.QueryType;
+import com.hp.core.database.enums.QueryTypeEnum;
 
 /**
  * @author huangping

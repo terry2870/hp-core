@@ -3,14 +3,18 @@
  */
 package com.hp.core.test.daltest;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.hp.core.common.junit.BaseJUnitTest;
+import com.hp.core.database.bean.OrderBy;
 import com.hp.core.test.dal.IBillInfoDAO;
 import com.hp.core.test.dal.ITestTableDAO;
 import com.hp.core.test.dal.ITestTableDAO2;
+import com.hp.core.test.dal.model.TestTable;
 
 /**
  * @author huangping
@@ -30,6 +34,10 @@ public class Test extends BaseJUnitTest {
 	@org.junit.Test
 	public void test() {
 		Integer count = testTableDAO.selectAllCount();
+		TestTable t = new TestTable();
+		t.setId(3);
+		List<TestTable> l = testTableDAO.selectListByParamsWithOrder(t, OrderBy.of("id", "desc"));
+		
 		System.out.println("count= " + count);
 	}
 	

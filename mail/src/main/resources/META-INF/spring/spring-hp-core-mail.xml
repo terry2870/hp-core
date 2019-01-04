@@ -14,17 +14,17 @@
 	http://www.springframework.org/schema/aop/spring-aop.xsd">
 	
 	<bean id="javaMailSenderImpl" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-		<property name="host" value="${mail.send.host:smtp.163.com}" />
-		<property name="port" value="${mail.send.port:25}" />
+		<property name="host" value="${hp.core.mail.send.host:smtp.163.com}" />
+		<property name="port" value="${hp.core.mail.send.port:25}" />
 		<property name="javaMailProperties">
 			<props>
-				<prop key="mail.smtp.auth">${mail.send.smtp.auth:true}</prop>
-				<prop key="mail.smtp.timeout">${mail.send.smtp.timeout:25000}</prop>
-				<prop key="mail.smtp.ssl.enable">${mail.smtp.ssl.enable:false}</prop>
+				<prop key="mail.smtp.auth">${hp.core.mail.send.smtp.auth:true}</prop>
+				<prop key="mail.smtp.timeout">${hp.core.mail.send.smtp.timeout:25000}</prop>
+				<prop key="mail.smtp.ssl.enable">${hp.core.mail.smtp.ssl.enable:false}</prop>
 			</props>
 		</property>
-		<property name="username" value="${mail.send.user:user}" />
-		<property name="password" value="${mail.send.password:123456}" />
+		<property name="username" value="${hp.core.mail.send.user:user}" />
+		<property name="password" value="${hp.core.mail.send.password:123456}" />
 	</bean>
 	
 	<bean id="sendMailHelper" class="com.hp.core.mail.helper.SendMailHelper">

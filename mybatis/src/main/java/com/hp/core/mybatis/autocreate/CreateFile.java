@@ -17,10 +17,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.core.common.utils.SpringContextUtil;
+import com.hp.core.database.datasource.DynamicDatasource;
 import com.hp.core.mybatis.autocreate.helper.AutoCreateBean;
 import com.hp.core.mybatis.autocreate.helper.TableBean;
 import com.hp.core.mybatis.autocreate.helper.TableBeanHelper;
-import com.hp.core.mybatis.datasource.DynamicDatasource;
 
 /**
  * @author huangping

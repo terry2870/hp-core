@@ -15,7 +15,7 @@
 	
 	
 	<bean id="serviceDiscoveryFactoryBean" class="com.hp.core.zookeeper.discovery.ServiceDiscoveryFactoryBean" init-method="init" destroy-method="close">
-		<property name="basePath" value="${zk.basePath:/yh/rpcservice}" />
+		<property name="basePath" value="${hp.core.zookeeper.basePath:/yh/rpcservice}" />
 		<property name="curator" ref="curatorFrameworkFactory" />
 	</bean>
 	
@@ -24,10 +24,10 @@
 	</bean>
 	
 	<bean id="curatorFrameworkFactory" class="com.hp.core.zookeeper.curator.CuratorFrameworkFactoryBean" init-method="init" destroy-method="close">
-		<property name="connectString" value="${zk.connectString:127.0.0.1:2181}" />
-		<property name="sessionTimeoutMs" value="${zk.sessionTimeoutMs:60000}" />
-		<property name="connectionTimeoutMs" value="${zk.connectionTimeoutMs:15000}" />
-		<property name="namespace" value="${zk.namespace:}" />
+		<property name="connectString" value="${hp.core.zookeeper.connectString:127.0.0.1:2181}" />
+		<property name="sessionTimeoutMs" value="${hp.core.zookeeper.sessionTimeoutMs:60000}" />
+		<property name="connectionTimeoutMs" value="${hp.core.zookeeper.connectionTimeoutMs:15000}" />
+		<property name="namespace" value="${hp.core.zookeeper.namespace:}" />
 	</bean>
 
 </beans>

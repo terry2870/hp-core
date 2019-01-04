@@ -9,11 +9,25 @@ package com.hp.core.mybatis.constant;
  */
 public class SQLProviderConstant {
 
+	/**
+	 * 传递的参数对象
+	 */
 	public static final String TARGET_OBJECT_ALIAS = "target";
 	
-	public static final String SQL_OBJECT_ALIAS = "sql";
-	
+	/**
+	 * 传递的分页对象
+	 */
 	public static final String PAGE_OBJECT_ALIAS = "page";
 	
+	/**
+	 * 主键的key
+	 */
 	public static final String KEY_PROPERTY_ID = "id";
+	
+	/**
+	 * 排序的对象
+	 */
+	public static final String ORDER_BY = "orderBy";
+	
+	public static final String SQL_OBJECT_ALIAS = "sql";
 }

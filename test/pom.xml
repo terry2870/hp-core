@@ -15,34 +15,34 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
-		<!-- <dependency>
+		<dependency>
 			<groupId>com.hp.core</groupId>
 			<artifactId>hp-core-api</artifactId>
-		</dependency> -->
-		<!-- <dependency>
+		</dependency>
+		<dependency>
 			<groupId>com.hp.core</groupId>
 			<artifactId>hp-core-common</artifactId>
-		</dependency> -->
-		<!-- <dependency>
+		</dependency>
+		<dependency>
 			<groupId>com.hp.core</groupId>
 			<artifactId>hp-core-netty</artifactId>
-		</dependency> -->
-		<!-- <dependency>
+		</dependency>
+		<dependency>
 			<groupId>com.hp.core</groupId>
 			<artifactId>hp-core-redis</artifactId>
-		</dependency> -->
-		<!-- <dependency>
+		</dependency>
+		<dependency>
 			<groupId>com.hp.core</groupId>
 			<artifactId>hp-core-zookeeper</artifactId>
-		</dependency> -->
-		<!-- <dependency>
+		</dependency>
+		<dependency>
 			<groupId>com.hp.core</groupId>
 			<artifactId>hp-core-limiter</artifactId>
-		</dependency> -->
-		<!-- <dependency>
+		</dependency>
+		<dependency>
 			<groupId>com.hp.core</groupId>
 			<artifactId>hp-core-plugins</artifactId>
-		</dependency> -->
+		</dependency>
 		<dependency>
 			<groupId>com.hp.core</groupId>
 			<artifactId>hp-core-mybatis</artifactId>

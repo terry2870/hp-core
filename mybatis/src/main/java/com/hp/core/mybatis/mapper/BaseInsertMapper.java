@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.SelectKey;
 
+import com.hp.core.database.dao.IBaseInsertDAO;
 import com.hp.core.mybatis.constant.SQLProviderConstant;
 import com.hp.core.mybatis.provider.BaseInsertSQLProvider;
 
@@ -18,7 +19,7 @@ import com.hp.core.mybatis.provider.BaseInsertSQLProvider;
  * @author huangping
  * 2018年5月29日
  */
-public interface BaseInsertMapper<T> {
+public interface BaseInsertMapper<T> extends IBaseInsertDAO<T> {
 
 	/**
 	 * 新增数据

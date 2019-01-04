@@ -21,7 +21,7 @@
 	<!--service线程调用链，调用堆栈 接口调用拦截器 -->
 	<bean id="serviceMethodInterceptor" class="com.hp.core.common.threadprofile.MethodProfileInterceptor" />
 	<aop:config>
-		<aop:pointcut id="serviceMethodPoint" expression="${hp.core.service.profile.execution:execution(* com.hp.core.test.dal.*DAO.*(..))}" />
+		<aop:pointcut id="serviceMethodPoint" expression="${hp.core.common.service.profile.execution:execution(* com.hp.core.test.dal.*DAO.*(..))}" />
 		<aop:advisor pointcut-ref="serviceMethodPoint" advice-ref="serviceMethodInterceptor" />
 	</aop:config>
 	

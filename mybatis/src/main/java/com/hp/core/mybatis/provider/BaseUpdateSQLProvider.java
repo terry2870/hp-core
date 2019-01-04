@@ -8,8 +8,9 @@ import org.apache.ibatis.jdbc.SQL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.core.mybatis.bean.DynamicColumnBean;
-import com.hp.core.mybatis.bean.DynamicEntityBean;
+import com.hp.core.database.bean.DynamicColumnBean;
+import com.hp.core.database.bean.DynamicEntityBean;
+import com.hp.core.database.interceptor.BaseSQLAOPFactory;
 
 /**
  * 基本的更新操作
@@ -46,7 +47,7 @@ public class BaseUpdateSQLProvider {
 	 * @return
 	 */
 	private static String getUpdateSQL(Object target, boolean all) {
-		DynamicEntityBean entity = BaseSQLProviderFactory.getEntity();
+		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
 		SQL sql = new SQL().UPDATE(entity.getTableName());
 		Object value = null;
 		try {

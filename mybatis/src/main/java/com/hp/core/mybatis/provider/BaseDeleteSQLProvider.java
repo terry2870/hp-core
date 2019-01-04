@@ -17,10 +17,11 @@ import org.apache.ibatis.jdbc.SQL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.core.mybatis.bean.DynamicColumnBean;
-import com.hp.core.mybatis.bean.DynamicEntityBean;
+import com.hp.core.database.bean.DynamicColumnBean;
+import com.hp.core.database.bean.DynamicEntityBean;
+import com.hp.core.database.exceptions.ProviderSQLException;
+import com.hp.core.database.interceptor.BaseSQLAOPFactory;
 import com.hp.core.mybatis.constant.SQLProviderConstant;
-import com.hp.core.mybatis.exceptions.ProviderSQLException;
 
 public class BaseDeleteSQLProvider {
 
@@ -32,7 +33,7 @@ public class BaseDeleteSQLProvider {
 	 * @return
 	 */
 	public static String deleteByPrimaryKey(Object id) {
-		DynamicEntityBean entity = BaseSQLProviderFactory.getEntity();
+		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
 		SQL sql = new SQL();
 		sql.DELETE_FROM(entity.getTableName())
 			.WHERE(entity.getPrimaryKeyColumnName() + " = #{id}");
@@ -46,7 +47,7 @@ public class BaseDeleteSQLProvider {
 	 * @return
 	 */
 	public static String deleteByPrimaryKeys(Map<String, Object> params) {
-		DynamicEntityBean entity = BaseSQLProviderFactory.getEntity();
+		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
 		List<?> list = (List<?>) params.get("list");
 		StringBuilder sql = new StringBuilder("DELETE FROM ").append(entity.getTableName());
 		sql.append("\n");
@@ -72,7 +73,7 @@ public class BaseDeleteSQLProvider {
 			log.error("deleteByParams error. with params is null.");
 			throw new ProviderSQLException("params is null");
 		}
-		DynamicEntityBean entity = BaseSQLProviderFactory.getEntity();
+		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
 		StringBuilder sql = new StringBuilder("DELETE ")
 				.append(" FROM ")
 				.append(entity.getTableName())

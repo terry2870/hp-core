@@ -10,9 +10,9 @@ package com.hp.core.database.dao;
  */
 public interface BaseDAO<T> 
 	extends
-	BaseSelectDAO<T>,
-	BaseUpdateDAO<T>,
-	BaseInsertDAO<T>,
-	BaseDeleteDAO<T> {
+	IBaseSelectDAO<T>,
+	IBaseUpdateDAO<T>,
+	IBaseInsertDAO<T>,
+	IBaseDeleteDAO<T> {
 
 }

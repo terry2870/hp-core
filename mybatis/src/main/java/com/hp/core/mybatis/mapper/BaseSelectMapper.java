@@ -10,7 +10,8 @@ import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.jdbc.SQL;
 
 import com.hp.core.common.beans.page.PageModel;
-import com.hp.core.database.dao.BaseSelectDAO;
+import com.hp.core.database.bean.OrderBy;
+import com.hp.core.database.dao.IBaseSelectDAO;
 import com.hp.core.mybatis.constant.SQLProviderConstant;
 import com.hp.core.mybatis.provider.BaseSelectProvider;
 
@@ -20,7 +21,7 @@ import com.hp.core.mybatis.provider.BaseSelectProvider;
  * @author huangping
  * 2018年5月21日
  */
-public interface BaseSelectMapper<T> extends BaseSelectDAO<T> {
+public interface BaseSelectMapper<T> extends IBaseSelectDAO<T> {
 
 	/**
 	 *  无条件查询所有总数
@@ -50,8 +51,18 @@ public interface BaseSelectMapper<T> extends BaseSelectDAO<T> {
 	 * @param params
 	 * @return
 	 */
+	public default List<T> selectListByParams(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target) {
+		return selectListByParamsWithOrder(target);
+	}
+	
+	/**
+	 * 根据条件，查询list（不分页）
+	 * @param target
+	 * @param orderBy
+	 * @return
+	 */
 	@SelectProvider(type = BaseSelectProvider.class, method = "selectListByParams")
-	public List<T> selectListByParams(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target);
+	public List<T> selectListByParamsWithOrder(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target, @Param(SQLProviderConstant.ORDER_BY) OrderBy... orderBy);
 	
 	/**
 	 * 自定义sql，查询列表

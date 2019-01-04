@@ -5,6 +5,7 @@ package com.hp.core.mybatis.mapper;
 
 import org.apache.ibatis.annotations.UpdateProvider;
 
+import com.hp.core.database.dao.IBaseUpdateDAO;
 import com.hp.core.mybatis.provider.BaseUpdateSQLProvider;
 
 /**
@@ -13,7 +14,7 @@ import com.hp.core.mybatis.provider.BaseUpdateSQLProvider;
  * @author huangping
  * 2018年5月29日
  */
-public interface BaseUpdateMapper<T> {
+public interface BaseUpdateMapper<T> extends IBaseUpdateDAO<T> {
 
 	/**
 	 * 根据主键更新数据

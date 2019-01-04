@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.Param;
 
+import com.hp.core.database.dao.IBaseDeleteDAO;
 import com.hp.core.mybatis.constant.SQLProviderConstant;
 import com.hp.core.mybatis.provider.BaseDeleteSQLProvider;
 
@@ -17,7 +18,7 @@ import com.hp.core.mybatis.provider.BaseDeleteSQLProvider;
  * @author huangping
  * 2018年5月29日
  */
-public interface BaseDeleteMapper<T> {
+public interface BaseDeleteMapper<T> extends IBaseDeleteDAO<T> {
 
 	/**
 	 * 根据主键删除

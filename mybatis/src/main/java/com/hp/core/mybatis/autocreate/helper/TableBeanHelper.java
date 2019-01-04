@@ -18,8 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.core.common.utils.NameDefineUtil;
-import com.hp.core.mybatis.datasource.AbstDatabase;
-import com.hp.core.mybatis.enums.DatabaseTypeEnum;
+import com.hp.core.database.datasource.AbstDatabase;
+import com.hp.core.database.enums.DatabaseTypeEnum;
 
 public class TableBeanHelper {
 
