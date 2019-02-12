@@ -8,72 +8,31 @@
 
 	//新增或修改用户
 	function editSysUser(id) {
-		var div = $("<div>").appendTo($(window.top.document.body));
-		var title = id === 0 ? "新增用户" : "修改用户";
-		window.top.$(div).myDialog({
+		$.saveDialog({
+			title : id === 0 ? "新增用户" : "修改用户",
 			width : "40%",
 			height : "80%",
-			title : title,
 			href : "${request.contextPath}/RedirectController/forward?redirectUrl=sysManage/sysUser/sysUserEdit&id=" + id,
-			method : "post",
-			modal : true,
-			collapsible : true,
-			cache : false,
-			buttons : [{
-				text : "保存",
-				disabled : true,
-				id : "sysUserSaveBtn",
-				iconCls : "icon-save",
-				handler : function() {
-					$.saveDialog({
-						dialogObject : window.top.$(div),
-						formObject : window.top.$("#sysUserEditForm"),
-						url : "${request.contextPath}/SysUserController/saveSysUser",
-						reloadTableObject : $("#sysUserListTable"),
-						onSubmit : function(param) {
-							var roleIds = window.top.$("#sysUserEditForm #roleIdTD").checkboxList("getCheckedValue");
-							param.roleIds = roleIds.join(",");
-						}
-					});
+			handler : {
+				formObjectId : "sysUserEditForm",
+				url : "${request.contextPath}/SysUserController/saveSysUser",
+				reloadTableObject : $("#sysUserListTable"),
+				onSubmit : function(param) {
+					var roleIds = window.top.$("#sysUserEditForm #roleIdTD").checkboxList("getCheckedValue");
+					param.roleIds = roleIds.join(",");
 				}
-			}, {
-				text : "关闭",
-				iconCls : "icon-cancel",
-				handler : function() {
-					window.top.$(div).dialog("close");
-				}
-			}],
-			onOpen : function() {
-				window.top.showButtonList("${menuId}", div.parent());
 			}
 		});
 	}
 	
 	//查看用户详情
 	function viewSysUser(id) {
-		var div = $("<div>").appendTo($(window.top.document.body));
-		window.top.$(div).myDialog({
+		$.saveDialog({
+			title : "用户详细",
 			width : "40%",
 			height : "80%",
-			title : "用户详细",
 			href : "${request.contextPath}/RedirectController/forward?redirectUrl=sysManage/sysUser/sysUserEdit&id=" + id,
-			method : "post",
-			modal : true,
-			collapsible : true,
-			cache : false,
-			buttons : [{
-				text : "刷新",
-				iconCls : "icon-reload",
-				handler : function() {
-					window.top.$(div).dialog("refresh");
-				}
-			}, {
-				text : "关闭",
-				iconCls : "icon-cancel",
-				handler : function() {
-					window.top.$(div).dialog("close");
-				}
-			}]
+			showSaveBtn : false
 		});
 	}
 

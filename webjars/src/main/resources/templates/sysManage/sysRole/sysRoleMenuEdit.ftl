@@ -1,4 +1,6 @@
-<ul id="roleMenuTree"></ul>
+<form id="sysRoleMenuForm" name="sysRoleMenuForm" method="post">
+	<ul id="roleMenuTree"></ul>
+</form>
 <script>
 	$(function() {
 		$("#roleMenuTree").myTree({
@@ -37,41 +39,6 @@
 			}
 		});
 	});
-	function saveRoleMenu(div) {
-		var check = $("#roleMenuTree").myTree("getChecked");
-		if (!check || check.length == 0) {
-			$.messager.alert("提示", "请至少分配一个菜单！", "error");
-			return;
-		}
-		var menuArr = [];
-		$(check).each(function(i, item) {
-			if ($("#roleMenuTree").myTree("isLeaf", item.target)) {
-				menuArr.push(item.attributes.id);
-			}
-		});
-		$.messager.progress({
-			title : "正在执行",
-			msg : "正在执行，请稍后..."
-		});
-		$.post("${request.contextPath}/SysRoleController/saveSysRoleMenu", {
-			menuIds : menuArr.join(","),
-			roleId : "${roleId}"
-		}, function(json) {
-			$.messager.progress("close");
-			if (!json) {
-				return;
-			}
-			if (json.code == CODE_SUCCESS) {
-				$(div).dialog("close");
-				$.messager.show({
-					title : "提示",
-					msg : "分配菜单权限成功！"
-				});
-			} else {
-				$.messager.alert("失败", json.message, "error");
-			}
-		});
-	}
 </script>
 
 

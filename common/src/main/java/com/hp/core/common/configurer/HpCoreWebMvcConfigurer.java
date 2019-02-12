@@ -31,19 +31,19 @@ public class HpCoreWebMvcConfigurer implements WebMvcConfigurer {
 	/**
 	 * 拦截器的beanname
 	 */
-	@Value("#{'${hp.core.interceptor.beanname:}'.split(',')}")
+	@Value("#{'${hp.core.common.interceptor.beanname:}'.split(',')}")
 	private List<String> interceptorBeanNameList;
 	
 	/**
 	 * 静态资源文件
 	 */
-	@Value("#{'${hp.core.static.path.pattern:}'.split(',')}")
+	@Value("#{'${hp.core.common.static.path.pattern:}'.split(',')}")
 	private List<String> staticPatternList;
 	
 	/**
 	 * 默认的拦截url
 	 */
-	@Value("${hp.core.interceptor.path.pattern:/**}")
+	@Value("${hp.core.common.interceptor.path.pattern:/**}")
 	private String interceptorPathPatterns;
 	
 	@Override

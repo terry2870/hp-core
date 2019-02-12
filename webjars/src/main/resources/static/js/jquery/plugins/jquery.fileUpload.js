@@ -49,9 +49,15 @@
 	 */
 	function _submit(jq) {
 		var opt = jq.data("fileUpload");
-		if (opt.onBeforeSubmit.call(jq, _getValue(jq)) === false) {
-			return;
+		if (opt.onBeforeSubmit) {
+			let result = opt.onBeforeSubmit.call(jq, _getValue(jq));
+			if (result === false) {
+				return;
+			}
 		}
+		$.fn.fileUpload.event.onBeforeSubmit.call(jq);
+		
+		
 		var frameId = "jquery_frame_" + (new Date().getTime());
 		var iframe = null;
 		var form = _getForm(jq);
@@ -111,17 +117,23 @@
 			}
 			data = JSON.parse(data);
 			jq.data("successData", data);
-			var fileName = data.data ? data.data.fileName : null;
+			if (data.code != 200) {
+				window.top.$.messager.alert("失败", data.message, "error");
+				_hideProgress();
+				return;
+			}
+			var fileName = opt.filterFileName(data);
 			if (opt.showFileName === true) {
-				if (opt.filterFileName) {
-					fileName = opt.filterFileName.call(jq, data);
-				}
 				if (fileName) {
 					_setFile(jq, fileName);
 				}
 			}
 			
-			opt.onLoadSuccess.call(jq, data);
+			if (opt.onLoadSuccess) {
+				opt.onLoadSuccess.call(jq, fileName, data);
+			}
+			$.fn.fileUpload.event.onLoadSuccess(fileName, data);
+			
 			setTimeout(function(){
 				iframe.unbind();
 				iframe.remove();
@@ -241,6 +253,16 @@
 		_createForm(jq);
 	}
 	
+	function _showProgress() {
+		window.top.$.messager.progress({
+			title : "正在执行",
+			msg : "正在执行，请稍后..."
+		});
+	}
+	
+	function _hideProgress() {
+		window.top.$.messager.progress("close");
+	}
 	
 	$.fn.fileUpload.methods = {
 		setValue : function(value) {
@@ -260,17 +282,29 @@
 		/**
 		 * 提交文件之前触发，如果该函数返回false，则阻止提交
 		 */	
-		onBeforeSubmit : function(value) {},
+		onBeforeSubmit : function(value) {
+			_showProgress();
+		},
 		/**
 		 * 提交后，服务端有返回后触发
 		 */
-		onLoadSuccess : function(fileName, data) {},
+		onLoadSuccess : function(fileName, data) {
+			_hideProgress();
+			if (data.code != 200) {
+				window.top.$.messager.alert("失败", "上传失败", "error");
+				return;
+			}
+			window.top.$.messager.show({
+				title : "提示",
+				msg : "上传成功！"
+			});
+		},
 		/**
 		 * 当点击文件时
 		 */
 		onClickFile : function(fileName, data) {}
 	};
-	$.fn.fileUpload.defaults = $.extend({}, $.fn.fileUpload.event, {
+	$.fn.fileUpload.defaults = $.extend({}, {
 		text : "请选择文件",					//按钮文字
 		uploadInputName : "file",			//上传文件的控件名称
 		realInputName : "",					//真实的文件字段名称
@@ -279,7 +313,10 @@
 		dataType : "json",					//返回数据的格式
 		value : null,						//文件默认值
 		filterFileName : function(data) {	//返回值中，获取文件名
-			return data;
+			if (!data || data.code != 200) {
+				return null;
+			}
+			return data.data ? data.data.fileName : null;
 		},
 		showFileName : true,					//上传成功后，是否显示文件名
 		accept : null

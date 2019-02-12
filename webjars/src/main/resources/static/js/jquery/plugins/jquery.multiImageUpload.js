@@ -52,9 +52,14 @@
 	 */
 	function _submit(jq) {
 		var opt = jq.data("multiImageUpload");
-		if (opt.onBeforeSubmit.call(jq, _getValue(jq)) === false) {
-			return;
+		if (opt.onBeforeSubmit) {
+			let result = opt.onBeforeSubmit.call(jq, _getValue(jq));
+			if (result === false) {
+				return;
+			}
 		}
+		$.fn.multiImageUpload.event.onBeforeSubmit.call(jq);
+		
 		var frameId = "jquery_frame_" + (new Date().getTime());
 		var iframe = null;
 		var form = _getForm(jq);
@@ -114,6 +119,11 @@
 			}
 			
 			data = JSON.parse(data);
+			if (data.code != 200) {
+				window.top.$.messager.alert("失败", data.message, "error");
+				_hideProgress();
+				return;
+			}
 			
 			var fileArr = data.data || [];
 			if (opt.filterFile) {
@@ -123,7 +133,11 @@
 				_setImage(jq, fileArr);
 			}
 
-			opt.onLoadSuccess.call(jq, data);
+			if (opt.onLoadSuccess) {
+				opt.onLoadSuccess.call(jq, data);
+			}
+			$.fn.multiImageUpload.event.onLoadSuccess.call(jq, data);
+			
 			setTimeout(function(){
 				iframe.unbind();
 				iframe.remove();
@@ -431,6 +445,17 @@
 		createText(jq, opt, ul);
 	}
 	
+	function _showProgress() {
+		window.top.$.messager.progress({
+			title : "正在执行",
+			msg : "正在执行，请稍后..."
+		});
+	}
+	
+	function _hideProgress() {
+		window.top.$.messager.progress("close");
+	}
+	
 	$.fn.multiImageUpload.methods = {
 		setValue : function(values) {
 			var jq = $(this);
@@ -447,13 +472,10 @@
 	};
 	$.fn.multiImageUpload.event = {
 		onBeforeSubmit : function(value) {
-			window.top.$.messager.progress({
-				title : "正在执行",
-				msg : "正在执行，请稍后..."
-			});
+			_showProgress();
 		},
 		onLoadSuccess : function(data) {
-			window.top.$.messager.progress("close");
+			_hideProgress();
 			if (data.code != 200) {
 				window.top.$.messager.alert("失败", "上传失败", "error");
 				return;
@@ -465,7 +487,7 @@
 		},
 		onCreate : function() {}
 	};
-	$.fn.multiImageUpload.defaults = $.extend({}, $.fn.multiImageUpload.event, {
+	$.fn.multiImageUpload.defaults = $.extend({}, {
 		width : 120,						//图片宽度
 		height : 150,						//图片高度
 		pluginHeight : 300,					//控件高度

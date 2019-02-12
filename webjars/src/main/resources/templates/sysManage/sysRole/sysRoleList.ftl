@@ -8,100 +8,55 @@
 
 	//新增或修改角色
 	function editSysRole(id) {
-		var div = $("<div>").appendTo($(window.top.document.body));
-		var title = id === 0 ? "新增角色数据" : "修改角色数据";
-		window.top.$(div).myDialog({
+		$.saveDialog({
+			title : id === 0 ? "新增角色数据" : "修改角色数据",
 			width : 500,
 			height : 400,
-			title : title,
 			href : "${request.contextPath}/RedirectController/forward?redirectUrl=sysManage/sysRole/sysRoleEdit&id=" + id,
-			method : "post",
-			modal : true,
-			collapsible : true,
-			cache : false,
-			buttons : [{
-				text : "保存",
-				id : "sysRoleSaveBtn",
-				disabled : true,
-				iconCls : "icon-save",
-				handler : function() {
-					$.saveDialog({
-						dialogObject : window.top.$(div),
-						formObject : window.top.$("#sysRoleEditForm"),
-						url : "${request.contextPath}/SysRoleController/saveSysRole",
-						reloadTableObject : $("#sysRoleListTable")
-					});
-				}
-			}, {
-				text : "关闭",
-				iconCls : "icon-cancel",
-				handler : function() {
-					window.top.$(div).dialog("close");
-				}
-			}],
-			onOpen : function() {
-				window.top.showButtonList("${menuId}", div.parent());
+			handler : {
+				formObjectId : "sysRoleEditForm",
+				url : "${request.contextPath}/SysRoleController/saveSysRole",
+				reloadTableObject : $("#sysRoleListTable")
 			}
 		});
 	}
 	
 	//查看角色详情
 	function viewSysRole(id) {
-		var div = $("<div>").appendTo($(window.top.document.body));
-		window.top.$(div).myDialog({
+		$.saveDialog({
+			title : "角色数据详细",
 			width : 500,
 			height : 400,
-			title : "角色数据详细",
 			href : "${request.contextPath}/RedirectController/forward?redirectUrl=sysManage/sysRole/sysRoleEdit&id=" + id,
-			method : "post",
-			modal : true,
-			collapsible : true,
-			cache : false,
-			buttons : [{
-				text : "刷新",
-				iconCls : "icon-reload",
-				handler : function() {
-					window.top.$(div).dialog("refresh");
-				}
-			}, {
-				text : "关闭",
-				iconCls : "icon-cancel",
-				handler : function() {
-					window.top.$(div).dialog("close");
-				}
-			}]
+			showSaveBtn : false
 		});
 	}
 	
 	//分配角色菜单
 	function viewRoleMenu(roleId) {
-		var div = $("<div>").appendTo($(window.top.document.body));
-		window.top.$(div).myDialog({
-			width : "20%",
-			height : "90%",
+		$.saveDialog({
 			title : "分配菜单",
+			width : "30%",
+			height : "90%",
 			href : "${request.contextPath}/RedirectController/forward?redirectUrl=sysManage/sysRole/sysRoleMenuEdit&roleId=" + roleId,
-			method : "post",
-			modal : true,
-			collapsible : true,
-			cache : false,
-			buttons : [{
-				text : "保存",
-				disabled : true,
-				id : "sysRoleMenuSaveBtn",
-				iconCls : "icon-save",
-				handler : function() {
-					window.top.saveRoleMenu(div);
-				}
-			}, {
-				text : "关闭",
-				iconCls : "icon-cancel",
-				handler : function() {
-					window.top.$(div).dialog("close");
-				}
-			}],
-			onOpen : function() {
-				window.top.showButtonList("${menuId}", div.parent());
+			handler : {
+				formObjectId : "sysRoleMenuForm",
+				onSubmit : function(param) {
+					var check = window.top.$("#roleMenuTree").myTree("getChecked");
+					if (!check || check.length == 0) {
+						window.top.$.messager.alert("提示", "请至少分配一个菜单！", "error");
+						return false;
+					}
+					var menuArr = [];
+					$(check).each(function(i, item) {
+						if (window.top.$("#roleMenuTree").myTree("isLeaf", item.target)) {
+							menuArr.push(item.attributes.id);
+						}
+					});
+					param.menuIds = menuArr.join(",");
+					param.roleId = roleId;
+				},
+				url : "${request.contextPath}/SysRoleController/saveSysRoleMenu"
 			}
 		});
 	}
@@ -112,7 +67,7 @@
 			emptyMsg : "没有数据",
 			fit : true,
 			fitColumns : true,
-			nowrap : true,
+			nowrap : false,
 			striped : true,
 			toolbar : "#sysRoleListToolbar",
 			url : "${request.contextPath}/SysRoleController/queryAllSysRole",

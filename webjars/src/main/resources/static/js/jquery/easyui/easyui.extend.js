@@ -9,7 +9,7 @@ jQuery.extend({
 	 * 			url
 	 * 			params
 	 * 			text
-	 * 			reloadTableSelector
+	 * 			reloadTableObject
 	 * 			callback
 	 * @returns
 	 */
@@ -27,6 +27,7 @@ jQuery.extend({
 				if (data.code == CODE_SUCCESS) {
 					if (obj.reloadTableObject) {
 						obj.reloadTableObject.datagrid("reload");
+						obj.reloadTableObject.datagrid("clearChecked");
 					}
 					if (obj.callback) {
 						obj.callback(data);
@@ -42,7 +43,7 @@ jQuery.extend({
 		});
 	},
 	/**
-	 * 保存对话框
+	 * 保存对话框保存按钮事件
 	 * @param obj
 	 * 			dialogObject
 	 * 			formObject
@@ -52,7 +53,10 @@ jQuery.extend({
 	 * 			callback
 	 * @returns
 	 */
-	saveDialog : function(obj) {
+	saveDialogHandler : function(obj) {
+		if (!obj.formObject) {
+			return;
+		}
 		obj.formObject.form("submit", {
 			url : obj.url,
 			onSubmit : function(param) {
@@ -83,10 +87,9 @@ jQuery.extend({
 						}
 						if (obj.reloadTableObject) {
 							obj.reloadTableObject.datagrid("reload");
+							obj.reloadTableObject.datagrid("clearChecked");
 						}
-						if (obj.callback) {
-							obj.callback(data);
-						}
+						
 						$.messager.show({
 							title : "提示",
 							msg : "保存成功！"
@@ -94,10 +97,73 @@ jQuery.extend({
 					} else {
 						window.top.$.messager.alert("出错", data.message, "error");
 					}
+					if (obj.callback) {
+						obj.callback(data);
+					}
 				} else {
 					window.top.$.messager.alert("出错", data.message, "error");
 				}
 			}
+		});
+	},
+	/**
+	 * 打开保存对话框
+	 * @param obj
+	 * 		title
+	 * 		width
+	 * 		height
+	 * 		href
+	 * 		queryParams
+	 * 		showSaveBtn = true
+	 * 		showCloseBtn = true
+	 * 		saveBtn.text = '保存'
+	 * 		saveBtn.iconCls = 'icon-save'
+	 * 		handler
+	 */
+	saveDialog : function(obj) {
+		var div = $("<div>").appendTo($(window.top.document.body));
+
+        let buttons = [];
+        if (obj.showSaveBtn !== false) {
+        	if (!obj.saveBtn) {
+        		obj.saveBtn = {};
+        	}
+            buttons.push({
+                text: (obj.saveBtn.text) ? obj.saveBtn.text : "保存",
+                iconCls: (obj.saveBtn.iconCls) ? obj.saveBtn.iconCls : "icon-save",
+                handler: function () {
+                	if (!obj.handler) {
+                		return;
+                	}
+                    obj.handler.dialogObject = window.top.$(div);
+                    if (!obj.handler.formObject && obj.handler.formObjectId) {
+                        obj.handler.formObject = window.top.$("#" + obj.handler.formObjectId);
+                    }
+                    $.saveDialogHandler(obj.handler);
+                }
+            });
+		}
+		if (obj.showCloseBtn !== false) {
+            buttons.push({
+                text: "关闭",
+                iconCls: "icon-cancel",
+                handler: function () {
+                    window.top.$(div).dialog("close");
+                }
+            });
+		}
+
+		window.top.$(div).myDialog({
+			width: obj.width ? obj.width : '500',
+			height: obj.height ? obj.height : '300',
+			title: obj.title,
+			href: obj.href,
+			queryParams: obj.queryParams,
+			method: "post",
+			modal: true,
+			collapsible: true,
+			cache: false,
+			buttons: buttons
 		});
 	}
 });

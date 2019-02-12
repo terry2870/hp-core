@@ -15,7 +15,7 @@
 
 	<!-- 线程调用链，调用堆栈拦截器 -->
 	<bean id="threadProfileInterceptor" class="com.hp.core.common.threadprofile.ThreadProfileInterceptor">
-		<property name="threshold" value="${hp.core.service.profile.threshold:200}" />
+		<property name="threshold" value="${hp.core.common.service.profile.threshold:200}" />
 	</bean>
 
 	<!--service线程调用链，调用堆栈 接口调用拦截器 -->

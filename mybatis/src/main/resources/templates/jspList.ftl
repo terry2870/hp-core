@@ -17,122 +17,27 @@
 
 	//新增或修改${tableComment}
 	function edit${modelName}(id) {
-		var div = $("<div>").appendTo($(window.top.document.body));
-		var title = id === 0 ? "新增${tableComment}数据" : "修改${tableComment}数据";
-		window.top.$(div).myDialog({
+		$.saveDialog({
+			title : id === 0 ? "新增${tableComment}数据" : "修改${tableComment}数据",
 			width : "40%",
-			height : "70%",
-			title : title,
-			href : "<t:path/>/jsp/newfile/${modelNameFirstLow}Edit.jsp",
-			method : "post",
-			queryParams : {
-				id : id
-			},
-			modal : true,
-			collapsible : true,
-			cache : false,
-			buttons : [{
-				text : "保存",
-				id : "save${modelName}Btn",
-				disabled : true,
-				iconCls : "icon-save",
-				handler : function() {
-					window.top.$("#${modelNameFirstLow}EditForm").form("submit", {
-						url : "<t:path />/${modelName}Controller/save${modelName}.do",
-						onSubmit : function(param) {
-							if (!window.top.$("#${modelNameFirstLow}EditForm").form("validate")) {
-								return false;
-							}
-							window.top.$.messager.progress({
-								title : "正在执行",
-								msg : "正在执行，请稍后..."
-							});
-							return true;
-						},
-						success : function(data) {
-							window.top.$.messager.progress("close");
-							data = JSON.parse(data);
-							if (data.code == CODE_SUCCESS) {
-								window.top.$(div).dialog("close");
-								$("#${modelNameFirstLow}ListTable").datagrid("reload");
-								window.top.$.messager.show({
-									title : "提示",
-									msg : title + "成功！"
-								});
-							} else {
-								window.top.$.messager.alert("失败", data.message, "error");
-							}
-						}
-					});
-				}
-			}, {
-				text : "关闭",
-				iconCls : "icon-cancel",
-				handler : function() {
-					window.top.$(div).dialog("close");
-				}
-			}],
-			onOpen : function() {
-				window.top.showButtonList("<t:write name='menuId' />", div.parent());
+			height : "80%",
+			href : "${request.contextPath}/RedirectController/forward?redirectUrl=sysManage/sysUser/${modelNameFirstLow}Edit&id=" + id,
+			handler : {
+				formObjectId : "${modelNameFirstLow}EditForm",
+				url : "${request.contextPath}/${modelName}Controller/save${modelName}",
+				reloadTableObject : $("#${modelNameFirstLow}ListTable")
 			}
 		});
 	}
 	
 	//查看${tableComment}详情
 	function view${modelName}(id) {
-		var div = $("<div>").appendTo($(window.top.document.body));
-		window.top.$(div).myDialog({
-			width : "40%",
-			height : "70%",
+		$.saveDialog({
 			title : "${tableComment}数据详细",
-			href : "<t:path/>/jsp/newfile/${modelNameFirstLow}Edit.jsp",
-			method : "post",
-			queryParams : {
-				id : id
-			},
-			modal : true,
-			collapsible : true,
-			cache : false,
-			buttons : [{
-				text : "刷新",
-				iconCls : "icon-reload",
-				handler : function() {
-					window.top.$(div).dialog("refresh");
-				}
-			}, {
-				text : "关闭",
-				iconCls : "icon-cancel",
-				handler : function() {
-					window.top.$(div).dialog("close");
-				}
-			}]
-		});
-	}
-	
-	//删除${tableComment}
-	function del${modelName}(id) {
-		window.top.$.messager.confirm("确认", "您确定要删除该${tableComment}数据吗？", function(flag) {
-			if (!flag) {
-				return;
-			}
-			window.top.$.messager.progress({
-				title : "正在执行",
-				msg : "正在执行，请稍后..."
-			});
-			$.post("<t:path />/${modelName}Controller/delete${modelName}.do", {
-				id : id
-			}, function(data) {
-				window.top.$.messager.progress("close");
-				if (data.code == CODE_SUCCESS) {
-					$("#${modelNameFirstLow}ListTable").datagrid("reload");
-					window.top.$.messager.show({
-						title : "提示",
-						msg : "删除数据成功！"
-					});
-				} else {
-					window.top.$.messager.alert("失败", data.message, "error");
-				}
-			});
+			width : "40%",
+			height : "80%",
+			href : "${request.contextPath}/RedirectController/forward?redirectUrl=sysManage/sysUser/${modelNameFirstLow}Edit&id=" + id,
+			showSaveBtn : false
 		});
 	}
 
@@ -194,29 +99,10 @@
 				$(this).myDatagrid("getPanel").find("a[role='del']").linkbutton({
 					iconCls : "icon-remove",
 					onClick : function() {
-						var id = $(this).attr("rowid");
-						window.top.$.messager.confirm("确认", "您确定要删除该${tableComment}吗？", function(flag) {
-							if (!flag) {
-								return;
-							}
-							window.top.$.messager.progress({
-								title : "正在执行",
-								msg : "正在执行，请稍后..."
-							});
-							$.post("<t:path />/${modelName}Controller/delete${modelName}.do", {
-								id : id
-							}, function(data) {
-								window.top.$.messager.progress("close");
-								if (data.code == CODE_SUCCESS) {
-									$("#${modelNameFirstLow}ListTable").myDatagrid("reload");
-									window.top.$.messager.show({
-										title : "提示",
-										msg : "删除${tableComment}成功！"
-									});
-								} else {
-									window.top.$.messager.alert("失败", data.message, "error");
-								}
-							});
+						$.confirmDialog({
+							url : "${request.contextPath}/${modelName}Controller/delete${modelName}?id=" + $(this).attr("rowid"),
+							text : "删除${tableComment}",
+							reloadTableObject : $("#${modelNameFirstLow}ListTable")
 						});
 					}
 				});

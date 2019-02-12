@@ -45,10 +45,16 @@
 		<zk.version>3.4.12</zk.version>
 		<curator.framework.version>4.0.1</curator.framework.version>
 		<curator-x-discovery.version>4.0.1</curator-x-discovery.version>
+		<commons-fileupload-version>1.4</commons-fileupload-version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>commons-fileupload</groupId>
+				<artifactId>commons-fileupload</artifactId>
+				<version>${commons-fileupload-version}</version>
+			</dependency>
 			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
