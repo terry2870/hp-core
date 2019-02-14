@@ -50,6 +50,7 @@ public class CreateService {
 		map.put("author", CreateFile.AUTHER_NAME);
 		map.put("package", packageUrl);
 		map.put("modelName", table.getModelName());
+		map.put("modelNameFirstLow", table.getModelNameFirstLow());
 		map.put("tableComment", table.getTableComment());
 		map.put("servicePackage", servicePackage);
 		map.put("convertPackage", CreateFile.PROJECT_PACKAGE + "." + CreateFile.COMMON_DIR_NAME + "." + CreateFile.CONVERT_DIR_NAME);
