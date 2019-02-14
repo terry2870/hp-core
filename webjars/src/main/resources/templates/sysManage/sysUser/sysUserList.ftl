@@ -18,8 +18,8 @@
 				url : "${request.contextPath}/SysUserController/saveSysUser",
 				reloadTableObject : $("#sysUserListTable"),
 				onSubmit : function(param) {
-					var roleIds = window.top.$("#sysUserEditForm #roleIdTD").checkboxList("getCheckedValue");
-					param.roleIds = roleIds.join(",");
+					var roleIds = window.top.$("#sysUserEditForm #roleId").tagbox("getValues");
+					param.roleIdList = roleIds.join(",");
 				}
 			}
 		});
@@ -46,9 +46,7 @@
 			striped : true,
 			toolbar : "#sysUserListToolbar",
 			url : "${request.contextPath}/SysUserController/queryAllSysUser",
-			loadFilter : function(data) {
-				return defaultLoadFilter(data);
-			},
+			loadFilter : defaultLoadFilter,
 			queryParams : {
 				status : 1
 			},

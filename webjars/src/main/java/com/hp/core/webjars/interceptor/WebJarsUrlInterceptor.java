@@ -36,14 +36,14 @@ public class WebJarsUrlInterceptor implements HandlerInterceptor {
 	private static final ThreadLocal<OperaBean> localUser = new ThreadLocal<>();
 
 	// 免过滤列表（不管有没有session都可以访问）
-	@Value("#{'${hp.core.firstNoFilterList:}'.split(',')}")
+	@Value("#{'${hp.core.webjars.firstNoFilterList:}'.split(',')}")
 	private List<String> firstNoFilterList;
 		
 	//默认的第一免过滤
 	private static final List<String> defaultFirstNoFilterList = Lists.newArrayList("/actuator", "/health", "/doLogin", "/login", "/logout", "/refeshCheckCode");
 
 	// 第二级免过滤列表（只要有session就都可以访问）
-	@Value("#{'${hp.core.secondNoFilterList:}'.split(',')}")
+	@Value("#{'${hp.core.webjars.secondNoFilterList:}'.split(',')}")
 	private List<String> secondNoFilterList;
 	
 	//默认的第二免过滤

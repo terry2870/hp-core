@@ -68,7 +68,7 @@ public class SysUserServiceImpl implements ISysUserService {
 		}
 		
 		//保存该用户的角色
-		sysUserRoleService.insertUserRole(dal.getId(), request.getRoleIds());
+		sysUserRoleService.insertUserRole(dal.getId(), request.getRoleIdList());
 		log.info("saveSysUser success with request={}", request);
 	}
 

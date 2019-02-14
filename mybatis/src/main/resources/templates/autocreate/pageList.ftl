@@ -1,17 +1,8 @@
-<%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
-<%@ taglib prefix="t" uri="/my-tags" %>
-<!DOCTYPE html>
-<html>
-<head>
-<title>main</title>
-<jsp:include page="/jsp/common/include.jsp" flush="true" />
-</head>
-<body class="easyui-layout" fit="true">
-	<div region="north" title="查询条件" style="height: 70px; border-style: none">
-		<jsp:include page="${modelNameFirstLow}Search.jsp" flush="true" />
-	</div>
-	<div region="center" id="${modelNameFirstLow}ListDiv">
-		<table id="${modelNameFirstLow}ListTable"></table>
+${'<#include "/include/head.ftl">'}
+<body>
+	<table id="${modelNameFirstLow}ListTable"></table>
+	<div id="toolbar">
+		${'<#include "/other/${modelNameFirstLow}Search.ftl">'}
 	</div>
 <script>
 
@@ -21,10 +12,10 @@
 			title : id === 0 ? "新增${tableComment}数据" : "修改${tableComment}数据",
 			width : "40%",
 			height : "80%",
-			href : "${request.contextPath}/RedirectController/forward?redirectUrl=sysManage/sysUser/${modelNameFirstLow}Edit&id=" + id,
+			href : "${contextPath}/RedirectController/forward?redirectUrl=other/${modelNameFirstLow}Edit&id=" + id,
 			handler : {
 				formObjectId : "${modelNameFirstLow}EditForm",
-				url : "${request.contextPath}/${modelName}Controller/save${modelName}",
+				url : "${contextPath}/${modelName}Controller/save${modelName}",
 				reloadTableObject : $("#${modelNameFirstLow}ListTable")
 			}
 		});
@@ -36,7 +27,7 @@
 			title : "${tableComment}数据详细",
 			width : "40%",
 			height : "80%",
-			href : "${request.contextPath}/RedirectController/forward?redirectUrl=sysManage/sysUser/${modelNameFirstLow}Edit&id=" + id,
+			href : "${contextPath}/RedirectController/forward?redirectUrl=other/${modelNameFirstLow}Edit&id=" + id,
 			showSaveBtn : false
 		});
 	}
@@ -49,10 +40,8 @@
 			fitColumns : true,
 			nowrap : true,
 			striped : true,
-			url : "<t:path />/${modelName}Controller/queryAll${modelName}.do",
-			loadFilter : function(data) {
-				return defaultLoadFilter(data);
-			},
+			url : "${contextPath}/${modelName}Controller/queryAll${modelName}",
+			loadFilter : defaultLoadFilter,
 			columns : [[{
 				title : "id",
 				field : "id",
@@ -69,9 +58,9 @@
 				width : "80%",
 				align : "center",
 				formatter : function(value, rowData, rowIndex) {
-					var str = "<a role='view' style='margin-left:10px;display:none;' rowid='"+ rowData.id +"' id='view${modelName}Btn_"+ rowData.id +"'>查看</a>";
-					str += "<a role='edit' style='margin-left:10px;display:none;' rowid='"+ rowData.id +"' id='edit${modelName}Btn_"+ rowData.id +"'>修改</a>";
-					str += "<a role='del' style='margin-left:10px;display:none;' rowid='"+ rowData.id +"' id='del${modelName}Btn_"+ rowData.id +"'>删除</a>";
+					var str = "<a role='view' style='margin-left:10px;' rowid='"+ rowData.id +"' id='view${modelName}Btn_"+ rowData.id +"'>查看</a>";
+					str += "<a role='edit' style='margin-left:10px;' rowid='"+ rowData.id +"' id='edit${modelName}Btn_"+ rowData.id +"'>修改</a>";
+					str += "<a role='del' style='margin-left:10px;' rowid='"+ rowData.id +"' id='del${modelName}Btn_"+ rowData.id +"'>删除</a>";
 					return str;
 				}
 			}]],
@@ -100,18 +89,15 @@
 					iconCls : "icon-remove",
 					onClick : function() {
 						$.confirmDialog({
-							url : "${request.contextPath}/${modelName}Controller/delete${modelName}?id=" + $(this).attr("rowid"),
+							url : "${contextPath}/${modelName}Controller/delete${modelName}?id=" + $(this).attr("rowid"),
 							text : "删除${tableComment}",
 							reloadTableObject : $("#${modelNameFirstLow}ListTable")
 						});
 					}
 				});
-				
-				window.top.showButtonList("<t:write name='menuId' />", $("body"), window.top.$("#<t:write name='iframeId' />").get(0).contentWindow);
 			}
 		});
 	});
 </script>
 </body>
-</html>
-
+<#include "/include/footer.ftl">

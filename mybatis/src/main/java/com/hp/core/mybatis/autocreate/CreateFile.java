@@ -36,11 +36,13 @@ public class CreateFile {
 	//java文件存放主目录
 	public static String JAVA_DIR = "src/main/java";
 	
-	public static String JSP_FILE_PATH = "src/main/webapp/jsp/newfile";
+	public static String FTL_FILE_PATH = "src/main/resources/templates/other";
 
 	public static String PROJECT_PACKAGE = "com.hp.core.test";
 
 	public static String MAPPING_DIR = "src/main/resources/META-INF/mybatis";
+	
+	public static String WEB_DIR_NAME = "start";
 	
 	//service所在module名称
 	public static String SERVICE_MAVEN_MODULE = "";
@@ -51,21 +53,24 @@ public class CreateFile {
 	public static final String BASE_REQUEST_BO_PACKAGE = "com.hp.core.common.beans.BaseRequestBO";
 	public static final String BASE_RESPONSE_BO_PACKAGE = "com.hp.core.common.beans.BaseResponseBO";
 	public static final String BASE_MAPPER_PACKAGE = "com.hp.core.mybatis.mapper.BaseMapper";
-	public static final String BASE_RESPONSE_PACKAGE = "com.hp.core.common.beans.Response";
+	public static final String RESPONSE_PACKAGE = "com.hp.core.common.beans.Response";
 	public static final String BASE_PAGE_REQUEST_PACKAGE = "com.hp.core.common.beans.page.PageRequest";
 	public static final String BASE_PAGE_RESPONSE_PACKAGE = "com.hp.core.common.beans.page.PageResponse";
 	public static final String BASE_PAGE_MODEL_PACKAGE = "com.hp.core.common.beans.page.PageModel";
 	public static final String DAL_DIR_NAME = "dal";
-	public static final String WEB_DIR_NAME = "web";
 	public static final String COMMON_DIR_NAME = "common";
 	public static final String MODEL_DIR_NAME = "model";
+	public static final String SERVICE_DIR_NAME = "service";
+	public static final String CONTROLLER_DIR_NAME = "controller";
+	public static final String REQUEST_DIR_NAME = "request";
+	public static final String RESPONSE_DIR_NAME = "response";
+	public static final String IMPL_DIR_NAME = "impl";
+	public static final String CONVERT_DIR_NAME = "convert";
 	public static final String AUTHER_NAME = "huangping";
-	
-	public static String is_create_JSP = "0";
-	
+		
 	public static List<String> tableList = new ArrayList<>();
 	
-	public static void main(AutoCreateBean bean) {
+	public static void main(AutoCreateBean bean, String contextPath) {
 		if (CollectionUtils.isEmpty(bean.getTableNameList())) {
 			log.error("auto create error. with table is empty.");
 			return;
@@ -76,6 +81,7 @@ public class CreateFile {
 		SERVICE_MAVEN_MODULE = bean.getServiceMavenModule();
 		CONTROLLER_MAVEN_MODULE = bean.getControllerMavenModule();
 		MAPPING_DIR = bean.getMappingDir();
+		WEB_DIR_NAME = bean.getWebDir();
 		try {
 			DataSource datasource = SpringContextUtil.getBean(DynamicDatasource.class);
 			Connection conn = datasource.getConnection();
@@ -83,6 +89,8 @@ public class CreateFile {
 			
 			for (String tableName : bean.getTableNameList()) {
 				table = TableBeanHelper.getTableInfoByTableName(conn, tableName);
+				
+				table.setContextPath(contextPath);
 				
 				//生成model
 				CreateDalModel.create(table);
@@ -93,25 +101,29 @@ public class CreateFile {
 				//生成mapper文件
 				CreateMapper.create(table);
 				
-				//生成request model
-				CreatModel.creat(table, "1");
+				if (bean.isCreateService()) {
+					//生成request model
+					CreatModel.creat(table, "1");
+					
+					//生成response model
+					CreatModel.creat(table, "2");
+					
+					//生成convert
+					CreateConvert.create(table);
+					
+					//生成service
+					CreateService.createInterface(table);
+					
+					//生成实现类
+					CreateService.createInterfaceImpl(table);
+				}
 				
-				//生成response model
-				CreatModel.creat(table, "2");
+				if (bean.isCreateController()) {
+					//生成controller
+					CreateController.create(table);
+				}
 				
-				//生成convert
-				CreateConvert.create(table);
-				
-				//生成service
-				CreateService.createInterface(table);
-				
-				//生成实现类
-				CreateService.createInterfaceImpl(table);
-				
-				//生成controller
-				CreateController.create(table);
-				
-				if ("1".equals(is_create_JSP)) {
+				if (bean.isCreateFtl()) {
 					CreateJSP.createJSPList(table);
 					CreateJSP.createJSPEdit(table);
 					CreateJSP.createJSPSearch(table);

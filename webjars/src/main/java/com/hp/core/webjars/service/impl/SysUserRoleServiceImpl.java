@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,19 +41,19 @@ public class SysUserRoleServiceImpl implements ISysUserRoleService {
 	}
 
 	@Override
-	public void insertUserRole(Integer userId, String roleIds) {
-		log.info("insertUserRole with userId={}, roleIds={}", userId, roleIds);
+	public void insertUserRole(Integer userId, List<Integer> roleIdList) {
+		log.info("insertUserRole with userId={}, roleIdList={}", userId, roleIdList);
 		//首先删除
 		sysUserRoleDAO.deleteByUserId(userId);
 		
-		if (StringUtils.isNotEmpty(roleIds)) {
-			String[] arr = roleIds.split(",");
-			List<SysUserRole> list = new ArrayList<>(arr.length);
-			for (String roleId : arr) {
-				list.add(new SysUserRole(userId, Integer.parseInt(roleId)));
-			}
-			sysUserRoleDAO.insertBatch(list);
+		if (CollectionUtils.isEmpty(roleIdList)) {
+			return;
 		}
+		List<SysUserRole> list = new ArrayList<>(roleIdList.size());
+		for (Integer roleId : roleIdList) {
+			list.add(new SysUserRole(userId, roleId));
+		}
+		sysUserRoleDAO.insertBatch(list);
 	}
 
 }

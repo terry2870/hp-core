@@ -3,6 +3,10 @@
  */
 package com.hp.core.mybatis.autocreate;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.hp.core.freemarker.utils.FreeMarkerUtil;
 import com.hp.core.mybatis.autocreate.helper.TableBean;
 
 /**
@@ -16,17 +20,12 @@ public class CreateMapper {
 	 * @param table
 	 */
 	public static void create(TableBean table) {
-		StringBuilder sb = new StringBuilder();
-		String daoPackage = CreateFile.PROJECT_PACKAGE + ".dal";
-		String daoModelPackage = CreateFile.PROJECT_PACKAGE + ".dal.model";
-		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\r\n");
-		sb.append("<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\" >\r\n");
-		sb.append("<mapper namespace=\"").append(daoPackage).append(".I").append(table.getModelName()).append("DAO\">\r\n");
-		sb.append("	<resultMap id=\"BaseResultMap\" type=\"").append(daoModelPackage).append(".").append(table.getModelName()).append("\">\r\n");
-		sb.append("	</resultMap>\r\n");
-		sb.append("\r\n");
-		sb.append("</mapper>\r\n");
+		String dalPackage = CreateFile.PROJECT_PACKAGE + "." + CreateFile.DAL_DIR_NAME;
 		String fileName = CreateFile.MAIN_PATH_DIR + "/"+ CreateFile.DAL_DIR_NAME +"/" + CreateFile.MAPPING_DIR + "/"+ table.getModelName() +"Mapper.xml";
-		CreateFile.saveFile(fileName, sb.toString());
+		Map<String, Object> map = new HashMap<>();
+		map.put("dalPackage", dalPackage);
+		map.put("dalModelPackage", dalPackage + "." + CreateFile.MODEL_DIR_NAME);
+		map.put("modelName", table.getModelName());
+		FreeMarkerUtil.createFile("autocreate/mapper.ftl", fileName, map);
 	}
 }

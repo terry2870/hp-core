@@ -17,8 +17,7 @@ import com.hp.core.database.interceptor.BaseSQLAOPFactory;
  * @author huangping
  * 2018年12月10日
  */
-@Repository
-public class BaseSelectDAOImpl<T> implements IBaseSelectDAO<T> {
+public abstract class BaseSelectDAOImpl<T> implements IBaseSelectDAO<T> {
 
 	/* (non-Javadoc)
 	 * @see com.hp.core.database.dao.IBaseSelectDAO#selectAllCount()

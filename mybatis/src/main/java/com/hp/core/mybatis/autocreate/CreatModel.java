@@ -3,8 +3,10 @@
  */
 package com.hp.core.mybatis.autocreate;
 
-import com.hp.core.common.utils.DateUtil;
-import com.hp.core.mybatis.autocreate.helper.ColumnBean;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.hp.core.freemarker.utils.FreeMarkerUtil;
 import com.hp.core.mybatis.autocreate.helper.TableBean;
 
 /**
@@ -18,58 +20,29 @@ public class CreatModel {
 	 * @param table
 	 */
 	public static void creat(TableBean table, String type) {
-		StringBuilder sb = new StringBuilder();
-		String packageUrl = "", fileName = "", filePath = "", baseBeanName = "";
+		String packageUrl = "", fileName = "", filePath = "", baseExtendBeanName = "", importPackage = "";
 		if ("1".equals(type)) {
 			//request
-			packageUrl = CreateFile.PROJECT_PACKAGE + ".model.request";
+			packageUrl = CreateFile.PROJECT_PACKAGE + "." + CreateFile.MODEL_DIR_NAME + "." + CreateFile.REQUEST_DIR_NAME;
 			fileName = table.getModelName() + "RequestBO";
-			baseBeanName = "BaseRequestBO";
+			baseExtendBeanName = "BaseRequestBO";
+			importPackage = CreateFile.BASE_REQUEST_BO_PACKAGE;
 		} else if ("2".equals(type)) {
 			//response
-			packageUrl = CreateFile.PROJECT_PACKAGE + ".model.response";
+			packageUrl = CreateFile.PROJECT_PACKAGE + "." + CreateFile.MODEL_DIR_NAME + "." + CreateFile.RESPONSE_DIR_NAME;
 			fileName = table.getModelName() + "ResponseBO";
-			baseBeanName = "BaseResponseBO";
+			baseExtendBeanName = "BaseResponseBO";
+			importPackage = CreateFile.BASE_RESPONSE_BO_PACKAGE;
 		}
 		filePath = CreateFile.MAIN_PATH_DIR + CreateFile.MODEL_DIR_NAME +"/" + CreateFile.JAVA_DIR + "/" + packageUrl.replace(".", "/");
-		sb.append("package ").append(packageUrl).append(";\r\n");
-		sb.append("\r\n");
-		if ("1".equals(type)) {
-			sb.append("import ").append(CreateFile.BASE_REQUEST_BO_PACKAGE).append(";\r\n");
-			sb.append("\r\n");
-		} else {
-			sb.append("import ").append(CreateFile.BASE_RESPONSE_BO_PACKAGE).append(";\r\n");
-			sb.append("\r\n");
-		}
-		sb.append("/**\r\n");
-		sb.append(" * @author ").append(CreateFile.AUTHER_NAME).append("\r\n");
-		sb.append(" * ").append(DateUtil.getCurrentDateString()).append("\r\n");
-		sb.append(" */\r\n");
-		sb.append("public class ").append(fileName).append(" extends ").append(baseBeanName).append(" {\r\n");
-		sb.append("\r\n");
-		sb.append("	private static final long serialVersionUID = 1L;\r\n");
-		sb.append("\r\n");
-		
-		for (ColumnBean column : table.getColumnList()) {
-			sb.append("	/**\r\n");
-			sb.append("	 * ").append(column.getColumnComment()).append("\r\n");
-			sb.append("	 */\r\n");
-			sb.append("	private ").append(column.getJavaType()).append(" ").append(column.getFieldName()).append(";\r\n");
-			sb.append("\r\n");
-		}
-		
-		for (ColumnBean column : table.getColumnList()) {
-			sb.append("	public ").append(column.getJavaType()).append(" get").append(column.getFieldNameFirstUpper()).append("() {\r\n");
-			sb.append("		return ").append(column.getFieldName()).append(";\r\n");
-			sb.append("	}\r\n");
-			sb.append("\r\n");
-			sb.append("	public void set").append(column.getFieldNameFirstUpper()).append("(").append(column.getJavaType()).append(" ").append(column.getFieldName()).append(") {\r\n");
-			sb.append("		this.").append(column.getFieldName()).append(" = ").append(column.getFieldName()).append(";\r\n");
-			sb.append("	}\r\n");
-			sb.append("\r\n");
-		}
-		sb.append("}\r\n");
-		
-		CreateFile.saveFile(filePath + "/" + fileName + ".java", sb.toString());
+		Map<String, Object> map = new HashMap<>();
+		map.put("author", CreateFile.AUTHER_NAME);
+		map.put("package", packageUrl);
+		map.put("className", fileName);
+		map.put("importPackage", importPackage);
+		map.put("baseExtendBeanName", baseExtendBeanName);
+		map.put("columnList", table.getColumnList());
+		map.put("tableComment", table.getTableComment());
+		FreeMarkerUtil.createFile("autocreate/model.ftl", filePath + "/" + fileName + ".java", map);
 	}
 }

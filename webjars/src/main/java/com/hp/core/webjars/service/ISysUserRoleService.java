@@ -21,7 +21,7 @@ public interface ISysUserRoleService {
 	/**
 	 * 插入用户的角色关系
 	 * @param userId
-	 * @param roleIds
+	 * @param roleIdList
 	 */
-	public void insertUserRole(Integer userId, String roleIds);
+	public void insertUserRole(Integer userId, List<Integer> roleIdList);
 }

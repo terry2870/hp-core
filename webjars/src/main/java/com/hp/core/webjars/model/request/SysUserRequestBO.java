@@ -1,5 +1,7 @@
 package com.hp.core.webjars.model.request;
 
+import java.util.List;
+
 import com.hp.core.common.beans.BaseRequestBO;
 
 /**
@@ -82,7 +84,7 @@ public class SysUserRequestBO extends BaseRequestBO {
 	
 	private String checkCode;
 	
-	private String roleIds;
+	private List<Integer> roleIdList;
 
 	public Integer getId() {
 		return id;
@@ -204,12 +206,12 @@ public class SysUserRequestBO extends BaseRequestBO {
 		this.checkCode = checkCode;
 	}
 
-	public String getRoleIds() {
-		return roleIds;
+	public List<Integer> getRoleIdList() {
+		return roleIdList;
 	}
 
-	public void setRoleIds(String roleIds) {
-		this.roleIds = roleIds;
+	public void setRoleIdList(List<Integer> roleIdList) {
+		this.roleIdList = roleIdList;
 	}
 
 }

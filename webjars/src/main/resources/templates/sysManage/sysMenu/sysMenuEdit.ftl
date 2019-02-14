@@ -148,7 +148,7 @@
 		$("#saveMenu").linkbutton({
 			iconCls : "icon-save",
 			onClick : function() {
-				$.saveDialog({
+				$.saveDialogHandler({
 					formObject : $("#sysMenuEditForm"),
 					url : "${request.contextPath}/SysMenuController/saveSysMenu",
 					callback : function() {

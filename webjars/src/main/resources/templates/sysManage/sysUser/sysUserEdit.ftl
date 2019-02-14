@@ -65,7 +65,8 @@
 			</td>
 		</tr>
 		<tr>
-			<td id="roleIdTD" colspan="2"></td>
+			<td align="right">角色：</td>
+			<td><input id="roleId" /></td>
 		</tr>
 		<tr>
 			<td align="right">用户身份：</td>
@@ -101,11 +102,11 @@
 		});
 		
 		//角色
-		$("#sysUserEditForm #roleIdTD").checkboxList({
-			textField : "roleName",
-			rowMaxSize : 5,
+		$("#sysUserEditForm #roleId").tagbox({
 			valueField : "id",
-			name : "roleId",
+			textField : "roleName",
+			limitToList : true,
+			hasDownArrow : true,
 			url : "${request.contextPath}/SysRoleController/queryAllSysRole",
 			queryParams : {
 				rows : 0,
@@ -118,6 +119,7 @@
 				return data.data.rows;
 			},
 			onLoadSuccess : function() {
+				let self = this;
 				$.post("${request.contextPath}/SysUserController/selectRoleByUserId", {
 					userId : id
 				}, function(data) {
@@ -128,8 +130,9 @@
 					$(data.data).each(function(index, item) {
 						arr.push(item);
 					});
-					$("#sysUserEditForm #roleIdTD").checkboxList("setChecked", arr.join(","));
-				})
+					
+					$(self).tagbox("setValues", arr);
+				});
 			}
 		});
 		

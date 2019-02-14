@@ -17,10 +17,9 @@ public class CreateJSP {
 	 * @param table
 	 */
 	public static void createJSPList(TableBean table) {
-
-		String fileName = CreateFile.MAIN_PATH_DIR + "/" + CreateFile.WEB_DIR_NAME + "/" + CreateFile.JSP_FILE_PATH
-				+ "/" + table.getModelNameFirstLow() + "List.jsp";
-		FreeMarkerUtil.createFile("jspList.ftl", fileName, table);
+		String fileName = CreateFile.MAIN_PATH_DIR + "/" + CreateFile.WEB_DIR_NAME + "/" + CreateFile.FTL_FILE_PATH
+				+ "/" + table.getModelNameFirstLow() + "List.ftl";
+		FreeMarkerUtil.createFile("autocreate/pageList.ftl", fileName, table);
 	}
 
 	/**
@@ -29,9 +28,9 @@ public class CreateJSP {
 	 */
 	public static void createJSPEdit(TableBean table) {
 
-		String fileName = CreateFile.MAIN_PATH_DIR + "/" + CreateFile.WEB_DIR_NAME + "/" + CreateFile.JSP_FILE_PATH
-				+ "/" + table.getModelNameFirstLow() + "Edit.jsp";
-		FreeMarkerUtil.createFile("jspEdit.ftl", fileName, table);
+		String fileName = CreateFile.MAIN_PATH_DIR + "/" + CreateFile.WEB_DIR_NAME + "/" + CreateFile.FTL_FILE_PATH
+				+ "/" + table.getModelNameFirstLow() + "Edit.ftl";
+		FreeMarkerUtil.createFile("autocreate/pageEdit.ftl", fileName, table);
 	}
 
 	/**
@@ -40,8 +39,8 @@ public class CreateJSP {
 	 */
 	public static void createJSPSearch(TableBean table) {
 
-		String fileName = CreateFile.MAIN_PATH_DIR + "/" + CreateFile.WEB_DIR_NAME + "/" + CreateFile.JSP_FILE_PATH
-				+ "/" + table.getModelNameFirstLow() + "Search.jsp";
-		FreeMarkerUtil.createFile("jspSearch.ftl", fileName, table);
+		String fileName = CreateFile.MAIN_PATH_DIR + "/" + CreateFile.WEB_DIR_NAME + "/" + CreateFile.FTL_FILE_PATH
+				+ "/" + table.getModelNameFirstLow() + "Search.ftl";
+		FreeMarkerUtil.createFile("autocreate/pageSearch.ftl", fileName, table);
 	}
 }
