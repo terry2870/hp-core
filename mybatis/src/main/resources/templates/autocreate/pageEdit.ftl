@@ -12,8 +12,6 @@
 </form>
 <script>
 	$(function() {
-		
-		$("#${modelNameFirstLow}EditForm").form();
 		var id = "${r'${id}'}";
 		if (id > 0) {
 			$.post("${contextPath}/${modelName}Controller/query${modelName}ById", {

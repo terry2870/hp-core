@@ -263,19 +263,11 @@ public class BaseSelectProvider {
 				} else if (QueryTypeEnum.IN.equals(column.getQueryType())) {
 					sql.append(" AND ")
 					.append(column.getColumnName())
-					.append(" IN #{")
-					.append(SQLProviderConstant.TARGET_OBJECT_ALIAS)
-					.append(".")
-					.append(column.getFieldName())
-					.append("}");
+					.append(" IN (").append(value).append(")");
 				} else if (QueryTypeEnum.NOT_IN.equals(column.getQueryType())) {
 					sql.append(" AND ")
 					.append(column.getColumnName())
-					.append(" NOT IN #{")
-					.append(SQLProviderConstant.TARGET_OBJECT_ALIAS)
-					.append(".")
-					.append(column.getFieldName())
-					.append("}");
+					.append(" NOT IN (").append(value).append(")");
 				}
 				
 			}

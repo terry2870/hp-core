@@ -216,6 +216,7 @@
 			//如果传过来不是数组，则变为数组
 			fileArr = [fileArr];
 		}
+		
 		var uploadForm = _getUploadForm(jq);
 		__showImage(0);
 		
@@ -299,6 +300,11 @@
 	}
 	
 	function _drawImage(jq, uploadForm, fileItem) {
+		
+		if (!_checkMaxFileSize(jq)) {
+			return;
+		}
+		
 		var opt = jq.data("multiImageUpload");
 		var imageLi = $("<li role='image'>").addClass("multi_image_upload_image").css({
 			width : opt.width,
@@ -357,8 +363,10 @@
 		var opt = jq.data("multiImageUpload");
 		if (images && images.length >= opt.maxFileNum) {
 			_getUploadForm(jq).hide();
+			return false;
 		} else {
 			_getUploadForm(jq).show();
+			return true;
 		}
 	}
 	

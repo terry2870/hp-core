@@ -25,7 +25,7 @@ import ${servicePackage}.I${modelName}Service;
 @RequestMapping("/${modelName}Controller")
 public class ${modelName}Controller {
 
-	static Logger log = LoggerFactory.getLogger(${modelName}Controller.class);
+	private static Logger log = LoggerFactory.getLogger(${modelName}Controller.class);
 
 	@Autowired
 	private I${modelName}Service ${modelNameFirstLow}Service;
