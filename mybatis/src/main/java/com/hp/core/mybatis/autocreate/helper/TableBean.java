@@ -22,7 +22,6 @@ public class TableBean extends BaseBean {
 	private String primaryKeyFirstUpper;
 	private String status;
 	
-	private String contextPath;
 
 	public String getTableName() {
 		return this.tableName;
@@ -88,12 +87,5 @@ public class TableBean extends BaseBean {
 		this.primaryKeyFirstUpper = primaryKeyFirstUpper;
 	}
 
-	public String getContextPath() {
-		return contextPath;
-	}
-
-	public void setContextPath(String contextPath) {
-		this.contextPath = contextPath;
-	}
 
 }

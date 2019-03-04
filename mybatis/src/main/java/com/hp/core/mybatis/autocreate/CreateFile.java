@@ -70,7 +70,7 @@ public class CreateFile {
 		
 	public static List<String> tableList = new ArrayList<>();
 	
-	public static void main(AutoCreateBean bean, String contextPath) {
+	public static void main(AutoCreateBean bean) {
 		if (CollectionUtils.isEmpty(bean.getTableNameList())) {
 			log.error("auto create error. with table is empty.");
 			return;
@@ -89,9 +89,7 @@ public class CreateFile {
 			
 			for (String tableName : bean.getTableNameList()) {
 				table = TableBeanHelper.getTableInfoByTableName(conn, tableName);
-				
-				table.setContextPath(contextPath);
-				
+								
 				//生成model
 				CreateDalModel.create(table);
 				

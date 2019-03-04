@@ -12,10 +12,10 @@ ${'<#include "/include/head.ftl">'}
 			title : id === 0 ? "新增${tableComment}数据" : "修改${tableComment}数据",
 			width : "40%",
 			height : "80%",
-			href : "${contextPath}/RedirectController/forward?redirectUrl=other/${modelNameFirstLow}Edit&id=" + id,
+			href : "${r"${request.contextPath}"}/RedirectController/forward?redirectUrl=other/${modelNameFirstLow}Edit&id=" + id,
 			handler : {
 				formObjectId : "${modelNameFirstLow}EditForm",
-				url : "${contextPath}/${modelName}Controller/save${modelName}",
+				url : "${r"${request.contextPath}"}/${modelName}Controller/save${modelName}",
 				reloadTableObject : $("#${modelNameFirstLow}ListTable")
 			}
 		});
@@ -27,7 +27,7 @@ ${'<#include "/include/head.ftl">'}
 			title : "${tableComment}数据详细",
 			width : "40%",
 			height : "80%",
-			href : "${contextPath}/RedirectController/forward?redirectUrl=other/${modelNameFirstLow}Edit&id=" + id,
+			href : "${r"${request.contextPath}"}/RedirectController/forward?redirectUrl=other/${modelNameFirstLow}Edit&id=" + id,
 			showSaveBtn : false
 		});
 	}
@@ -40,7 +40,7 @@ ${'<#include "/include/head.ftl">'}
 			fitColumns : true,
 			nowrap : true,
 			striped : true,
-			url : "${contextPath}/${modelName}Controller/queryAll${modelName}",
+			url : "${r"${request.contextPath}"}/${modelName}Controller/queryAll${modelName}",
 			loadFilter : defaultLoadFilter,
 			columns : [[{
 				title : "id",
@@ -89,7 +89,7 @@ ${'<#include "/include/head.ftl">'}
 					iconCls : "icon-remove",
 					onClick : function() {
 						$.confirmDialog({
-							url : "${contextPath}/${modelName}Controller/delete${modelName}?id=" + $(this).attr("rowid"),
+							url : "${r"${request.contextPath}"}/${modelName}Controller/delete${modelName}?id=" + $(this).attr("rowid"),
 							text : "删除${tableComment}",
 							reloadTableObject : $("#${modelNameFirstLow}ListTable")
 						});
@@ -100,4 +100,4 @@ ${'<#include "/include/head.ftl">'}
 	});
 </script>
 </body>
-<#include "/include/footer.ftl">
+${'<#include "/include/footer.ftl">'}

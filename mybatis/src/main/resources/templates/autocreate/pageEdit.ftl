@@ -14,7 +14,7 @@
 	$(function() {
 		var id = "${r'${id}'}";
 		if (id > 0) {
-			$.post("${contextPath}/${modelName}Controller/query${modelName}ById", {
+			$.post("${r"${request.contextPath}"}/${modelName}Controller/query${modelName}ById", {
 				id : id
 			}, function(data) {
 				$("#${modelNameFirstLow}EditForm").form("load", data.data);

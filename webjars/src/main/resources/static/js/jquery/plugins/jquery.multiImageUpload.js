@@ -361,7 +361,7 @@
 	function _checkMaxFileSize(jq) {
 		var images = _getImage(jq);
 		var opt = jq.data("multiImageUpload");
-		if (images && images.length >= opt.maxFileNum) {
+		if (opt.maxFileNum > 0 && images && images.length >= opt.maxFileNum) {
 			_getUploadForm(jq).hide();
 			return false;
 		} else {
