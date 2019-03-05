@@ -145,7 +145,7 @@
 				
 				//分配权限按钮
 				$(this).myDatagrid("getPanel").find("a[role='roleMenu']").linkbutton({
-					iconCls : "icon-remove",
+					iconCls : "icon-more",
 					onClick : function() {
 						viewRoleMenu($(this).attr("rowid"));
 					}

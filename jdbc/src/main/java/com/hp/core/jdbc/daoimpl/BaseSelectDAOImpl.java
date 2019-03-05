@@ -7,9 +7,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.hp.core.common.beans.page.PageModel;
 import com.hp.core.database.bean.DynamicEntityBean;
 import com.hp.core.database.bean.OrderBy;
+import com.hp.core.database.bean.PageModel;
 import com.hp.core.database.dao.IBaseSelectDAO;
 import com.hp.core.database.interceptor.BaseSQLAOPFactory;
 

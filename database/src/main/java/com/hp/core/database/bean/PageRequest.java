@@ -1,4 +1,4 @@
-package com.hp.core.common.beans.page;
+package com.hp.core.database.bean;
 
 import org.apache.commons.lang3.StringUtils;
 

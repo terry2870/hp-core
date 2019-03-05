@@ -1,7 +1,7 @@
 package com.hp.core.webjars.service;
 
-import com.hp.core.common.beans.page.PageRequest;
 import com.hp.core.common.beans.page.PageResponse;
+import com.hp.core.database.bean.PageRequest;
 import com.hp.core.webjars.model.request.SysUserRequestBO;
 import com.hp.core.webjars.model.response.SysUserResponseBO;
 

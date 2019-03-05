@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hp.core.common.beans.Response;
-import com.hp.core.common.beans.page.PageRequest;
 import com.hp.core.common.beans.page.PageResponse;
+import com.hp.core.database.bean.PageRequest;
 import com.hp.core.webjars.model.request.SysRoleRequestBO;
 import com.hp.core.webjars.model.response.SysRoleResponseBO;
 import com.hp.core.webjars.service.ISysRoleMenuService;

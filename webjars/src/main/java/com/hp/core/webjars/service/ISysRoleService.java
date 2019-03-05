@@ -2,8 +2,8 @@ package com.hp.core.webjars.service;
 
 import com.hp.core.webjars.model.request.SysRoleRequestBO;
 import com.hp.core.webjars.model.response.SysRoleResponseBO;
-import com.hp.core.common.beans.page.PageRequest;
 import com.hp.core.common.beans.page.PageResponse;
+import com.hp.core.database.bean.PageRequest;
 
 /**
  * 系统角色表业务接口定义

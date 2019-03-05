@@ -1,4 +1,4 @@
-package com.hp.core.common.beans.page;
+package com.hp.core.database.bean;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -15,6 +15,7 @@ import com.hp.core.common.utils.StringUtil;
  * @author ping.huang
  *
  */
+@Deprecated
 public class PageBean extends BaseBean {
 
 	static Logger log = LoggerFactory.getLogger(PageBean.class);

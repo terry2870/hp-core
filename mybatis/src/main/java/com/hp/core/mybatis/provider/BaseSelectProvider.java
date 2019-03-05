@@ -15,10 +15,10 @@ import org.apache.ibatis.jdbc.SQL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.core.common.beans.page.PageModel;
 import com.hp.core.database.bean.DynamicColumnBean;
 import com.hp.core.database.bean.DynamicEntityBean;
 import com.hp.core.database.bean.OrderBy;
+import com.hp.core.database.bean.PageModel;
 import com.hp.core.database.enums.QueryTypeEnum;
 import com.hp.core.database.exceptions.ProviderSQLException;
 import com.hp.core.database.interceptor.BaseSQLAOPFactory;

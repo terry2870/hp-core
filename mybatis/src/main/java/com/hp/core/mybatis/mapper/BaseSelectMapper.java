@@ -9,8 +9,8 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.jdbc.SQL;
 
-import com.hp.core.common.beans.page.PageModel;
 import com.hp.core.database.bean.OrderBy;
+import com.hp.core.database.bean.PageModel;
 import com.hp.core.database.dao.IBaseSelectDAO;
 import com.hp.core.mybatis.constant.SQLProviderConstant;
 import com.hp.core.mybatis.provider.BaseSelectProvider;

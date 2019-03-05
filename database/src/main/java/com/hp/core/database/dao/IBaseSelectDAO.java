@@ -5,8 +5,8 @@ package com.hp.core.database.dao;
 
 import java.util.List;
 
-import com.hp.core.common.beans.page.PageModel;
 import com.hp.core.database.bean.OrderBy;
+import com.hp.core.database.bean.PageModel;
 
 /**
  * 基本的查询操作

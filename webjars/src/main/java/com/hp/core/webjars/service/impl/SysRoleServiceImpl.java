@@ -9,12 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hp.core.common.beans.page.PageModel;
-import com.hp.core.common.beans.page.PageRequest;
 import com.hp.core.common.beans.page.PageResponse;
 import com.hp.core.common.enums.StatusEnum;
 import com.hp.core.common.exceptions.CommonException;
 import com.hp.core.common.utils.DateUtil;
+import com.hp.core.database.bean.PageModel;
+import com.hp.core.database.bean.PageRequest;
 import com.hp.core.webjars.convert.SysRoleConvert;
 import com.hp.core.webjars.dal.ISysRoleDAO;
 import com.hp.core.webjars.dal.model.SysRole;
