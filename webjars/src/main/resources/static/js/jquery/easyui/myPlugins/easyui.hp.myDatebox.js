@@ -5,6 +5,7 @@
  * 日期：2016-11-21
  */
 (function($) {
+	$.parser.plugins.push("myDatebox");
 	$.fn.myDatebox = function(options, param) {
 		var self = this;
 		if (typeof (options) == "string") {

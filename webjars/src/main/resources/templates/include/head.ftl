@@ -20,6 +20,7 @@
 <script src="${request.contextPath}/js/jquery/easyui/myPlugins/easyui.hp.myCombotree.js"></script>
 <script src="${request.contextPath}/js/jquery/easyui/myPlugins/easyui.hp.myCombobox.js"></script>
 <script src="${request.contextPath}/js/jquery/easyui/myPlugins/easyui.hp.myDatetimebox.js"></script>
+<script src="${request.contextPath}/js/jquery/easyui/myPlugins/easyui.hp.myDatebox.js"></script>
 <script src="${request.contextPath}/js/jquery/plugins/jquery.multiImageUpload.js"></script>
 <script src="${request.contextPath}/js/jquery/plugins/jquery.checkboxList.js"></script>
 
