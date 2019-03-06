@@ -6,6 +6,7 @@ package com.hp.core.freemarker.utils;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,8 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import com.hp.core.common.utils.SpringContextUtil;
 
+import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.beans.BeansWrapperBuilder;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
@@ -24,6 +27,31 @@ public class FreeMarkerUtil {
 
 	private static Logger log = LoggerFactory.getLogger(FreeMarkerUtil.class);
 	
+	private static BeansWrapper beansWrapper = new BeansWrapperBuilder(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS).build();
+	
+	/**
+	 * 使ftl页面上可以直接调用java静态方法和字段
+	 * @param map
+	 */
+	public static void addStaticTemplate(Map<String, Object> map) {
+		addStaticTemplate(map, "javaClass");
+	}
+	
+	/**
+	 * 使ftl页面上可以直接调用java静态方法和字段
+	 * @param map
+	 * @param staticTemplateModelName
+	 */
+	public static void addStaticTemplate(Map<String, Object> map, String staticTemplateModelName) {
+		map.put(staticTemplateModelName, beansWrapper.getStaticModels());
+	}
+	
+	/**
+	 * 使用FreeMarker模板生成文件
+	 * @param templateFileName
+	 * @param outFileName
+	 * @param root
+	 */
 	public static void createFile(String templateFileName, String outFileName, Object root) {
 		
 		FreeMarkerConfigurer cfg2 = SpringContextUtil.getBean("local_freeMarkerConfigurer", FreeMarkerConfigurer.class);
