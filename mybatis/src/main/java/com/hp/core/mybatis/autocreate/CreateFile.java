@@ -54,9 +54,9 @@ public class CreateFile {
 	public static final String BASE_RESPONSE_BO_PACKAGE = "com.hp.core.common.beans.BaseResponseBO";
 	public static final String BASE_MAPPER_PACKAGE = "com.hp.core.mybatis.mapper.BaseMapper";
 	public static final String RESPONSE_PACKAGE = "com.hp.core.common.beans.Response";
-	public static final String BASE_PAGE_REQUEST_PACKAGE = "com.hp.core.common.beans.page.PageRequest";
+	public static final String BASE_PAGE_REQUEST_PACKAGE = "com.hp.core.database.bean.PageRequest";
 	public static final String BASE_PAGE_RESPONSE_PACKAGE = "com.hp.core.common.beans.page.PageResponse";
-	public static final String BASE_PAGE_MODEL_PACKAGE = "com.hp.core.common.beans.page.PageModel";
+	public static final String BASE_PAGE_MODEL_PACKAGE = "com.hp.core.database.bean.PageModel";
 	public static final String DAL_DIR_NAME = "dal";
 	public static final String COMMON_DIR_NAME = "common";
 	public static final String MODEL_DIR_NAME = "model";
