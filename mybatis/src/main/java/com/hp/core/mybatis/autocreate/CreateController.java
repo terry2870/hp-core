@@ -25,6 +25,7 @@ public class CreateController {
 		map.put("tableComment", table.getTableComment());
 		map.put("author", CreateFile.AUTHER_NAME);
 		map.put("package", packageUrl);
+		map.put("freeMarkerUtilPackage", CreateFile.FREEMARKER_UTIL_PACKAGE);
 		map.put("responsePackage", CreateFile.RESPONSE_PACKAGE);
 		map.put("pageRequestPackage", CreateFile.BASE_PAGE_REQUEST_PACKAGE);
 		map.put("pageResponsePackage", CreateFile.BASE_PAGE_RESPONSE_PACKAGE);

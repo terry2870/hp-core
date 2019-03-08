@@ -1,6 +1,7 @@
 package ${package};
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import ${responsePackage};
 import ${pageRequestPackage};
 import ${pageResponsePackage};
+import ${freeMarkerUtilPackage};
 import ${requestModelPackage}.${modelName}RequestBO;
 import ${responseModelPackage}.${modelName}ResponseBO;
 import ${servicePackage}.I${modelName}Service;
@@ -36,10 +38,10 @@ public class ${modelName}Controller {
 	 * @return
 	 */
 	@RequestMapping("/${modelNameFirstLow}List")
-	public ModelAndView ${modelNameFirstLow}List(HttpServletRequest request) {
-		request.setAttribute("menuId", request.getParameter("menuId"));
-		request.setAttribute("iframeId", request.getParameter("iframeId"));
-		return new ModelAndView("other/${modelNameFirstLow}List");
+	public ModelAndView ${modelNameFirstLow}List(Integer menuId, Integer iframeId) {
+		Map<String, Object> map = new HashMap<>();
+		FreeMarkerUtil.addStaticTemplate(map);
+		return new ModelAndView("other/${modelNameFirstLow}List", map);
 	}
 	
 	/**
