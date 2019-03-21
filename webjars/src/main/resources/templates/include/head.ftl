@@ -32,4 +32,5 @@
 <link rel="stylesheet" type="text/css" href="${request.contextPath}/js/jquery/plugins/css/jquery.multiImageUpload.css" />
 <link rel="stylesheet" type="text/css" href="${request.contextPath}/js/jquery/easyui/myPlugins/css/easyui-extend.css" />
 <link rel="stylesheet" type="text/css" href="${request.contextPath}/css/index.css" />
+<link rel="stylesheet" type="text/css" href="${request.contextPath}/css/style-new.css" />
 </head>

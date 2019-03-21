@@ -4,6 +4,7 @@
  * 日期：2016-09-09
  */
 (function($) {
+	$.parser.plugins.push("myCombobox");
 	$.fn.myCombobox = function(options, param) {
 		var self = this;
 		

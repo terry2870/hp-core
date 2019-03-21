@@ -9,8 +9,10 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.google.common.collect.Lists;
@@ -45,6 +47,21 @@ public class HpCoreWebMvcConfigurer implements WebMvcConfigurer {
 	 */
 	@Value("${hp.core.common.interceptor.path.pattern:/**}")
 	private String interceptorPathPatterns;
+	
+	/**
+	 * 首页
+	 */
+	@Value("${hp.core.common.interceptor.welcome.file:}")
+	private String welcomeFile;
+	
+	@Override
+	public void addViewControllers(ViewControllerRegistry registry) {
+		if (StringUtils.isEmpty(welcomeFile)) {
+			return;
+		}
+		registry.addViewController("/").setViewName("forward:" + welcomeFile);
+		registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
+	}
 	
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {

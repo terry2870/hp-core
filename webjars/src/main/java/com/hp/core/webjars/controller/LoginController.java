@@ -73,7 +73,7 @@ public class LoginController {
 	public void logout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		log.info("logout start ");
 		request.getSession().invalidate();
-		response.sendRedirect(request.getContextPath() + "/login");
+		response.sendRedirect(request.getContextPath());
 	}
 	
 	/**
