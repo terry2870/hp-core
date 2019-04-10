@@ -9,12 +9,13 @@ jQuery.extend({
 	 * 			url
 	 * 			params
 	 * 			text
+	 * 			message
 	 * 			reloadTableObject
 	 * 			callback
 	 * @returns
 	 */
 	confirmDialog : function(obj) {
-		window.top.$.messager.confirm("确认", "您确定要"+ obj.text +"该数据吗？", function(flag) {
+		window.top.$.messager.confirm("确认", obj.message ? obj.message : "您确定要"+ obj.text +"该数据吗？", function(flag) {
 			if (!flag) {
 				return;
 			}
@@ -34,7 +35,7 @@ jQuery.extend({
 					}
 					window.top.$.messager.show({
 						title : "提示",
-						msg : obj.text + "成功！"
+						msg : "操作成功！"
 					});
 				} else {
 					window.top.$.messager.alert("失败", data.message, "error");
@@ -123,7 +124,7 @@ jQuery.extend({
 	saveDialog : function(obj) {
 		var div = $("<div>").appendTo($(window.top.document.body));
 
-        let buttons = [];
+		let buttons = obj.buttons || [];
         if (obj.showSaveBtn !== false) {
         	if (!obj.saveBtn) {
         		obj.saveBtn = {};
@@ -158,12 +159,15 @@ jQuery.extend({
 			height: obj.height ? obj.height : '300',
 			title: obj.title,
 			href: obj.href,
+			content : obj.content,
 			queryParams: obj.queryParams,
 			method: "post",
 			modal: true,
 			collapsible: true,
 			cache: false,
-			buttons: buttons
+			buttons: buttons,
+			onOpen : obj.onOpen || $.noop
 		});
+		return div;
 	}
 });

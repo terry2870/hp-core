@@ -24,6 +24,32 @@ import com.hp.core.mybatis.provider.BaseSelectProvider;
 public interface BaseSelectMapper<T> extends IBaseSelectDAO<T> {
 
 	/**
+	 * 查询最大的id
+	 * @param target
+	 * @return
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectMaxId")
+	public Long selectMaxId(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target);
+	
+	/**
+	 * 查询最小id
+	 * @param target
+	 * @return
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectMinId")
+	public Long selectMinId(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target);
+	
+	/**
+	 * 根据id范围查询
+	 * @param minId
+	 * @param maxId
+	 * @param target
+	 * @return
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectListByRange")
+	public List<T> selectListByRange(@Param("minId") long minId, @Param("maxId") long maxId, @Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target);
+	
+	/**
 	 *  无条件查询所有总数
 	 * @return
 	 */

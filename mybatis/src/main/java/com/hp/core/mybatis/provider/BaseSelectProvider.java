@@ -34,6 +34,62 @@ public class BaseSelectProvider {
 	private static Logger log = LoggerFactory.getLogger(BaseSelectProvider.class);
 	
 	/**
+	 * 查询最大id
+	 * @return
+	 */
+	public static String selectMaxId(Map<String, Object> target) {
+		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
+		StringBuilder sql = new StringBuilder()
+				.append("select max(")
+				.append(entity.getPrimaryKeyColumnName())
+				.append(") from ")
+				.append(entity.getTableName())
+				.append(" where 1=1 ");
+		setSQLByParams(target.get(SQLProviderConstant.TARGET_OBJECT_ALIAS), entity, sql);
+		log.debug("selectMaxId get sql \r\nsql={} \r\nentity={}", sql, entity);
+		return sql.toString();
+	}
+	
+	/**
+	 * 查询最小id
+	 * @return
+	 */
+	public static String selectMinId(Map<String, Object> target) {
+		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
+		StringBuilder sql = new StringBuilder()
+				.append("select min(")
+				.append(entity.getPrimaryKeyColumnName())
+				.append(") from ")
+				.append(entity.getTableName())
+				.append(" where 1=1 ");
+		setSQLByParams(target.get(SQLProviderConstant.TARGET_OBJECT_ALIAS), entity, sql);
+		log.debug("selectMinId get sql \r\nsql={} \r\nentity={}", sql, entity);
+		return sql.toString();
+	}
+	
+	/**
+	 * 根据id范围查询
+	 * @param params
+	 * @return
+	 */
+	public static String selectListByRange(Map<String, Object> params) {
+		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
+		StringBuilder sql = new StringBuilder()
+				.append("select ")
+				.append(entity.getSelectColumns())
+				.append(" from ")
+				.append(entity.getTableName())
+				.append(" where ")
+				.append(entity.getPrimaryKeyColumnName())
+				.append(" >= #{minId} and ")
+				.append(entity.getPrimaryKeyColumnName())
+				.append(" < #{maxId} ");
+		setSQLByParams(params.get(SQLProviderConstant.TARGET_OBJECT_ALIAS), entity, sql);
+		log.debug("selectListByRange get sql \r\nsql={} \r\nentity={}", sql, entity);
+		return sql.toString();
+	}
+	
+	/**
 	 * 无条件，查询总数
 	 * @return
 	 */
@@ -195,9 +251,11 @@ public class BaseSelectProvider {
 		if (page == null) {
 			return;
 		}
-		if (StringUtils.isNotEmpty(page.getSortColumn())) {
-			sql.append(" order by ").append(page.getSortColumn()).append(" ").append(page.getOrder());
+		
+		if (CollectionUtils.isNotEmpty(page.getOrderBy())) {
+			getOrderBy(page.getOrderBy().toArray(new OrderBy[] {}), sql);
 		}
+		
 		if (page.getPageSize() > 0) {
 			sql.append(" limit ").append(page.getStartIndex()).append(", ").append(page.getPageSize());
 		}
