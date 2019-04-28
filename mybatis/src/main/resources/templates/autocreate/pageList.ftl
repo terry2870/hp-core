@@ -12,7 +12,7 @@ ${'<#include "/include/head.ftl">'}
 			title : id === 0 ? "新增${tableComment}数据" : "修改${tableComment}数据",
 			width : "40%",
 			height : "80%",
-			href : "${r"${request.contextPath}"}/RedirectController/forward?redirectUrl=other/${modelNameFirstLow}Edit&id=" + id,
+			href : "${r"${request.contextPath}"}/redirect/forward?redirectUrl=other/${modelNameFirstLow}Edit&id=" + id,
 			handler : {
 				formObjectId : "${modelNameFirstLow}EditForm",
 				url : "${r"${request.contextPath}"}/${modelName}Controller/save${modelName}",
@@ -20,22 +20,12 @@ ${'<#include "/include/head.ftl">'}
 			}
 		});
 	}
-	
-	//查看${tableComment}详情
-	function view${modelName}(id) {
-		$.saveDialog({
-			title : "${tableComment}数据详细",
-			width : "40%",
-			height : "80%",
-			href : "${r"${request.contextPath}"}/RedirectController/forward?redirectUrl=other/${modelNameFirstLow}Edit&id=" + id,
-			showSaveBtn : false
-		});
-	}
 
 	$(function() {
 		$("#${modelNameFirstLow}ListTable").myDatagrid({
 			title : "${tableComment}数据列表",
 			emptyMsg : "没有数据",
+			toolbar : "#toolbar",
 			fit : true,
 			fitColumns : true,
 			nowrap : true,
@@ -58,7 +48,7 @@ ${'<#include "/include/head.ftl">'}
 				width : "80%",
 				align : "center",
 				formatter : function(value, rowData, rowIndex) {
-					var str = "<a role='view' style='margin-left:10px;' rowid='"+ rowData.id +"' id='view${modelName}Btn_"+ rowData.id +"'>查看</a>";
+					let str = "";
 					str += "<a role='edit' style='margin-left:10px;' rowid='"+ rowData.id +"' id='edit${modelName}Btn_"+ rowData.id +"'>修改</a>";
 					str += "<a role='del' style='margin-left:10px;' rowid='"+ rowData.id +"' id='del${modelName}Btn_"+ rowData.id +"'>删除</a>";
 					return str;
@@ -71,13 +61,9 @@ ${'<#include "/include/head.ftl">'}
 			showFooter : true,
 			singleSelect : true,
 			onLoadSuccess : function(data) {
-				$(this).myDatagrid("getPanel").find("a[role='view']").linkbutton({
-					iconCls : "icon-search",
-					onClick : function() {
-						view${modelName}($(this).attr("rowid"));
-					}
-				});
+				$(this).myDatagrid("clearChecked");
 				
+				//编辑
 				$(this).myDatagrid("getPanel").find("a[role='edit']").linkbutton({
 					iconCls : "icon-edit",
 					onClick : function() {
@@ -85,6 +71,7 @@ ${'<#include "/include/head.ftl">'}
 					}
 				});
 				
+				//删除
 				$(this).myDatagrid("getPanel").find("a[role='del']").linkbutton({
 					iconCls : "icon-remove",
 					onClick : function() {

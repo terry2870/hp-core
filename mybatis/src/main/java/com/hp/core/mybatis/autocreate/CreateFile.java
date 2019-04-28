@@ -123,9 +123,9 @@ public class CreateFile {
 				}
 				
 				if (bean.isCreateFtl()) {
-					CreateJSP.createJSPList(table);
-					CreateJSP.createJSPEdit(table);
-					CreateJSP.createJSPSearch(table);
+					CreateFTL.createFTLList(table);
+					CreateFTL.createFTLEdit(table);
+					CreateFTL.createFTLSearch(table);
 				}
 			}
 		} catch(Exception e) {

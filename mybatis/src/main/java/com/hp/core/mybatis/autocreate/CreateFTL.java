@@ -9,14 +9,14 @@ import com.hp.core.mybatis.autocreate.helper.TableBean;
 /**
  * @author huangping 2018年7月11日
  */
-public class CreateJSP {
+public class CreateFTL {
 
 	/**
 	 * 生成jsp列表
 	 * 
 	 * @param table
 	 */
-	public static void createJSPList(TableBean table) {
+	public static void createFTLList(TableBean table) {
 		String fileName = CreateFile.MAIN_PATH_DIR + "/" + CreateFile.WEB_DIR_NAME + "/" + CreateFile.FTL_FILE_PATH
 				+ "/" + table.getModelNameFirstLow() + "List.ftl";
 		FreeMarkerUtil.createFile("autocreate/pageList.ftl", fileName, table);
@@ -26,7 +26,7 @@ public class CreateJSP {
 	 * 生成编辑页面
 	 * @param table
 	 */
-	public static void createJSPEdit(TableBean table) {
+	public static void createFTLEdit(TableBean table) {
 
 		String fileName = CreateFile.MAIN_PATH_DIR + "/" + CreateFile.WEB_DIR_NAME + "/" + CreateFile.FTL_FILE_PATH
 				+ "/" + table.getModelNameFirstLow() + "Edit.ftl";
@@ -37,7 +37,7 @@ public class CreateJSP {
 	 * 生成查询页面
 	 * @param table
 	 */
-	public static void createJSPSearch(TableBean table) {
+	public static void createFTLSearch(TableBean table) {
 
 		String fileName = CreateFile.MAIN_PATH_DIR + "/" + CreateFile.WEB_DIR_NAME + "/" + CreateFile.FTL_FILE_PATH
 				+ "/" + table.getModelNameFirstLow() + "Search.ftl";

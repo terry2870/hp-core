@@ -453,6 +453,9 @@
 		createText(jq, opt, ul);
 	}
 	
+	/**
+	 * 显示进度条
+	 */
 	function _showProgress() {
 		window.top.$.messager.progress({
 			title : "正在执行",
@@ -460,8 +463,19 @@
 		});
 	}
 	
+	/**
+	 * 隐藏进度条
+	 */
 	function _hideProgress() {
 		window.top.$.messager.progress("close");
+	}
+	
+	/**
+	 * 清除
+	 */
+	function _clear(jq) {
+		jq.find("li[role='image']").remove();
+		_checkMaxFileSize(jq);
 	}
 	
 	$.fn.multiImageUpload.methods = {
@@ -476,9 +490,19 @@
 		},
 		getValue : function() {
 			return _getValue(this);
+		},
+		clear : function() {
+			var jq = $(this);
+			return jq.each(function() {
+				_clear(jq);
+			});
 		}
 	};
 	$.fn.multiImageUpload.event = {
+		/**
+		 * 图片上传之前执行
+		 * 返回false，可以阻止提交
+		 */
 		onBeforeSubmit : function(value) {
 			_showProgress();
 		},

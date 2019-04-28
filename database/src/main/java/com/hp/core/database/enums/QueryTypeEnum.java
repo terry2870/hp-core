@@ -11,5 +11,10 @@ public enum QueryTypeEnum {
 	EQUALS,
 	LIKE,
 	IN,
-	NOT_IN;
+	NOT_IN,
+	GT,
+	GTE,
+	LT,
+	LTE,
+	;
 }

@@ -122,13 +122,14 @@
 				_hideProgress();
 				return;
 			}
-			var fileName = opt.filterFileName(data);
+			let file = data.data || {};
+			file = opt.filterFile(data);
 			if (opt.showFileName === true) {
-				if (fileName) {
-					_setFile(jq, fileName);
+				if (file) {
+					_setFile(jq, file);
 				}
 			}
-			
+			let fileName = _getFileName(file);
 			if (opt.onLoadSuccess) {
 				opt.onLoadSuccess.call(jq, fileName, data);
 			}
@@ -186,21 +187,29 @@
 		_create();
 	}
 	
+	function _getFileName(file) {
+		if (!file) {
+			return "";
+		}
+		return file.fileName || file.videoUrl || file.url;
+	}
+	
 	/**
 	 * 设置文件
 	 * @param jq
 	 * @returns
 	 */
-	function _setFile(jq, fileName) {
+	function _setFile(jq, file) {
+		let fileName = _getFileName(file);
 		jq.empty();
 		var opt = jq.data("fileUpload");
 		jq.append($("<input type='hidden' />").attr({
 			name : opt.realInputName
-		}).val(fileName));
+		}).val(fileName).data("fileData", file));
 		var textSpan = $("<span>").html(fileName.substring(fileName.lastIndexOf("/") + 1));
 		if (opt.onClickFile) {
 			textSpan.click(function() {
-				opt.onClickFile.call(jq, fileName);
+				opt.onClickFile.call(jq, fileName, file);
 			});
 		}
 		var closeSpan = $("<span>").click(function() {
@@ -209,12 +218,31 @@
 		jq.append(textSpan).append(closeSpan)
 	}
 	
+	/**
+	 * 获取文件名
+	 */
 	function _getValue(jq) {
+		let obj = _getFile(jq);
+		return obj.val();
+	}
+	
+	/**
+	 * 获取文件对象
+	 */
+	function _getFile(jq) {
 		var obj = jq.find("input[type='file']");
 		if (!obj || obj.length == 0) {
 			obj = jq.find("input[type='hidden']");
 		}
-		return obj.val();
+		return obj;
+	}
+	
+	/**
+	 * 获取文件数据
+	 */
+	function _getFileData(jq) {
+		let obj = _getFile(jq);
+		return obj.data("fileData");
 	}
 	
 	/**
@@ -265,6 +293,9 @@
 	}
 	
 	$.fn.fileUpload.methods = {
+		/**
+		 * 设置数据 
+		 */
 		setValue : function(value) {
 			var jq = $(this);
 			if (!value) {
@@ -274,8 +305,26 @@
 				_setFile(jq, value);
 			});
 		},
+		/**
+		 * 获取文件名
+		 */
 		getValue : function() {
 			return _getValue(this);
+		},
+		/**
+		 * 清空
+		 */
+		clear : function() {
+			var jq = $(this);
+			return jq.each(function() {
+				_closeFile(jq);
+			});
+		},
+		/**
+		 * 获取文件数据
+		 */
+		getFileData : function() {
+			return _getFileData(this);
 		}
 	};
 	$.fn.fileUpload.event = {
@@ -296,7 +345,8 @@
 			}
 			window.top.$.messager.show({
 				title : "提示",
-				msg : "上传成功！"
+				msg : "上传成功！",
+				timeout : messager_show_timeout
 			});
 		},
 		/**
@@ -312,11 +362,8 @@
 		queryParams : {},					//提交到后端额外参数
 		dataType : "json",					//返回数据的格式
 		value : null,						//文件默认值
-		filterFileName : function(data) {	//返回值中，获取文件名
-			if (!data || data.code != 200) {
-				return null;
-			}
-			return data.data ? data.data.fileName : null;
+		filterFile : function(data) {		//返回值处理
+			return data;
 		},
 		showFileName : true,					//上传成功后，是否显示文件名
 		accept : null

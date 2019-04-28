@@ -326,6 +326,38 @@ public class BaseSelectProvider {
 					sql.append(" AND ")
 					.append(column.getColumnName())
 					.append(" NOT IN (").append(value).append(")");
+				} else if (QueryTypeEnum.GT.equals(column.getQueryType())) {
+					sql.append(" AND ")
+					.append(column.getColumnName())
+					.append(" > #{")
+					.append(SQLProviderConstant.TARGET_OBJECT_ALIAS)
+					.append(".")
+					.append(column.getFieldName())
+					.append("}");
+				} else if (QueryTypeEnum.LT.equals(column.getQueryType())) {
+					sql.append(" AND ")
+					.append(column.getColumnName())
+					.append(" < #{")
+					.append(SQLProviderConstant.TARGET_OBJECT_ALIAS)
+					.append(".")
+					.append(column.getFieldName())
+					.append("}");
+				} else if (QueryTypeEnum.GTE.equals(column.getQueryType())) {
+					sql.append(" AND ")
+					.append(column.getColumnName())
+					.append(" >= #{")
+					.append(SQLProviderConstant.TARGET_OBJECT_ALIAS)
+					.append(".")
+					.append(column.getFieldName())
+					.append("}");
+				} else if (QueryTypeEnum.LTE.equals(column.getQueryType())) {
+					sql.append(" AND ")
+					.append(column.getColumnName())
+					.append(" <= #{")
+					.append(SQLProviderConstant.TARGET_OBJECT_ALIAS)
+					.append(".")
+					.append(column.getFieldName())
+					.append("}");
 				}
 				
 			}

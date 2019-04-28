@@ -17,7 +17,7 @@
 			}
 		}
 		return this.each(function() {
-			var opt = $.extend({}, $.fn.myDatetimebox.defaults, options);
+			var opt = $.extend({}, $.fn.myDatetimebox.defaults, $.fn.datetimebox.parseOptions(this), options);
 			self.data("myDatetimebox", opt);
 			_createDatetimebox(self);
 		});
@@ -38,7 +38,14 @@
 			}
 		});
 		jq.datetimebox($.extend({}, {
-			buttons : btns
+			width : 200,
+			buttons : btns,
+			icons : [{
+				iconCls : "icon-clear",
+				handler : function(e) {
+					$(e.data.target).textbox("clear");
+				}
+			}],
 		}, opt));
 	}
 	

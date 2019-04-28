@@ -24,7 +24,7 @@ import com.hp.core.freemarker.utils.FreeMarkerUtil;
  * @author huangping 2018年8月3日
  */
 @Controller
-@RequestMapping("/RedirectController")
+@RequestMapping("/redirect")
 public class RedirectController {
 
 	private Logger log = LoggerFactory.getLogger(RedirectController.class);
