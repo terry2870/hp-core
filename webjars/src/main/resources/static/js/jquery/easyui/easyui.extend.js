@@ -6,12 +6,14 @@ jQuery.extend({
 	/**
 	 * 确认操作提示框
 	 * @param obj
+	 * 			onPost
 	 * 			url
 	 * 			params
-	 * 			text
 	 * 			message
+	 * 			text
 	 * 			reloadTableObject
 	 * 			callback
+	 * 			onSuccess
 	 * @returns
 	 */
 	confirmDialog : function(obj) {
@@ -19,19 +21,23 @@ jQuery.extend({
 			if (!flag) {
 				return;
 			}
+			let params = {};
+			if (obj.onPost && obj.onPost(params) === false) {
+				return;
+			}
 			window.top.$.messager.progress({
 				title : "正在执行",
 				msg : "正在执行，请稍后..."
 			});
-			$.post(obj.url, obj.params || {}, function(data) {
+			$.post(obj.url, $.extend({}, obj.params, params), function(data) {
 				window.top.$.messager.progress("close");
 				if (data.code == CODE_SUCCESS) {
 					if (obj.reloadTableObject) {
 						obj.reloadTableObject.datagrid("reload");
 						obj.reloadTableObject.datagrid("clearChecked");
 					}
-					if (obj.callback) {
-						obj.callback(data);
+					if (obj.onSuccess) {
+						obj.onSuccess(data);
 					}
 					window.top.$.messager.show({
 						title : "提示",
@@ -39,6 +45,9 @@ jQuery.extend({
 					});
 				} else {
 					window.top.$.messager.alert("失败", data.message, "error");
+				}
+				if (obj.callback) {
+					obj.callback(data);
 				}
 			});
 		});
@@ -52,10 +61,14 @@ jQuery.extend({
 	 * 			onSubmit
 	 * 			reloadTableObject
 	 * 			callback
+	 * 			onSuccess
 	 * @returns
 	 */
 	saveDialogHandler : function(obj) {
 		if (!obj.formObject) {
+			return;
+		}
+		if (!obj.url) {
 			return;
 		}
 		obj.formObject.form("submit", {
@@ -91,6 +104,10 @@ jQuery.extend({
 							obj.reloadTableObject.datagrid("clearChecked");
 						}
 						
+						if (obj.onSuccess) {
+							obj.onSuccess(data);
+						}
+						
 						$.messager.show({
 							title : "提示",
 							msg : "保存成功！"
@@ -120,6 +137,7 @@ jQuery.extend({
 	 * 		saveBtn.text = '保存'
 	 * 		saveBtn.iconCls = 'icon-save'
 	 * 		handler
+	 * 		buttons		自定义按钮
 	 */
 	saveDialog : function(obj) {
 		var div = $("<div>").appendTo($(window.top.document.body));
@@ -166,7 +184,8 @@ jQuery.extend({
 			collapsible: true,
 			cache: false,
 			buttons: buttons,
-			onOpen : obj.onOpen || $.noop
+			onOpen : obj.onOpen || $.noop,
+			onClose : obj.onClose || $.noop
 		});
 		return div;
 	}

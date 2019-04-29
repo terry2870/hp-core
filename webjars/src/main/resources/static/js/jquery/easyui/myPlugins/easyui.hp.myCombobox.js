@@ -17,7 +17,7 @@
 			}
 		}
 		return this.each(function() {
-			var opt = $.extend({}, $.fn.myCombobox.defaults, options);
+			var opt = $.extend({}, $.fn.myCombobox.defaults, $.fn.combobox.parseOptions(this), options);
 			$(self).data("myCombobox", opt)
 			_create(self);
 		});
