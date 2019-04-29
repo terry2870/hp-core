@@ -52,12 +52,16 @@
 	 */
 	function _submit(jq) {
 		var opt = jq.data("multiImageUpload");
+		let params = {};
 		if (opt.onBeforeSubmit) {
-			let result = opt.onBeforeSubmit.call(jq, _getValue(jq));
+			let result = opt.onBeforeSubmit.call(jq, _getValue(jq), params);
 			if (result === false) {
 				return;
 			}
 		}
+		
+		opt.queryParams = $.extend(opt.queryParams, params);
+		
 		$.fn.multiImageUpload.event.onBeforeSubmit.call(jq);
 		
 		var frameId = "jquery_frame_" + (new Date().getTime());
@@ -199,10 +203,22 @@
 	 * @returns
 	 */
 	function _closeFile(obj, jq) {
-		//var opt = jq.data("multiImageUpload");
+		var opt = jq.data("multiImageUpload");
+		let values = _getValue(jq);
+		let imgIndex = $(obj).parent().parent().index();
+		if (opt.onBeforeClear) {
+			let res = opt.onBeforeClear.call(jq, values[imgIndex], imgIndex, values);
+			if (res === false) {
+				return;
+			}
+		}
 		//_createForm(jq);
 		$(obj).parent().parent().remove();
 		_checkMaxFileSize(jq);
+		if (opt.onAfterClear) {
+			opt.onAfterClear.call(jq, values[imgIndex], imgIndex, values);
+		}
+		
 	}
 	
 	/**
@@ -311,7 +327,16 @@
 			//height : opt.text ? "80%" : "100%"
 			height : opt.height
 		}).insertBefore(uploadForm);
+		
 		var imageDiv = $("<div role='image'>").addClass("img_div").appendTo(imageLi);
+		if (opt.onClickImg) {
+			imageDiv.click(function() {
+				opt.onClickImg.call(this, fileItem, $(this).parent().index());
+			});
+		}
+		/*imageDiv.click(function() {
+			window.open(fileItem.fileName || fileItem.url);
+		});*/
 		imageDiv.append($("<img />").attr({
 			src : fileItem.fileName || fileItem.url,
 			width : "100%",
@@ -503,9 +528,12 @@
 		 * 图片上传之前执行
 		 * 返回false，可以阻止提交
 		 */
-		onBeforeSubmit : function(value) {
+		onBeforeSubmit : function(value, params) {
 			_showProgress();
 		},
+		/**
+		 * 当图片上传完，显示之后执行
+		 */
 		onLoadSuccess : function(data) {
 			_hideProgress();
 			if (data.code != 200) {
@@ -517,7 +545,23 @@
 				msg : "上传成功！"
 			});
 		},
-		onCreate : function() {}
+		/**
+		 * 当创建完成后执行
+		 */
+		onCreate : function() {},
+		/**
+		 * 当点击图片时，执行
+		 */
+		onClickImg : function(item, index) {},
+		/**
+		 * 当清除前时触发
+		 * 返回false，则阻止clear
+		 */
+		onBeforeClear : function(value, imgIndex, values) {},
+		/**
+		 * 清除完成后触发
+		 */
+		onAfterClear : function(value, imgIndex, values) {}
 	};
 	$.fn.multiImageUpload.defaults = $.extend({}, {
 		width : 120,						//图片宽度

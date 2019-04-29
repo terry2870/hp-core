@@ -49,14 +49,17 @@
 	 */
 	function _submit(jq) {
 		var opt = jq.data("fileUpload");
+		let params = {};
 		if (opt.onBeforeSubmit) {
-			let result = opt.onBeforeSubmit.call(jq, _getValue(jq));
+			let result = opt.onBeforeSubmit.call(jq, _getValue(jq), params);
 			if (result === false) {
 				return;
 			}
 		}
-		$.fn.fileUpload.event.onBeforeSubmit.call(jq);
 		
+		opt.queryParams = $.extend(opt.queryParams, params);
+		
+		$.fn.fileUpload.event.onBeforeSubmit.call(jq);
 		
 		var frameId = "jquery_frame_" + (new Date().getTime());
 		var iframe = null;
@@ -278,7 +281,18 @@
 	 */
 	function _closeFile(jq) {
 		var opt = jq.data("fileUpload");
+		let file = _getFile(jq);
+		if (opt.onBeforeClear) {
+			let re = opt.onBeforeClear.call(jq, file);
+			if (re === false) {
+				return;
+			}
+		}
 		_createForm(jq);
+		
+		if (opt.onAfterClear) {
+			opt.onAfterClear.call(jq, file);
+		}
 	}
 	
 	function _showProgress() {
@@ -331,7 +345,7 @@
 		/**
 		 * 提交文件之前触发，如果该函数返回false，则阻止提交
 		 */	
-		onBeforeSubmit : function(value) {
+		onBeforeSubmit : function(value, params) {
 			_showProgress();
 		},
 		/**
@@ -345,14 +359,22 @@
 			}
 			window.top.$.messager.show({
 				title : "提示",
-				msg : "上传成功！",
-				timeout : messager_show_timeout
+				msg : "上传成功！"
 			});
 		},
 		/**
 		 * 当点击文件时
 		 */
-		onClickFile : function(fileName, data) {}
+		onClickFile : function(fileName, data) {},
+		/**
+		 * 当清除前时触发
+		 * 返回false，则阻止clear
+		 */
+		onBeforeClear : function(value) {},
+		/**
+		 * 清除完成后触发
+		 */
+		onAfterClear : function(value) {}
 	};
 	$.fn.fileUpload.defaults = $.extend({}, {
 		text : "请选择文件",					//按钮文字
