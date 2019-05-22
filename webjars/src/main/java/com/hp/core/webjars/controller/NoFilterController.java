@@ -4,20 +4,21 @@
 package com.hp.core.webjars.controller;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.hp.core.common.beans.EnumTypeRequestBean;
 import com.hp.core.common.beans.Response;
+import com.hp.core.common.beans.ValueTextBean;
 import com.hp.core.common.exceptions.CommonException;
 import com.hp.core.common.utils.ObjectUtil;
 import com.hp.core.webjars.constants.BaseConstant;
@@ -44,21 +45,24 @@ public class NoFilterController {
 	 * @return
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(params = "method=getEnumForSelect")
-	public Response<JSONArray> getEnumForSelect(EnumTypeRequestBean bo) throws Exception {
+	public Response<Collection<ValueTextBean>> getEnumForSelect(EnumTypeRequestBean bo) throws Exception {
 		log.info("enter getEnumForSelect with EnumTypeRequestBO={}", bo);
 		String className = bo.getClassName();
 		if (className.indexOf(".") < 0) {
-			className = "com.hp.core.webjars.enums." + className;
+			className = "com.yoho.tools.webjars.enums." + className;
 		}
-		JSONArray arr = (JSONArray) ObjectUtil.executeJavaMethod(Class.forName(className), "toJSON", null, null);
+		Collection<ValueTextBean> respList = new ArrayList<>();
 		if (bo.getFirstText() != null && bo.getFirstValue() != null) {
-			JSONObject json = new JSONObject();
-			json.put("text", bo.getFirstText());
-			json.put("value", bo.getFirstValue());
-			arr.add(0, json);
+			respList.add(new ValueTextBean(bo.getFirstValue(), bo.getFirstText()));
 		}
-		return new Response<JSONArray>(arr);
+		
+		Collection<ValueTextBean> arr = (Collection<ValueTextBean>) ObjectUtil.executeJavaMethod(Class.forName(className), "toJSON", null, null);
+		if (CollectionUtils.isNotEmpty(arr)) {
+			respList.addAll(arr);
+		}
+		return new Response<>(respList);
 	}
 	
 	/**

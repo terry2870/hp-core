@@ -107,11 +107,7 @@ public class HPValueOperations {
 		Boolean result = Boolean.FALSE;
         try {
         	//设置
-        	result = valueOperations.setIfAbsent(key, v);
-        	if (result) {
-        		//设置成功，设置超时
-        		hpRedisTemplate.expire(key, timeout, unit);
-        	}
+        	result = valueOperations.setIfAbsent(key, v, timeout, unit);
         } catch (Exception e) {
         	log.error("HPValueOperations setIfAbsent redis error. with key={}, value={}", key, value, e);
         	//删除key

@@ -4,6 +4,7 @@ $.ajaxSetup({
 	dataType : "json",
 	type : "POST",
 	complete : function(XMLHttpRequest, textStatus) {
+		window.top.$.messager.progress("close");
 		var status = XMLHttpRequest.status;
 		if (status == 200) {
 			return;
