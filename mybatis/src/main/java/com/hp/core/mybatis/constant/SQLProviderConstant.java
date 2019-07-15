@@ -30,4 +30,9 @@ public class SQLProviderConstant {
 	public static final String ORDER_BY = "orderBy";
 	
 	public static final String SQL_OBJECT_ALIAS = "sql";
+	
+	/**
+	 * 大于Id
+	 */
+	public static final String LARGETHAN_ID_OBJECT_ALIAS = "largeThanId";
 }

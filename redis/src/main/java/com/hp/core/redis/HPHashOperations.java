@@ -21,6 +21,7 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.ScanOptions;
 
+import com.alibaba.fastjson.JSON;
 import com.hp.core.redis.utils.RedisUtil;
 
 
@@ -89,6 +90,29 @@ public class HPHashOperations {
 			return RedisUtil.string2Value(v, clazz);
 		} catch (Exception e) {
 			log.error("get value error. with key={}, hashKey={}", key, hashKey, e);
+		}
+		return null;
+	}
+	
+	/**
+	 * 获取list格式
+	 * @param key
+	 * @param hashKey
+	 * @param clazz
+	 * @param <T>
+	 * @return
+	 */
+	public <T> List<T> getList(String key, Object hashKey, Class<T> clazz) {
+		String v = null;
+		try {
+			v = hashOperationsReadOnly.get(key, hashKey.toString());
+			if (v == null) {
+				log.warn("RedisHashHelper getList redis error key={}", key);
+				return null;
+			}
+			return JSON.parseArray(v, clazz);
+		} catch (Exception e) {
+			log.error("RedisHashHelper getList error. with key={}, e={}", key, e.toString());
 		}
 		return null;
 	}

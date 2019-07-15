@@ -107,6 +107,15 @@ public interface BaseSelectMapper<T> extends IBaseSelectDAO<T> {
 	public T selectOneByParams(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target);
 	
 	/**
+	 * 根据条件，查询单个（带排序）
+	 * @param target
+	 * @param orderBy
+	 * @return
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectOneByParams")
+	public T selectOneByParamsWithOrder(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target, @Param(SQLProviderConstant.ORDER_BY) OrderBy... orderBy);
+	
+	/**
 	 * 根据条件，查询list（分页）
 	 * @param params
 	 * @param page
@@ -114,6 +123,16 @@ public interface BaseSelectMapper<T> extends IBaseSelectDAO<T> {
 	 */
 	@SelectProvider(type = BaseSelectProvider.class, method = "selectListByParams")
 	public List<T> selectPageListByParams(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target, @Param(SQLProviderConstant.PAGE_OBJECT_ALIAS) PageModel page);
+	
+	/**
+	 * 根据条件，查询list（分页）
+	 * @param target
+	 * @param page
+	 * @param largeThanId
+	 * @return
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectPageListByParamsAndLargeThanId")
+	public List<T> selectPageListByParamsAndLargeThanId(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target, @Param(SQLProviderConstant.PAGE_OBJECT_ALIAS) PageModel page, @Param(SQLProviderConstant.LARGETHAN_ID_OBJECT_ALIAS) Long largeThanId);
 	
 	/**
 	 * 根据主键，批量查询

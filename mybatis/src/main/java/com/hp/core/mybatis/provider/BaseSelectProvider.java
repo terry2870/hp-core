@@ -211,6 +211,53 @@ public class BaseSelectProvider {
 	}
 	
 	/**
+	 * 根据条件，查询list（分页）
+	 * @param target
+	 * @return
+	 */
+	public static String selectPageListByParamsAndLargeThanId(Map<String, Object> target) {
+		if (target == null) {
+			log.error("selectPageListByParamsAndLargeThanId error. with params is null.");
+			throw new ProviderSQLException("params is null");
+		}
+		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
+		StringBuilder sql = new StringBuilder("SELECT ")
+				.append(entity.getSelectColumns())
+				.append(" FROM ")
+				.append(entity.getTableName())
+				.append(" WHERE 1=1");
+		setSQLByParams(target.get(SQLProviderConstant.TARGET_OBJECT_ALIAS), entity, sql);
+
+		if (target.containsKey(SQLProviderConstant.LARGETHAN_ID_OBJECT_ALIAS)) {
+			getLargeThanSQL((Long)target.get(SQLProviderConstant.LARGETHAN_ID_OBJECT_ALIAS), entity, sql);
+		}
+
+		if (target.containsKey(SQLProviderConstant.PAGE_OBJECT_ALIAS)) {
+			getPageSQL((PageModel) target.get(SQLProviderConstant.PAGE_OBJECT_ALIAS), sql);
+		}
+		log.debug("selectPageListByParamsAndLargeThanId get sql \r\nsql={} \r\nparams={}, \r\nentity={}", sql, target, entity);
+		return sql.toString();
+	}
+	
+	/**
+	 * 主键必须大于当前Id
+	 * @param largeThanId
+	 * @param entity
+	 * @param sql
+	 */
+	private static void getLargeThanSQL(Long largeThanId, DynamicEntityBean entity, StringBuilder sql) {
+		if(largeThanId == null){
+			largeThanId = 0L;
+		}
+
+		if(largeThanId.longValue() > 0L){
+			sql.append(" and ").append(entity.getPrimaryKeyColumnName()).append(">").append(largeThanId);
+		}
+
+		getOrderBy(new OrderBy[] {OrderBy.of(entity.getPrimaryKeyColumnName())}, sql);
+	}
+	
+	/**
 	 * 根据条件，查询单个
 	 * @param target
 	 * @return
@@ -227,6 +274,10 @@ public class BaseSelectProvider {
 				.append(entity.getTableName())
 				.append(" WHERE 1=1");
 		setSQLByParams(target.get(SQLProviderConstant.TARGET_OBJECT_ALIAS), entity, sql);
+		
+		if (target.containsKey(SQLProviderConstant.ORDER_BY)) {
+			getOrderBy((OrderBy[]) target.get(SQLProviderConstant.ORDER_BY), sql);
+		}
 		
 		sql.append(" limit 1");
 		

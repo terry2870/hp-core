@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -32,6 +33,8 @@ import com.hp.core.redis.utils.RedisUtil;
 public class HPValueOperations {
 
 	static Logger log = LoggerFactory.getLogger(HPValueOperations.class);
+	private static final int MIN_TIME = 5;
+	private static final int MAX_TIME = 21;
 	
 	private HPRedisTemplate hpRedisTemplate;
 	
@@ -46,6 +49,18 @@ public class HPValueOperations {
 		// TODO Auto-generated method stub
 	}
 
+	/**
+	 * 设置，随机时间
+	 * @param key
+	 * @param value
+	 */
+	public void setWithRandomMinute(String key, Object value) {
+		//随机获取一个时间
+		long timeout = RandomUtils.nextLong(MIN_TIME, MAX_TIME);
+		set(key, value, timeout, TimeUnit.MINUTES);
+	}
+
+	
 	/**
 	 * 设置，并且设置超时
 	 * @param key
@@ -313,6 +328,57 @@ public class HPValueOperations {
 			log.error("HPValueOperations multiGet error. ", e);
 		}
 		return null;
+	}
+	
+	/**
+	 * 批量获取
+	 * 
+	 * @param keys
+	 * @param clazz
+	 * @return
+	 */
+	public <T> List<List<T>> multiGetList(Collection<String> keys, Class<T> clazz) {
+		if (CollectionUtils.isEmpty(keys)) {
+			log.warn("RedisValueHelper multiGetList error. keys={}", keys);
+			return null;
+		}
+		List<String> list = null;
+		try {
+			list = valueOperationsReadOnly.multiGet(keys);
+			if (CollectionUtils.isEmpty(list)) {
+				log.warn("RedisValueHelper multiGetList error. keys={}", keys);
+				return null;
+			}
+			List<List<T>> l = new ArrayList<>();
+			for (String str : list) {
+				l.add(JSON.parseArray(str, clazz));
+			}
+			return l;
+		} catch (Exception e) {
+			log.error("RedisValueHelper multiGetList error. ", e);
+		}
+		return null;
+	}
+	
+	/**
+	 * 批量获取，返回map
+	 * @param keys
+	 * @param clazz
+	 * @return
+	 */
+	public <T> Map<String, T> multiGetForMap(Collection<String> keys, Class<T> clazz) {
+		List<T> list = multiGet(keys, clazz);
+		if (CollectionUtils.isEmpty(list)) {
+			return null;
+		}
+		
+		Map<String, T> map = new HashMap<>();
+		int i = 0;
+		for (String key : keys) {
+			map.put(key, list.get(i));
+			i++;
+		}
+		return map;
 	}
 	
 	/**
