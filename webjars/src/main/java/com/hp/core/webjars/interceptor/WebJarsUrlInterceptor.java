@@ -18,8 +18,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.common.collect.Lists;
+import com.hp.core.common.enums.CodeEnum;
 import com.hp.core.webjars.constants.BaseConstant;
-import com.hp.core.webjars.enums.CodeEnum;
 import com.hp.core.webjars.enums.IdentityEnum;
 import com.hp.core.webjars.exceptions.NoRightException;
 import com.hp.core.webjars.model.OperaBean;
