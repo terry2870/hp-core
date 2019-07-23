@@ -23,5 +23,14 @@
 			<groupId>ognl</groupId>
 			<artifactId>ognl</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>javax.servlet.jsp-api</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+		</dependency>
 	</dependencies>
 </project>

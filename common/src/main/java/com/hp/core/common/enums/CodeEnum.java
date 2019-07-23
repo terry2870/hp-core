@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.hp.core.webjars.enums;
+package com.hp.core.common.enums;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;

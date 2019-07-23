@@ -28,7 +28,7 @@ public class OgnlCache {
 	}
 
 	public static Object getValue(String expression, Object root) {
-		OgnlContext context = new OgnlContext(new HashMap<>());
+		OgnlContext context = new OgnlContext(new DefaultMemberAccess(true), null, null, new HashMap<>());
 		Object ognl = null;
 		try {
 			ognl = parseExpression(expression);

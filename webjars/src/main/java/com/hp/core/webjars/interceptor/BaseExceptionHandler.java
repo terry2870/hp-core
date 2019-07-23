@@ -17,8 +17,8 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.support.spring.FastJsonJsonView;
+import com.hp.core.common.enums.CodeEnum;
 import com.hp.core.common.exceptions.CommonException;
-import com.hp.core.webjars.enums.CodeEnum;
 import com.hp.core.webjars.exceptions.NoRightException;
 
 /**
