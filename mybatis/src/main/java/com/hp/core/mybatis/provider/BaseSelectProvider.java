@@ -19,6 +19,7 @@ import com.hp.core.database.bean.DynamicColumnBean;
 import com.hp.core.database.bean.DynamicEntityBean;
 import com.hp.core.database.bean.OrderBy;
 import com.hp.core.database.bean.PageModel;
+import com.hp.core.database.bean.SQLBuilder;
 import com.hp.core.database.enums.QueryTypeEnum;
 import com.hp.core.database.exceptions.ProviderSQLException;
 import com.hp.core.database.interceptor.BaseSQLAOPFactory;
@@ -285,11 +286,83 @@ public class BaseSelectProvider {
 		return sql.toString();
 	}
 	
-	public static String selectListBySQL(Map<String, Object> params) {
-		log.info("params= {}", params);
+	/**
+	 * 根据传入的sqlbuild，查询数量
+	 * @param target
+	 * @return
+	 */
+	public static String selectCountByBuilder(Map<String, Object> target) {
+		if (target == null) {
+			log.error("selectCountByBuilder error. with params is null.");
+			throw new ProviderSQLException("params is null");
+		}
+		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
+		StringBuilder sql = new StringBuilder("SELECT count(1) FROM ")
+				.append(entity.getTableName())
+				.append(" WHERE 1=1");
 		
+		setSQLBySQLBuilds((SQLBuilder[]) target.get(SQLProviderConstant.SQL_BUILD_ALIAS), sql);
+
+		log.debug("selectCountByBuilder get sql \r\nsql={} \r\nparams={}, \r\nentity={}", sql, target, entity);
+		return sql.toString();
+	}
+	
+	/**
+	 * 根据传入的sqlbuild，查询
+	 * @param target
+	 * @return
+	 */
+	public static String selectListByBuilder(Map<String, Object> target) {
+		if (target == null) {
+			log.error("selectListByBuilder error. with params is null.");
+			throw new ProviderSQLException("params is null");
+		}
+		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
+		StringBuilder sql = new StringBuilder("SELECT ")
+				.append(entity.getSelectColumns())
+				.append(" FROM ")
+				.append(entity.getTableName())
+				.append(" WHERE 1=1");
 		
-		return "";
+		setSQLBySQLBuilds((SQLBuilder[]) target.get(SQLProviderConstant.SQL_BUILD_ALIAS), sql);
+
+		if (target.containsKey(SQLProviderConstant.ORDER_BY)) {
+			getOrderBy((OrderBy[]) target.get(SQLProviderConstant.ORDER_BY), sql);
+		}
+		
+		if (target.containsKey(SQLProviderConstant.PAGE_OBJECT_ALIAS)) {
+			getPageSQL((PageModel) target.get(SQLProviderConstant.PAGE_OBJECT_ALIAS), sql);
+		}
+		log.debug("selectListByBuilder get sql \r\nsql={} \r\nparams={}, \r\nentity={}", sql, target, entity);
+		return sql.toString();
+	}
+	
+	/**
+	 * 根据传入的sqlbuild，查询一个
+	 * @param target
+	 * @return
+	 */
+	public static String selectOneByBuilder(Map<String, Object> target) {
+		if (target == null) {
+			log.error("selectOneByBuilder error. with params is null.");
+			throw new ProviderSQLException("params is null");
+		}
+		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
+		StringBuilder sql = new StringBuilder("SELECT ")
+				.append(entity.getSelectColumns())
+				.append(" FROM ")
+				.append(entity.getTableName())
+				.append(" WHERE 1=1");
+		
+		setSQLBySQLBuilds((SQLBuilder[]) target.get(SQLProviderConstant.SQL_BUILD_ALIAS), sql);
+
+		if (target.containsKey(SQLProviderConstant.ORDER_BY)) {
+			getOrderBy((OrderBy[]) target.get(SQLProviderConstant.ORDER_BY), sql);
+		}
+		
+		sql.append(" LIMIT 1");
+		log.debug("selectOneByBuilder get sql \r\nsql={} \r\nparams={}, \r\nentity={}", sql, target, entity);
+		return sql.toString();
 	}
 	
 	/**
@@ -415,6 +488,110 @@ public class BaseSelectProvider {
 		} catch (Exception e) {
 			log.error("get setSQLByParams sql error. with params is {}", params, e);
 		}
+	}
+	
+	/**
+	 * 设置查询条件
+	 * @param builders
+	 * @param sql
+	 */
+	private static void setSQLBySQLBuilds(SQLBuilder[] builders, StringBuilder sql) {
+		if (ArrayUtils.isEmpty(builders)) {
+			return;
+		}
+		try {
+			for (int i = 0; i < builders.length; i++) {
+				setSQLBySQLBuild(builders[i], sql, i);
+			}
+		} catch (Exception e) {
+			log.error("get setSQLBySQLBuilds sql error. with builders is {}", builders, e);
+		}
+	}
+	
+	/**
+	 * 设置查询条件
+	 * @param builder
+	 * @param sql
+	 * @param index
+	 */
+	private static void setSQLBySQLBuild(SQLBuilder builder, StringBuilder sql, int index) {
+		if (checkNull(builder)) {
+			return;
+		}
+		
+		switch (builder.getOperator()) {
+		case EQUALS:
+			sql.append(" AND ")
+			.append(builder.getField())
+			.append(" = #{")
+			.append(SQLProviderConstant.SQL_BUILD_ALIAS)
+			.append("[").append(index).append("].value}");
+			break;
+		case LIKE:
+			sql.append(" AND INSTR(")
+			.append(builder.getField())
+			.append(", #{")
+			.append(SQLProviderConstant.SQL_BUILD_ALIAS)
+			.append("[").append(index).append("].value}) > 0");
+			break;
+		case IN:
+			sql.append(" AND ")
+			.append(builder.getField())
+			.append(" IN (").append(builder.getValue()).append(")");
+			break;
+		case NOT_IN:
+			sql.append(" AND ")
+			.append(builder.getField())
+			.append(" NOT IN (").append(builder.getValue()).append(")");
+			break;
+		case GT:
+			sql.append(" AND ")
+			.append(builder.getField())
+			.append(" > #{")
+			.append(SQLProviderConstant.SQL_BUILD_ALIAS)
+			.append("[").append(index).append("].value}");
+			break;
+		case LT:
+			sql.append(" AND ")
+			.append(builder.getField())
+			.append(" < #{")
+			.append(SQLProviderConstant.SQL_BUILD_ALIAS)
+			.append("[").append(index).append("].value}");
+			break;
+		case GTE:
+			sql.append(" AND ")
+			.append(builder.getField())
+			.append(" >= #{")
+			.append(SQLProviderConstant.SQL_BUILD_ALIAS)
+			.append("[").append(index).append("].value}");
+			break;
+		case LTE:
+			sql.append(" AND ")
+			.append(builder.getField())
+			.append(" <= #{")
+			.append(SQLProviderConstant.SQL_BUILD_ALIAS)
+			.append("[").append(index).append("].value}");
+			break;
+		default:
+			break;
+		}
+	}
+	
+	/**
+	 * 检查是否为空
+	 * @param build
+	 * @return
+	 */
+	private static boolean checkNull(SQLBuilder build) {
+		if (build == null || build.getValue() == null) {
+			//null
+			return true;
+		}
+		if (build.getJavaType() != null && StringUtils.equals(String.class.getName(), build.getJavaType().getName()) && StringUtils.isEmpty((String) build.getValue())) {
+			//空字符串
+			return true;
+		}
+		return false;
 	}
 	
 	private static boolean checkNull(DynamicColumnBean column, Object value) {

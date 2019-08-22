@@ -11,6 +11,7 @@ import org.apache.ibatis.jdbc.SQL;
 
 import com.hp.core.database.bean.OrderBy;
 import com.hp.core.database.bean.PageModel;
+import com.hp.core.database.bean.SQLBuilder;
 import com.hp.core.database.dao.IBaseSelectDAO;
 import com.hp.core.mybatis.constant.SQLProviderConstant;
 import com.hp.core.mybatis.provider.BaseSelectProvider;
@@ -149,4 +150,54 @@ public interface BaseSelectMapper<T> extends IBaseSelectDAO<T> {
 	 */
 	@SelectProvider(type = BaseSelectProvider.class, method = "selectByPrimaryKeysWithInSort")
 	public List<T> selectByPrimaryKeysWithInSort(List<?> ids);
+	
+	/**
+	 * 根据传入的sqlbuild，查询数量
+	 * @param builder
+	 * @return
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectCountByBuilder")
+	public Integer selectCountByBuilder(@Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder... builder);
+	
+	/**
+	 * 根据传入的sqlbuild，查询
+	 * @param build
+	 * @return
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectListByBuilder")
+	public List<T> selectListByBuilder(@Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder... builder);
+	
+	/**
+	 * 根据传入的sqlbuild，查询
+	 * @param build
+	 * @return
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectListByBuilder")
+	public List<T> selectListByBuilderWithOrder(@Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder[] builder, @Param(SQLProviderConstant.ORDER_BY) OrderBy... orderBy);
+	
+	/**
+	 * 根据传入的sqlbuild，查询分页数据
+	 * @param builder
+	 * @param page
+	 * @return
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectListByBuilder")
+	public List<T> selectPageListByBuilder(@Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder[] builder, @Param(SQLProviderConstant.PAGE_OBJECT_ALIAS) PageModel page);
+	
+	/**
+	 * 根据传入的sqlbuild，查询一个
+	 * @param builder
+	 * @return
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectOneByBuilder")
+	public T selectOneByBuilder(@Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder... builder);
+	
+	/**
+	 * 根据传入的sqlbuild，查询一个
+	 * @param builder
+	 * @param orderBy
+	 * @return
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectOneByBuilder")
+	public T selectOneByBuilderWithOrder(@Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder[] builder, @Param(SQLProviderConstant.ORDER_BY) OrderBy... orderBy);
 }

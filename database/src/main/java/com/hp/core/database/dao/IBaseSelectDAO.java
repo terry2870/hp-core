@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.hp.core.database.bean.OrderBy;
 import com.hp.core.database.bean.PageModel;
+import com.hp.core.database.bean.SQLBuilder;
 
 /**
  * 基本的查询操作
@@ -81,4 +82,48 @@ public interface IBaseSelectDAO<T> {
 	 * @return
 	 */
 	public List<T> selectByPrimaryKeysWithInSort(List<?> ids);
+	
+	/**
+	 * 根据传入的sqlbuild，查询数量
+	 * @param builder
+	 * @return
+	 */
+	public Integer selectCountByBuilder(SQLBuilder... builder);
+	
+	/**
+	 * 根据传入的sqlbuild，查询
+	 * @param build
+	 * @return
+	 */
+	public List<T> selectListByBuilder(SQLBuilder... builder);
+	
+	/**
+	 * 根据传入的sqlbuild，查询
+	 * @param build
+	 * @return
+	 */
+	public List<T> selectListByBuilderWithOrder(SQLBuilder[] builder, OrderBy... orderBy);
+	
+	/**
+	 * 根据传入的sqlbuild，查询分页数据
+	 * @param builder
+	 * @param page
+	 * @return
+	 */
+	public List<T> selectPageListByBuilder(SQLBuilder[] builder, PageModel page);
+	
+	/**
+	 * 根据传入的sqlbuild，查询一个
+	 * @param builder
+	 * @return
+	 */
+	public T selectOneByBuilder(SQLBuilder... builder);
+	
+	/**
+	 * 根据传入的sqlbuild，查询一个
+	 * @param builder
+	 * @param orderBy
+	 * @return
+	 */
+	public T selectOneByBuilderWithOrder(SQLBuilder[] builder, OrderBy... orderBy);
 }
