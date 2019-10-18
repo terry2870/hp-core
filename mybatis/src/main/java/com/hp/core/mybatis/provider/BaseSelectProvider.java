@@ -434,6 +434,14 @@ public class BaseSelectProvider {
 						.append(".")
 						.append(column.getFieldName())
 						.append("}");
+				} else if (QueryTypeEnum.NOT_EQUALS.equals(column.getQueryType())) {
+					sql.append(" AND ")
+					.append(column.getColumnName())
+					.append(" != #{")
+					.append(SQLProviderConstant.TARGET_OBJECT_ALIAS)
+					.append(".")
+					.append(column.getFieldName())
+					.append("}");
 				} else if (QueryTypeEnum.LIKE.equals(column.getQueryType())) {
 					sql.append(" AND INSTR(")
 						.append(column.getColumnName())
@@ -482,6 +490,18 @@ public class BaseSelectProvider {
 					.append(".")
 					.append(column.getFieldName())
 					.append("}");
+				} else if (QueryTypeEnum.PREFIX.equals(column.getQueryType())) {
+					sql.append(" AND ")
+					.append(column.getColumnName())
+					.append(" like '")
+					.append(value)
+					.append(" %'");
+				} else if (QueryTypeEnum.SUFFIX.equals(column.getQueryType())) {
+					sql.append(" AND ")
+					.append(column.getColumnName())
+					.append(" like '%")
+					.append(value)
+					.append("'");
 				}
 				
 			}
@@ -524,6 +544,13 @@ public class BaseSelectProvider {
 			sql.append(" AND ")
 			.append(builder.getField())
 			.append(" = #{")
+			.append(SQLProviderConstant.SQL_BUILD_ALIAS)
+			.append("[").append(index).append("].value}");
+			break;
+		case NOT_EQUALS:
+			sql.append(" AND ")
+			.append(builder.getField())
+			.append(" != #{")
 			.append(SQLProviderConstant.SQL_BUILD_ALIAS)
 			.append("[").append(index).append("].value}");
 			break;
@@ -571,6 +598,20 @@ public class BaseSelectProvider {
 			.append(" <= #{")
 			.append(SQLProviderConstant.SQL_BUILD_ALIAS)
 			.append("[").append(index).append("].value}");
+			break;
+		case PREFIX:
+			sql.append(" AND ")
+			.append(builder.getField())
+			.append(" like '")
+			.append(builder.getValue())
+			.append("%'");
+			break;
+		case SUFFIX:
+			sql.append(" AND ")
+			.append(builder.getField())
+			.append(" like '%")
+			.append(builder.getValue())
+			.append("'");
 			break;
 		default:
 			break;

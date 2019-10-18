@@ -9,6 +9,7 @@ package com.hp.core.database.enums;
 public enum QueryTypeEnum {
 
 	EQUALS,
+	NOT_EQUALS,
 	LIKE,
 	IN,
 	NOT_IN,
@@ -16,5 +17,7 @@ public enum QueryTypeEnum {
 	GTE,
 	LT,
 	LTE,
+	PREFIX,
+	SUFFIX,
 	;
 }
