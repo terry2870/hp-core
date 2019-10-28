@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.core.database.bean.DynamicColumnBean;
 import com.hp.core.database.bean.DynamicEntityBean;
+import com.hp.core.database.bean.SQLBuilder;
 import com.hp.core.database.exceptions.ProviderSQLException;
 import com.hp.core.database.interceptor.BaseSQLAOPFactory;
 import com.hp.core.mybatis.constant.SQLProviderConstant;
@@ -87,6 +88,33 @@ public class BaseDeleteSQLProvider {
 		
 		log.debug("deleteByParams get sql \r\nsql={} \r\nparams={}, \r\nentity={}", sql, params, entity);
 		return sql.append(where.toString()).toString();
+	}
+	
+	/**
+	 * 根据build，删除
+	 * @param params
+	 * @return
+	 */
+	public static String deleteByBuilder(Map<String, Object> params) {
+		if (params == null) {
+			log.error("deleteByBuilder error. with params is null.");
+			throw new ProviderSQLException("params is null");
+		}
+		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
+		StringBuilder sql = new StringBuilder("DELETE ")
+				.append(" FROM ")
+				.append(entity.getTableName())
+				.append(" WHERE 1=1 ");
+		
+		String where = SQLBuilderHelper.getSQLBySQLBuild((SQLBuilder[]) params.get(SQLProviderConstant.SQL_BUILD_ALIAS));
+		
+		if (where == null || where.length() == 0) {
+			log.error("deleteByBuilder error. with where sql is empty. not allow. with \r\nparams={}, \r\nentity={}", params, entity);
+			throw new ProviderSQLException("deleteByBuilder error. with where sql is empty");
+		}
+		
+		log.debug("deleteByBuilder get sql \r\nsql={} \r\nparams={}, \r\nentity={}", sql, params, entity);
+		return sql.append(where).toString();
 	}
 	
 	private static StringBuilder getDeleteSQLByParams(Object params, DynamicEntityBean entity) {
