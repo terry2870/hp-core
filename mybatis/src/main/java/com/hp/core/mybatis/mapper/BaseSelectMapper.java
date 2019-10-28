@@ -96,8 +96,8 @@ public interface BaseSelectMapper<T> extends IBaseSelectDAO<T> {
 	 * @param sql
 	 * @return
 	 */
-	@SelectProvider(type = BaseSelectProvider.class, method = "selectListBySQL")
-	public List<T> selectList(@Param(SQLProviderConstant.SQL_OBJECT_ALIAS) SQL sql);
+	//@SelectProvider(type = BaseSelectProvider.class, method = "selectListBySQL")
+	//public List<T> selectList(@Param(SQLProviderConstant.SQL_OBJECT_ALIAS) SQL sql);
 	
 	/**
 	 * 根据条件，查询单个
