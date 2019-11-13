@@ -26,6 +26,9 @@ public class DateUtil {
 
 	// 默认格式的时间
 	public static final String DEFAULT_DATE_TIME_FORMAT = DATE_TIME_FORMAT;
+	
+	//一天的秒数
+	public static final int ONE_DAY_SECONDS = 86400;
 
 	/**
 	 * 判断当前时间是不是在22点到第二天8点之间
@@ -37,31 +40,6 @@ public class DateUtil {
 		return time.compareTo("22:00:00") > 0 || time.compareTo("08:00:00") < 0;
 		// return time.compareTo("18:00:00") > 0 || time.compareTo("08:00:00") <
 		// 0;
-	}
-
-	public static void main(String[] args) {
-		System.out.println(isNotDisturbTime());
-		System.out.println("19:36:00".compareTo("18:00:00"));
-		System.out.println("19:36:00".compareTo("08:00:00"));
-	}
-
-	/**
-	 * 获取当前时间
-	 * 
-	 * @return
-	 */
-	public static Date getCurrentDate() {
-		return new Date();
-	}
-
-	/**
-	 * 获取当前时间, 并且将当前时间转换称INT类型
-	 *
-	 * @return 当前时间的INT类型
-	 */
-	public static int getCurrentTimeSeconds() {
-		long longTime = getCurrentDate().getTime();
-		return (int) (longTime / 1000);
 	}
 	
 	/**
@@ -81,7 +59,46 @@ public class DateUtil {
 	}
 
 	/**
-	 * 将通过getTime获得的long型的时间，转换成format类型的时间，如"2015-08-09"
+	 * 获取当前时间
+	 * 
+	 * @return
+	 */
+	public static Date getCurrentDate() {
+		return new Date();
+	}
+
+	/**
+	 * 获取当前时间, 并且将当前时间转换称INT类型
+	 *
+	 * @return 当前时间的INT类型
+	 */
+	public static int getCurrentTimeSeconds() {
+		long longTime = getCurrentTimeMilliSeconds();
+		return (int) (longTime / 1000);
+	}
+	
+	/**
+	 * 获取当前时间的毫秒数
+	 * @return
+	 */
+	public static long getCurrentTimeMilliSeconds() {
+		return System.currentTimeMillis();
+	}
+
+	/**
+	 * int 转 date
+	 * @param time
+	 * @return
+	 */
+	public static Date int2Date(Integer time) {
+		if (time == null || time == 0) {
+			return null;
+		}
+		return new Date((long) time * 1000);
+	}
+	
+	/**
+	 * 将通过getTime获得的int型的时间，转换成format类型的时间，如"2015-08-09"
 	 *
 	 * @param time
 	 *            int型的时间戳
@@ -90,10 +107,27 @@ public class DateUtil {
 	 * @return String "2015-08-09"
 	 */
 	public static String int2DateStr(Integer time, String... format) {
-		if (time == null || time == 0) {
+		if (time == null || time.intValue() == 0) {
 			return "";
 		}
 		Date date = new Date((long) time * 1000);
+		return dateToString(date, format);
+	}
+	
+	/**
+	 * 将通过getTime获得的long型的时间，转换成format类型的时间，如"2015-08-09"
+	 *
+	 * @param time
+	 *            long型的时间戳
+	 * @param format
+	 *            需要转化的类型 “yyyy-MM-dd”
+	 * @return String "2015-08-09"
+	 */
+	public static String long2DateStr(Long time, String... format) {
+		if (time == null || time.longValue() == 0) {
+			return "";
+		}
+		Date date = new Date(time.longValue());
 		return dateToString(date, format);
 	}
 
@@ -107,15 +141,33 @@ public class DateUtil {
 		if (StringUtils.isEmpty(time)) {
 			return 0;
 		}
+		long l = string2Long(time, format);
+		return (int) (l / 1000);
+	}
+	
+	/**
+	 * string格式转为时间戳（毫秒）
+	 * @param time
+	 * @param format
+	 * @return
+	 */
+	public static long string2Long(String time, String... format) {
+		if (StringUtils.isEmpty(time)) {
+			return 0;
+		}
 		Date d = string2Date(time, format);
-		return (int) (d.getTime() / 1000);
+		if(d == null){
+			return 0L;
+		}
+		return d.getTime();
+
 	}
 
 	/**
 	 * 根据字符串和格式获取date对象
 	 */
 	public static Date string2Date(String time, String... format) {
-		if (StringUtils.isEmpty(time)) {
+		if (StringUtils.isEmpty(time) || "0000-00-00".equals(time)) {
 			return null;
 		}
 		SimpleDateFormat sdf = new SimpleDateFormat(getDateFormatter(format));
@@ -130,13 +182,39 @@ public class DateUtil {
 	}
 
 	/**
-	 * 按照格式，取得当前时间
 	 * 
-	 * @param str
+	 * 返回string格式的当前时间
+	 * @param format
 	 * @return
 	 */
-	public static String getToday(String str) {
-		return dateToString(getCurrentDate(), str);
+	public static String getToday(String... format) {
+		return dateToString(getCurrentDate(), format);
+	}
+	
+	/**
+	 * 返回string格式的当前时间
+	 * @param format
+	 * @return
+	 */
+	public static String getTodayString(String... format) {
+		return getToday(format);
+	}
+	
+	/**
+	 * 返回int格式的当前时间
+	 * @param format
+	 * @return
+	 */
+	public static int getTodayInt(String... format) {
+		return string2Int(dateToString(getCurrentDate(), format), format);
+	}
+	
+	/**
+	 * 返回date类型的当前时间
+	 * @return
+	 */
+	public static Date getTodayDate() {
+		return getCurrentDate();
 	}
 
 	/**
@@ -217,4 +295,55 @@ public class DateUtil {
 	private static String getDateFormatter(String... format) {
 		return ArrayUtils.isEmpty(format) ? DEFAULT_DATE_TIME_FORMAT : format[0];
 	}
+	
+	/**
+	 * 转换为可视化时间
+	 * @param time
+	 * @return
+	 */
+	public static String getDisplayTime(Integer time) {
+		if (time == null || time.intValue() == 0) {
+			return "";
+		}
+		Date begin = new Date(((long) time) * 1000);
+		Date end = new Date();
+		long between = (end.getTime() - begin.getTime()) / 1000;// 除以1000是为了转换成秒
+		long dayDiff = between / (24 * 3600);
+		long hourDiff = between % (24 * 3600) / 3600;
+		long minuteDiff = between % 3600 / 60;
+		long secondDiff = between % 60 / 60;
+
+		// 1天<=时间, 显示 [06.23.2016格式]
+		if (dayDiff >= 1) {
+			return int2DateStr(time, "dd.MM.yyyy");
+		}
+		// 1小时<时间<24小时, 显示 [n小时前]
+		else if (hourDiff < 24 && hourDiff > 1) {
+			return hourDiff + "小时前";
+		}
+		// 1分钟<时间<60分钟, 显示 [n分钟前]
+		else if (minuteDiff < 60 && minuteDiff > 1) {
+			return minuteDiff + "分钟前";
+		}
+		// 时间<=1分钟 , 显示 [刚刚]
+		else if (secondDiff < 1) {
+			return "刚刚";
+		}
+
+		return null;
+	}
+	
+	/**
+	 * 获取UTC时间
+	 * @return
+	 */
+	public static int getUTCTimeForInt() {
+		Calendar cal = Calendar.getInstance();
+		int offset = cal.get(Calendar.ZONE_OFFSET);
+	   	//获得夏令时  时差
+	   	int dstoff = cal.get(Calendar.DST_OFFSET);
+	   	cal.add(Calendar.MILLISECOND, - (offset + dstoff));
+	   	return (int) (cal.getTimeInMillis() / 1000);
+	}
+
 }

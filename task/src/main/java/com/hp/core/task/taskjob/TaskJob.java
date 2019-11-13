@@ -32,7 +32,7 @@ public class TaskJob {
 	 * 添加或修改任务
 	 * @param job
 	 */
-	public void addOrUpdateJob(JobBean job) throws Exception {
+	public void addOrUpdateJob(JobBean job) {
 		log.info("addJob with job={}", job);
 		if (job == null) {
 			log.warn("addJob error. job is null");

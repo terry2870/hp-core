@@ -28,6 +28,12 @@ public class PageRequest extends BaseBean {
 	private int rows = 10;
 	
 	/**
+	 * 每页条数
+	 * rows是用在easyui中的分页参数，其他情况下使用limit
+	 */
+	private int limit = 10;
+	
+	/**
 	 * 排序字段
 	 */
 	private String sort;
@@ -43,6 +49,7 @@ public class PageRequest extends BaseBean {
 	private int startIndex = 0;
 	
 	
+	@SuppressWarnings("deprecation")
 	public PageModel toPageModel() {
 		PageModel model = new PageModel();
 		model.setCurrentPage(this.page);
@@ -99,6 +106,14 @@ public class PageRequest extends BaseBean {
 
 	public void setStartIndex(int startIndex) {
 		this.startIndex = startIndex;
+	}
+
+	public int getLimit() {
+		return limit;
+	}
+
+	public void setLimit(int limit) {
+		this.limit = limit;
 	}
 
 	

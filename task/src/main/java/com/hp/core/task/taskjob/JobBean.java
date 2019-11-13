@@ -6,6 +6,8 @@ package com.hp.core.task.taskjob;
 import java.io.Serializable;
 import java.util.concurrent.ScheduledFuture;
 
+import com.hp.core.task.enums.TaskModeEnum;
+
 /**
  * @author ping.huang 2016年6月18日
  */
@@ -27,17 +29,15 @@ public class JobBean implements Serializable {
 	// 任务线程
 	private Runnable commond;
 	
-	/**
-	 * @param jobName
-	 * @param timeExpression
-	 * @param activeMode
-	 * @param commond
-	 */
 	public JobBean(String jobName, String timeExpression, int activeMode, Runnable commond) {
 		this.jobName = jobName;
 		this.timeExpression = timeExpression;
 		this.activeMode = activeMode;
 		this.commond = commond;
+	}
+
+	public JobBean(String jobName, String timeExpression, TaskModeEnum taskMode, Runnable commond) {
+		this(jobName, timeExpression, taskMode.getValue(), commond);
 	}
 
 	/**

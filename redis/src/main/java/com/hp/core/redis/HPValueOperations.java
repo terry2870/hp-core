@@ -45,6 +45,33 @@ public class HPValueOperations {
 	
 	// 读写----------------------------开始
 	
+	/**
+	 * 删除key
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public Boolean delete(String key) {
+		return hpRedisTemplate.delete(key);
+	}
+	
+	/**
+	 * 批量删除
+	 */
+	public Long delete(Collection<String> keys) {
+		return hpRedisTemplate.delete(keys);
+	}
+	
+	/**
+	 * 设置超时
+	 * @param key
+	 * @param timeout
+	 * @param unit
+	 */
+	public void setTimeout(String key, long timeout, TimeUnit unit) {
+		hpRedisTemplate.setTimeout(key, timeout, unit);
+	}
+	
 	public void set(String key, Object value) {
 		// TODO Auto-generated method stub
 	}
@@ -97,11 +124,11 @@ public class HPValueOperations {
 		}
         try {
         	valueOperations.set(key, v, offset);
-        	hpRedisTemplate.expire(key, timeout, unit);
+        	setTimeout(key, timeout, unit);
         } catch (Exception e) {
         	log.error("HPValueOperations set redis error. with key={}, value={}", key, value, e);
         	//删除key
-        	hpRedisTemplate.delete(key);
+        	delete(key);
         }
 	}
 	
@@ -126,7 +153,7 @@ public class HPValueOperations {
         } catch (Exception e) {
         	log.error("HPValueOperations setIfAbsent redis error. with key={}, value={}", key, value, e);
         	//删除key
-        	hpRedisTemplate.delete(key);
+        	delete(key);
         }
         return result;
 	}
@@ -168,7 +195,7 @@ public class HPValueOperations {
 			});
 		} catch (Exception e) {
 			log.error("HPValueOperations multiSet redis error. with key.size={}", map.size(), e);
-			hpRedisTemplate.delete(map.keySet());
+			delete(map.keySet());
 		}
 	}
 	
@@ -191,12 +218,12 @@ public class HPValueOperations {
         try {
         	result = valueOperations.getAndSet(key, v);
         	//设置超时
-        	hpRedisTemplate.expire(key, timeout, unit);
+        	setTimeout(key, timeout, unit);
         	return RedisUtil.string2Value(result, clazz);
         } catch (Exception e) {
         	log.error("HPValueOperations getAndSet redis error. with key={}, value={}", key, value, e);
         	//删除key
-        	hpRedisTemplate.delete(key);
+        	delete(key);
         }
         return null;
 	}
@@ -418,10 +445,6 @@ public class HPValueOperations {
 
 	public void setValueOperationsReadOnly(ValueOperations<String, String> valueOperationsReadOnly) {
 		this.valueOperationsReadOnly = valueOperationsReadOnly;
-	}
-
-	public HPRedisTemplate getHpRedisTemplate() {
-		return hpRedisTemplate;
 	}
 
 	public void setHpRedisTemplate(HPRedisTemplate hpRedisTemplate) {

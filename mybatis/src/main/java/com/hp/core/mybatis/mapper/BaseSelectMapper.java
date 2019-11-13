@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.jdbc.SQL;
 
 import com.hp.core.database.bean.OrderBy;
 import com.hp.core.database.bean.PageModel;

@@ -240,6 +240,16 @@
 				<artifactId>hp-core-zookeeper</artifactId>
 				<version>${hp.core.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.hp.core</groupId>
+				<artifactId>hp-core-echarts</artifactId>
+				<version>${hp.core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.hp.core</groupId>
+				<artifactId>hp-core-elasticsearch</artifactId>
+				<version>${hp.core.version}</version>
+			</dependency>
 			
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
@@ -344,5 +354,7 @@
 		<module>springboot</module>
 		<module>database</module>
 		<module>jdbc</module>
-	</modules>
+		<module>echarts</module>
+		<module>elasticsearch</module>
+  </modules>
 </project>
