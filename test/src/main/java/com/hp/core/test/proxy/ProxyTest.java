@@ -35,8 +35,9 @@ public class ProxyTest {
 		int result = Arrays.binarySearch(elements, key);
 
 		// print match if found
-		if (result >= 0)
+		if (result >= 0) {
 			System.out.println(elements[result]);
+		}
 	}
 
 	static class TraceHandler implements InvocationHandler {
@@ -50,6 +51,7 @@ public class ProxyTest {
 			target = t;
 		}
 
+		@Override
 		public Object invoke(Object proxy, Method m, Object[] args) throws Throwable// 此方法在代理类中
 		{ // 的方法被调用时均会被调用
 			// print implicit argument
@@ -60,8 +62,9 @@ public class ProxyTest {
 			if (args != null) {
 				for (int i = 0; i < args.length; i++) {
 					System.out.print(args[i]);
-					if (i < args.length - 1)
+					if (i < args.length - 1) {
 						System.out.print(", ");
+					}
 				}
 			}
 			System.out.println(")");

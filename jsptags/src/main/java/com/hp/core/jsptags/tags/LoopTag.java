@@ -26,6 +26,7 @@ public class LoopTag extends BaseTagSupport {
 		this.times = times;
 	}
 
+	@Override
 	public int doStartTag() throws JspException {
 		super.doStartTag();
 		indexNum = 0;
@@ -40,6 +41,7 @@ public class LoopTag extends BaseTagSupport {
 		}
 	}
 
+	@Override
 	public int doAfterBody() throws JspException {
 		indexNum++;
 		if (StringUtils.isNotEmpty(this.index)) {

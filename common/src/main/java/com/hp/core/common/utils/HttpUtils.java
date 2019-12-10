@@ -108,11 +108,11 @@ public class HttpUtils {
 			post.setEntity(new StringEntity(body, Charset.forName(charset)));
 			
 			setConfig(post, headList, timeout);
-			long d1 = new Date().getTime();
+			long d1 = DateUtil.getCurrentTimeMilliSeconds();
 			re = client.execute(post);
 			code = re.getStatusLine().getStatusCode();
 			message = EntityUtils.toString(re.getEntity(), charset);
-			long d2 = new Date().getTime();
+			long d2 = DateUtil.getCurrentTimeMilliSeconds();
 			log.info("postBody with url={}, code={}, and cost time={}", url, code, (d2 - d1));
 		} catch (Exception e) {
 			log.error("postBody error with url={}, body={}", url, body, e);
@@ -208,11 +208,11 @@ public class HttpUtils {
 				post.setEntity(new UrlEncodedFormEntity(list, charset));
 			}
 			setConfig(post, headList, timeout);
-			long d1 = new Date().getTime();
+			long d1 = DateUtil.getCurrentTimeMilliSeconds();
 			re = client.execute(post);
 			code = re.getStatusLine().getStatusCode();
 			message = EntityUtils.toString(re.getEntity(), charset);
-			long d2 = new Date().getTime();
+			long d2 = DateUtil.getCurrentTimeMilliSeconds();
 			log.info("httpPost with url={}, code={}, and cost time={}", url, code, (d2 - d1));
 		} catch (Exception e) {
 			log.error("httpPost error with url={}, param={}", url, param, e);
@@ -269,11 +269,11 @@ public class HttpUtils {
 		try {
 			get = new HttpGet(url);
 			setConfig(get, headList, timeout);
-			long d1 = new Date().getTime();
+			long d1 = DateUtil.getCurrentTimeMilliSeconds();
 			re = client.execute(get);
 			code = re.getStatusLine().getStatusCode();
 			message = EntityUtils.toString(re.getEntity(), charset);
-			long d2 = new Date().getTime();
+			long d2 = DateUtil.getCurrentTimeMilliSeconds();
 			log.info("httpGet with url={}, code={}, and cost time={}", url, code, (d2 - d1));
 		} catch (Exception e) {
 			log.error("httpGet error with url={}", url, e);

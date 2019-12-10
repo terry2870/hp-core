@@ -45,6 +45,8 @@ public class NoRightException extends Exception {
 	public void setCode(int code) {
 		this.code = code;
 	}
+	
+	@Override
 	public String getMessage() {
 		return message;
 	}

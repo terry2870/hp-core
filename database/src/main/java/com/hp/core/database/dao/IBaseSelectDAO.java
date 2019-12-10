@@ -39,7 +39,7 @@ public interface IBaseSelectDAO<T> {
 	
 	/**
 	 * 根据条件，查询list（不分页）
-	 * @param params
+	 * @param target
 	 * @return
 	 */
 	public default List<T> selectListByParams(T target) {

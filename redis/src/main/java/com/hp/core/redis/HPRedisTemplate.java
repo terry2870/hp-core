@@ -25,6 +25,7 @@ public class HPRedisTemplate extends StringRedisTemplate {
 	 * @param key
 	 * @param value
 	 */
+	@Override
 	public Boolean delete(String key) {
 		if (key == null) {
 			log.warn("HPRedisTemplate delete redis error with key is empty");
@@ -48,6 +49,7 @@ public class HPRedisTemplate extends StringRedisTemplate {
 	/**
 	 * 批量删除
 	 */
+	@Override
 	public Long delete(Collection<String> keys) {
 		if (CollectionUtils.isEmpty(keys)) {
 			log.warn("HPRedisTemplate delete redis error with key is empty");

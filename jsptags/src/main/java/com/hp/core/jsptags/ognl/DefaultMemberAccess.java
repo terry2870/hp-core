@@ -19,10 +19,9 @@ public class DefaultMemberAccess implements MemberAccess {
 	public boolean allowProtectedAccess = false;
 	public boolean allowPackageProtectedAccess = false;
 
-	/*
-	 * ===================================================================
-	 * Constructors
-	 * ===================================================================
+	/**
+	 * 
+	 * @param allowAllAccess
 	 */
 	public DefaultMemberAccess(boolean allowAllAccess) {
 		this(allowAllAccess, allowAllAccess, allowAllAccess);
@@ -35,10 +34,6 @@ public class DefaultMemberAccess implements MemberAccess {
 		this.allowPackageProtectedAccess = allowPackageProtectedAccess;
 	}
 
-	/*
-	 * =================================================================== Public
-	 * methods ===================================================================
-	 */
 	public boolean getAllowPrivateAccess() {
 		return allowPrivateAccess;
 	}
@@ -63,12 +58,11 @@ public class DefaultMemberAccess implements MemberAccess {
 		allowPackageProtectedAccess = value;
 	}
 
-	/*
-	 * ===================================================================
-	 * MemberAccess interface
-	 * ===================================================================
+	/**
+	 * 
 	 */
 	@SuppressWarnings("rawtypes")
+	@Override
 	public Object setup(Map context, Object target, Member member, String propertyName) {
 		Object result = null;
 
@@ -84,6 +78,7 @@ public class DefaultMemberAccess implements MemberAccess {
 	}
 
 	@SuppressWarnings("rawtypes")
+	@Override
 	public void restore(Map context, Object target, Member member, String propertyName, Object state) {
 		if (state != null) {
 			((AccessibleObject) member).setAccessible(((Boolean) state).booleanValue());
@@ -95,6 +90,7 @@ public class DefaultMemberAccess implements MemberAccess {
 	 * this object.
 	 */
 	@SuppressWarnings("rawtypes")
+	@Override
 	public boolean isAccessible(Map context, Object target, Member member, String propertyName) {
 		int modifiers = member.getModifiers();
 		boolean result = Modifier.isPublic(modifiers);

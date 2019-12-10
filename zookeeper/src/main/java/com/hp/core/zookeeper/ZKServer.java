@@ -21,6 +21,7 @@ public class ZKServer {
 
 	public void connectZookeeper(String address) throws Exception {
 		ZooKeeper zk = new ZooKeeper("192.168.128.129:2181", 5000, new Watcher() {
+			@Override
 			public void process(WatchedEvent event) {
 				// 不做处理
 			}

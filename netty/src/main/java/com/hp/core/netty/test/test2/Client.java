@@ -58,6 +58,7 @@ public class Client {
 			req = ("QUERY TIME ORDER" + System.getProperty("line.separator")).getBytes();
 		}
 
+		@Override
 		public void channelActive(ChannelHandlerContext ctx) {
 			logger.info("channelActive");
 			ByteBuf message = null;
@@ -68,6 +69,7 @@ public class Client {
 			}
 		}
 
+		@Override
 		public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
 			logger.info("Unexcepted exception from downstream:" + cause.getMessage());
 			ctx.close();

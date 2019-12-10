@@ -20,6 +20,7 @@ public class DBCPConnectionPoolFactoryImpl implements AbstConnectionPoolFactory 
 	/**
 	 * 获取基础信息
 	 */
+	@Override
 	public DataSource getDatasource(DatasourceConfigBean bean, AbstDatabase database, String ipPort) {
 		BasicDataSource ds = new BasicDataSource();
 		ds.setUrl(database.getConnectionUrl(ipPort, bean.getDatabaseName(), bean.getConnectionParam()));

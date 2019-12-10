@@ -16,6 +16,7 @@ public class SetAttributeTag extends BaseTagSupport {
 	
 	static Logger log = LoggerFactory.getLogger(SetAttributeTag.class);
 
+	@Override
 	public int doStartTag() throws JspException {
 		super.doStartTag();
 		try {
