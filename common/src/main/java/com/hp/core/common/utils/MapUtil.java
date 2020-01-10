@@ -21,7 +21,7 @@ import com.google.common.collect.Maps;
 public class MapUtil {
 	
 	public static final <K, V> Map<K, V> list2map(Iterable<V> values, Function<K, ? super V> keyFunction) {
-		return list2map(values, keyFunction);
+		return list2Map(values, keyFunction);
 	}
 	
 	/**
