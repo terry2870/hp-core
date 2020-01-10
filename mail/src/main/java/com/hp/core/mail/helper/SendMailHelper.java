@@ -3,8 +3,6 @@
  */
 package com.hp.core.mail.helper;
 
-import javax.mail.internet.MimeMessage;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -41,16 +39,6 @@ public class SendMailHelper {
 		}
 		javaMailSenderImpl.send(message);
 		log.info("sendSimpleMailMessage success. with message={}", message);
-	}
-	
-	/**
-	 * 发送邮件
-	 * @param message
-	 */
-	public void sendMimeMessage(MimeMessage message) {
-		log.info("sendMimeMessage start. with message={}", message);
-		javaMailSenderImpl.send(message);
-		log.info("sendMimeMessage success. with message={}", message);
 	}
 
 	public void setJavaMailSenderImpl(JavaMailSenderImpl javaMailSenderImpl) {

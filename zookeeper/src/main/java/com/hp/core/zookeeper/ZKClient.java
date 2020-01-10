@@ -25,7 +25,6 @@ public class ZKClient {
 	/**
 	 * 连接zookeeper
 	 */
-	@Override
 	public void connectZookeeper() throws Exception {
 		zk = new ZooKeeper("192.168.128.129:2181", 5000, new Watcher() {
 			public void process(WatchedEvent event) {
