@@ -33,9 +33,21 @@
 	<bean id="dynamicDatasource" class="com.hp.core.database.datasource.DynamicDatasource" depends-on="SpringContextUtil">
 		<property name="databasesMap" ref="databasesMap" />
 	</bean>
+	
+	<!--Database数据库路由注解的拦截器, 支持强制到主,支持开始事务前选择数据源-->
+	<bean id="forceMasterAnnotationInterceptor" class="com.hp.core.database.interceptor.ForceMasterInterceptor" />
+	<aop:config>
+		<aop:aspect id="forceMasterAnnotationInterceptorAspect" ref="forceMasterAnnotationInterceptor">
+			<aop:pointcut id="setForceMaster" expression="@annotation(com.hp.core.database.annotation.ForceMaster) 
+				or @annotation(org.springframework.transaction.annotation.Transactional)" />
+			<aop:before method="before" pointcut-ref="setForceMaster" />
+			<aop:after method="after" pointcut-ref="setForceMaster" />
+			<aop:after-throwing method="throwing" throwing="ex" pointcut-ref="setForceMaster"/>
+		</aop:aspect>
+    </aop:config>
+	
 
 	<bean id="DAOMethodInterceptorHandle" class="com.hp.core.database.interceptor.DAOMethodInterceptorHandle" />
-
 	<aop:config>
 		<aop:aspect id="DAOMethodInterceptorHandleAspect" ref="DAOMethodInterceptorHandle">
 			<aop:pointcut id="setDatasource" expression="${hp.core.database.interceptor.expression:}" />

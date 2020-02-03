@@ -9,6 +9,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.hp.core.test.dal.IBillInfoDAO;
+import com.hp.core.test.service.TestService;
 
 /**
  * @author huangping
@@ -20,11 +21,17 @@ public class Test {
 
 	@Autowired
 	private IBillInfoDAO billInfoDAO;
+	@Autowired
+	private TestService testService;
 	
 	@org.junit.Test
 	public void aa() {
 		System.out.println("asdasdasdasd");
-		System.out.println("billInfoDAO= " + billInfoDAO.selectAllCount());
-		System.out.println(billInfoDAO.selectBy(2));
+		testService.count();
+		//System.out.println(billInfoDAO.selectBy(2));
+		
+		
+		//billInfoDAO.selectByPrimaryKey(2);
 	}
+	
 }

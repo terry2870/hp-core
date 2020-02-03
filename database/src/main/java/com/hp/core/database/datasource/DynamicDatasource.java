@@ -3,8 +3,6 @@
  */
 package com.hp.core.database.datasource;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +11,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -20,8 +19,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
-import com.hp.core.database.annotation.ForceMaster;
-import com.hp.core.database.annotation.ForceSlave;
 import com.hp.core.database.bean.DAOInterfaceInfoBean;
 import com.hp.core.database.bean.DatasourceConfigBean;
 import com.hp.core.database.bean.DynamicDatasourceBean;
@@ -29,6 +26,7 @@ import com.hp.core.database.enums.ConnectionPoolFactoryEnum;
 import com.hp.core.database.exceptions.DataSourceNotFoundException;
 import com.hp.core.database.exceptions.DynamicDataSourceRouteException;
 import com.hp.core.database.interceptor.DAOMethodInterceptorHandle;
+import com.hp.core.database.interceptor.ForceMasterInterceptor;
 
 /**
  * @author huangping
@@ -50,11 +48,6 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 	 */
 	private static Map<String, Integer> databaseIPCountMap = new HashMap<>();
 	
-	/**
-	 * 存放方法是否有注解的map
-	 */
-	private static Map<String, Boolean> methodAnnotationMap = new HashMap<>();
-	
 	//默认的数据源名称
 	private static String DEFAULT_DATABASE_NAME = "";
 	
@@ -65,7 +58,7 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 	private static Pattern update = Pattern.compile("^update.*");
 	private static Pattern insert = Pattern.compile("^insert.*");
 	private static Pattern delete = Pattern.compile("^delete.*");
-	
+		
 	private Map<String, Object> databasesMap;
 
 	@Override
@@ -88,52 +81,29 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 			databaseName = DEFAULT_DATABASE_NAME;
 		}
 		
-		String result = getDatasourceByKey(databaseName, getFormMaster(daoInfo));
+		String result = getDatasourceByKey(databaseName, getForceMaster(daoInfo));
 		log.debug("-------select route datasource with statementId={} and result is {}", (daoInfo.getMapperNamespace() + "." + daoInfo.getStatementId()), result);
 		return result;
 	}
 	
-	private boolean getFormMaster(DAOInterfaceInfoBean daoInfo) {
-		String key = daoInfo.getMapperNamespace() + "." + daoInfo.getStatementId();
-		//查询缓存
-		Boolean bool = methodAnnotationMap.get(key);
-		if (bool != null) {
-			return bool.booleanValue();
+	/**
+	 * 获取是否  forceMaster
+	 * @param daoInfo
+	 * @return
+	 */
+	private boolean getForceMaster(DAOInterfaceInfoBean daoInfo) {
+		if (ForceMasterInterceptor.getForceMaster()) {
+			//有设置forceMaster
+			return true;
 		}
 		
-		boolean b = getFormMasterFromAnnotation(daoInfo);
-		methodAnnotationMap.put(key, new Boolean(b));
-		return b;
+		return getForceMasterFromAnnotation(daoInfo);
 	}
 	
 	/**
-	 * 查询是从哪个数据源
+	 * 根据方法名，判断走主从
 	 */
-	private boolean getFormMasterFromAnnotation(DAOInterfaceInfoBean daoInfo) {
-		//先判断方法上面
-		ForceMaster forceMaster = getAnnotationByMethod(daoInfo.getMethod(), ForceMaster.class);
-		if (forceMaster != null) {
-			//方法上有注解，直接返回
-			return true;
-		}
-		ForceSlave forceSlave = getAnnotationByMethod(daoInfo.getMethod(), ForceSlave.class);
-		if (forceSlave != null) {
-			//方法上有注解，直接返回
-			return false;
-		}
-		
-		//再判断接口上面
-		forceMaster = getAnnotationByClass(daoInfo.getClassName(), ForceMaster.class);
-		if (forceMaster != null) {
-			//方法上有注解，直接返回
-			return true;
-		}
-		forceSlave = getAnnotationByClass(daoInfo.getClassName(), ForceSlave.class);
-		if (forceSlave != null) {
-			//方法上有注解，直接返回
-			return false;
-		}
-		
+	private boolean getForceMasterFromAnnotation(DAOInterfaceInfoBean daoInfo) {
 		//根据方法名称去判断
 		boolean fromMaster = false;
 		//获取用户执行的sql方法名
@@ -144,8 +114,9 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 		}
 		statementId = statementId.toLowerCase();
 		if (select.matcher(statementId).matches()) {
-			//使用slave数据源
-			fromMaster = false;
+			//这个时候，随机主从
+			int i = RandomUtils.nextInt(0, 2);
+			fromMaster = BooleanUtils.toBoolean(i);
 		} else if (update.matcher(statementId).matches() || insert.matcher(statementId).matches() || delete.matcher(statementId).matches()) {
 			//使用master数据源
 			fromMaster = true;
@@ -155,40 +126,6 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 			fromMaster = true;
 		}
 		return fromMaster;
-	}
-	
-	/**
-	 * 查询方法上是否有注解
-	 * @param method
-	 * @param annotationType
-	 * @return
-	 */
-	private <T extends Annotation> T getAnnotationByMethod(Method method, Class<T> annotationType) {
-		if (method == null) {
-			return null;
-		}
-		T a = method.getAnnotation(annotationType);
-		if (a == null) {
-			return null;
-		}
-		return a;
-	}
-	
-	/**
-	 * 查询接口上是否有注解
-	 * @param clazz
-	 * @param annotationType
-	 * @return
-	 */
-	private <T extends Annotation> T getAnnotationByClass(Class<?> clazz, Class<T> annotationType) {
-		if (clazz == null) {
-			return null;
-		}
-		T a = clazz.getAnnotation(annotationType);
-		if (a == null) {
-			return null;
-		}
-		return a;
 	}
 	
 	/**

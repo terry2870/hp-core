@@ -2,9 +2,9 @@ datasources:
    eie:
       servers:
          master:
-           - 192.168.103.100:3306
+           - 192.168.102.17:3306
          slave:
-           - 192.168.103.100:3306
+           - 192.168.102.19:3306
       username: yh_test
       password: yh_test
       maxTotal: 100

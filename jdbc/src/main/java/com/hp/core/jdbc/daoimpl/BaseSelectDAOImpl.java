@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.hp.core.database.bean.DynamicEntityBean;
 import com.hp.core.database.bean.OrderBy;
 import com.hp.core.database.bean.PageModel;
+import com.hp.core.database.bean.SQLBuilder;
 import com.hp.core.database.dao.IBaseSelectDAO;
 import com.hp.core.database.interceptor.BaseSQLAOPFactory;
 
@@ -17,7 +18,7 @@ import com.hp.core.database.interceptor.BaseSQLAOPFactory;
  * @author huangping
  * 2018年12月10日
  */
-public abstract class BaseSelectDAOImpl<T> implements IBaseSelectDAO<T> {
+public class BaseSelectDAOImpl<T> implements IBaseSelectDAO<T> {
 
 	/* (non-Javadoc)
 	 * @see com.hp.core.database.dao.IBaseSelectDAO#selectAllCount()
@@ -33,7 +34,7 @@ public abstract class BaseSelectDAOImpl<T> implements IBaseSelectDAO<T> {
 	 */
 	@Override
 	public T selectByPrimaryKey(Object id) {
-		// TODO Auto-generated method stub
+		System.out.println("----------------- " + id);
 		return null;
 	}
 
@@ -87,6 +88,42 @@ public abstract class BaseSelectDAOImpl<T> implements IBaseSelectDAO<T> {
 	 */
 	@Override
 	public List<T> selectByPrimaryKeysWithInSort(List<?> ids) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Integer selectCountByBuilder(SQLBuilder... builder) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<T> selectListByBuilder(SQLBuilder... builder) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<T> selectListByBuilderWithOrder(SQLBuilder[] builder, OrderBy... orderBy) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<T> selectPageListByBuilder(SQLBuilder[] builder, PageModel page) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public T selectOneByBuilder(SQLBuilder... builder) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public T selectOneByBuilderWithOrder(SQLBuilder[] builder, OrderBy... orderBy) {
 		// TODO Auto-generated method stub
 		return null;
 	}
