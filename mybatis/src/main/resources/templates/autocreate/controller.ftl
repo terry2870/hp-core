@@ -38,7 +38,7 @@ public class ${modelName}Controller {
 	 * @return
 	 */
 	@RequestMapping("/${modelNameFirstLow}List")
-	public ModelAndView ${modelNameFirstLow}List(Integer menuId, Integer iframeId) {
+	public ModelAndView ${modelNameFirstLow}List(Integer menuId, String iframeId) {
 		Map<String, Object> map = new HashMap<>();
 		FreeMarkerUtil.addStaticTemplate(map);
 		return new ModelAndView("other/${modelNameFirstLow}List", map);
@@ -52,7 +52,7 @@ public class ${modelName}Controller {
 	 */
 	@RequestMapping("/queryAll${modelName}")
 	public Response<PageResponse<${modelName}ResponseBO>> queryAll${modelName}(${modelName}RequestBO request, PageRequest pageRequest) {
-		log.info("queryAll${modelName} with request={}, page={}", request, pageRequest);
+		log.info("enter queryAll${modelName} with request={}, page={}", request, pageRequest);
 		PageResponse<${modelName}ResponseBO> list = ${modelNameFirstLow}Service.query${modelName}PageList(request, pageRequest);
 		log.info("queryAll${modelName} success. with request={}, page={}", request, pageRequest);
 		if (list == null) {
@@ -68,7 +68,7 @@ public class ${modelName}Controller {
 	 */
 	@RequestMapping("/save${modelName}")
 	public Response<Object> save${modelName}(${modelName}RequestBO request) {
-		log.info("save${modelName} with request={}", request);
+		log.info("enter save${modelName} with request={}", request);
 		${modelNameFirstLow}Service.save${modelName}(request);
 		log.info("save${modelName} success. with request={}", request);
 		return new Response<>();
@@ -81,7 +81,7 @@ public class ${modelName}Controller {
 	 */
 	@RequestMapping("/delete${modelName}")
 	public Response<Object> delete${modelName}(Integer id) {
-		log.info("delete${modelName} with id={}", id);
+		log.info("enter delete${modelName} with id={}", id);
 		${modelNameFirstLow}Service.delete${modelName}(id);
 		log.info("delete${modelName} success. with id={}", id);
 		return new Response<>();
@@ -94,7 +94,7 @@ public class ${modelName}Controller {
 	 */
 	@RequestMapping("/query${modelName}ById")
 	public Response<${modelName}ResponseBO> query${modelName}ById(Integer id) {
-		log.info("query${modelName}ById with id={}", id);
+		log.info("enter query${modelName}ById with id={}", id);
 		${modelName}ResponseBO bo = ${modelNameFirstLow}Service.query${modelName}ById(id);
 		log.info("query${modelName}ById success. with id={}", id);
 		return new Response<>(bo);

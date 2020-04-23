@@ -126,7 +126,9 @@
 				return;
 			}
 			let file = data.data || {};
-			file = opt.filterFile(data);
+			if (opt.filterFile) {
+				file = opt.filterFile(data);
+			}
 			if (opt.showFileName === true) {
 				if (file) {
 					_setFile(jq, file);
@@ -206,6 +208,7 @@
 		let fileName = _getFileName(file);
 		jq.empty();
 		var opt = jq.data("fileUpload");
+		jq.data("fileItem", file);
 		jq.append($("<input type='hidden' />").attr({
 			name : opt.realInputName
 		}).val(fileName).data("fileData", file));
@@ -244,8 +247,7 @@
 	 * 获取文件数据
 	 */
 	function _getFileData(jq) {
-		let obj = _getFile(jq);
-		return obj.data("fileData");
+		return jq.data("fileItem");
 	}
 	
 	/**
@@ -314,6 +316,11 @@
 			var jq = $(this);
 			if (!value) {
 				return jq;
+			}
+			if ($.type(value) == "string") {
+				value = {
+					fileName : value
+				};
 			}
 			return jq.each(function() {
 				_setFile(jq, value);
@@ -384,9 +391,9 @@
 		queryParams : {},					//提交到后端额外参数
 		dataType : "json",					//返回数据的格式
 		value : null,						//文件默认值
-		filterFile : function(data) {		//返回值处理
-			return data;
-		},
+		//filterFile : function(data) {		//返回值处理
+			//return data;
+		//},
 		showFileName : true,					//上传成功后，是否显示文件名
 		accept : null
 	});

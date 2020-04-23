@@ -22,6 +22,9 @@ public class Response<T> extends BaseBean {
 	
 	private T data;
 	
+	public static <T> Response<T> success() {
+		return success(SUCCESS_MESSAGE);
+	}
 	
 	public static <T> Response<T> success(T data) {
 		return success(SUCCESS_MESSAGE, data);

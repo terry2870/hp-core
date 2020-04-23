@@ -30,6 +30,7 @@
 		<google-collect.version>snapshot-20080530</google-collect.version>
 		<commons-beanutils.version>1.9.3</commons-beanutils.version>
 		<commons-fileupload-version>1.4</commons-fileupload-version>
+		<poi-version>4.1.0</poi-version>
 	</properties>
 
 	<dependencyManagement>
@@ -147,6 +148,16 @@
 				<artifactId>curator-x-discovery</artifactId>
 				<version>${curator-x-discovery.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi</artifactId>
+				<version>${poi-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi-ooxml</artifactId>
+				<version>${poi-version}</version>
+			</dependency>
 
 			
 			
@@ -250,6 +261,11 @@
 				<artifactId>hp-core-elasticsearch</artifactId>
 				<version>${hp.core.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.hp.core</groupId>
+				<artifactId>hp-core-excel</artifactId>
+				<version>${hp.core.version}</version>
+			</dependency>
 			
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
@@ -257,12 +273,6 @@
 				<version>${spring-boot-version}</version>
 				<type>pom</type>
 				<scope>import</scope>
-				<!-- <exclusions>
-					<exclusion>
-						<groupId>mysql</groupId>
-						<artifactId>mysql-connector-java</artifactId>
-					</exclusion>
-				</exclusions> -->
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -307,5 +317,6 @@
 		<module>jdbc</module>
 		<module>echarts</module>
 		<module>elasticsearch</module>
+		<module>excel</module>
   </modules>
 </project>
