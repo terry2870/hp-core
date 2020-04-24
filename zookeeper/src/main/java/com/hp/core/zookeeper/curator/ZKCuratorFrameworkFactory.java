@@ -35,7 +35,7 @@ public class ZKCuratorFrameworkFactory implements Closeable {
 
 	static Logger log = LoggerFactory.getLogger(ZKCuratorFrameworkFactory.class);
 
-	private ConcurrentMap<String, ZKClusterClient> clientFactory = Maps.newConcurrentHashMap();
+	private ConcurrentMap<String, ZKClusterClient> clientFactory = Maps.newConcurrentMap();
 
 	// 饿汉模式，加载类，就初始化实例
 	private static ZKCuratorFrameworkFactory instance = new ZKCuratorFrameworkFactory();

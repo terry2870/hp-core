@@ -10,10 +10,9 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<hp.core.version>0.0.1-SNAPSHOT</hp.core.version>
-		<spring-boot-version>2.1.9.RELEASE</spring-boot-version>
+		<spring-boot-version>2.2.6.RELEASE</spring-boot-version>
 		<fastjson.version>1.2.58</fastjson.version>
-		<commons-collections.version>3.2.2</commons-collections.version>
-		<commons-lang3.version>3.9</commons-lang3.version>
+		<commons.collections4.version>4.4</commons.collections4.version>
 		<ognl.version>3.2.10</ognl.version>
 		<jsp-api.version>2.3.3</jsp-api.version>
 		<commons-text.version>1.6</commons-text.version>
@@ -30,6 +29,7 @@
 		<google-collect.version>snapshot-20080530</google-collect.version>
 		<commons-beanutils.version>1.9.3</commons-beanutils.version>
 		<commons-fileupload-version>1.4</commons-fileupload-version>
+		<javax.mail.version>1.4.1</javax.mail.version>
 		<poi-version>4.1.0</poi-version>
 	</properties>
 
@@ -56,41 +56,11 @@
 				<version>${mybatis.spring.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.google.guava</groupId>
-				<artifactId>guava</artifactId>
-				<version>${guava.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>aopalliance</groupId>
 				<artifactId>aopalliance</artifactId>
 				<version>${aopalliance.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-lang3</artifactId>
-				<version>${commons-lang3.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-collections</groupId>
-				<artifactId>commons-collections</artifactId>
-				<version>${commons-collections.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.code.google-collections</groupId>
-				<artifactId>google-collect</artifactId>
-				<version>${google-collect.version}</version>
-			</dependency>
 			
-			<dependency>
-				<groupId>com.alibaba</groupId>
-				<artifactId>fastjson</artifactId>
-				<version>${fastjson.version}</version>
-			</dependency> 
-			<dependency>
-				<groupId>commons-beanutils</groupId>
-				<artifactId>commons-beanutils</artifactId>
-				<version>${commons-beanutils.version}</version>
-			</dependency>
 			<dependency>
 				<groupId>ognl</groupId>
 				<artifactId>ognl</artifactId>
@@ -157,6 +127,11 @@
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi-ooxml</artifactId>
 				<version>${poi-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.mail</groupId>
+				<artifactId>mail</artifactId>
+				<version>${javax.mail.version}</version>
 			</dependency>
 
 			
@@ -226,11 +201,11 @@
 				<artifactId>hp-core-redis</artifactId>
 				<version>${hp.core.version}</version>
 			</dependency>
-			<dependency>
+			<!-- <dependency>
 				<groupId>com.hp.core</groupId>
 				<artifactId>hp-core-springboot</artifactId>
 				<version>${hp.core.version}</version>
-			</dependency>
+			</dependency> -->
 			<dependency>
 				<groupId>com.hp.core</groupId>
 				<artifactId>hp-core-task</artifactId>
@@ -279,20 +254,41 @@
 
 	<dependencies>
 		<dependency>
-			 <groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-test</artifactId>
+			<artifactId>spring-boot-starter-test</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>${commons.collections4.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.google-collections</groupId>
+			<artifactId>google-collect</artifactId>
+			<version>${google-collect.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>${fastjson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>${commons-beanutils.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -312,7 +308,7 @@
 		<module>jsptags</module>
 		<module>webjars</module>
 		<module>freemarker</module>
-		<module>springboot</module>
+		<!-- <module>springboot</module> -->
 		<module>database</module>
 		<module>jdbc</module>
 		<module>echarts</module>

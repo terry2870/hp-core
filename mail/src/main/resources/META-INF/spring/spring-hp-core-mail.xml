@@ -13,7 +13,8 @@
 	http://www.springframework.org/schema/aop
 	http://www.springframework.org/schema/aop/spring-aop.xsd">
 	
-	<bean id="javaMailSenderImpl" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+	<!-- 
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
 		<property name="host" value="${hp.core.mail.send.host:smtp.163.com}" />
 		<property name="port" value="${hp.core.mail.send.port:25}" />
 		<property name="javaMailProperties">
@@ -26,9 +27,6 @@
 		<property name="username" value="${hp.core.mail.send.user:user}" />
 		<property name="password" value="${hp.core.mail.send.password:123456}" />
 	</bean>
-	
-	<bean id="sendMailHelper" class="com.hp.core.mail.helper.SendMailHelper">
-		<property name="javaMailSenderImpl" ref="javaMailSenderImpl" />
-	</bean>
+	 -->
 </beans>
 

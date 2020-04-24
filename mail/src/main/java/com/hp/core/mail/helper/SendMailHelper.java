@@ -4,44 +4,44 @@
 package com.hp.core.mail.helper;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Component;
+
+import com.hp.core.mail.request.SendEmailRequestBO;
 
 /**
  * @author ping.huang
  * 2017年3月30日
  */
+@Component
 public class SendMailHelper {
 
 	private static Logger log = LoggerFactory.getLogger(SendMailHelper.class);
 	
-	private JavaMailSenderImpl javaMailSenderImpl;
+	@Autowired
+	private JavaMailSender javaMailSender;
 	
-	@Value("${hp.core.mail.send.from:}")
-	private String from;
 	
-	/**
-	 * 发送邮件
-	 * @param message
-	 */
-	public void sendSimpleMailMessage(SimpleMailMessage message) {
-		log.info("sendSimpleMailMessage start. with message={}", message);
-		if (ArrayUtils.isEmpty(message.getTo())) {
-			log.warn("sendSimpleMailMessage error. to is empty. with message={}", message);
+	public void sendSimpleMail(SendEmailRequestBO request) {
+		log.info("sendSimpleMail start. with request={}", request);
+
+		if (ArrayUtils.isEmpty(request.getTo())) {
+			log.warn("sendSimpleMail error. to is empty. with request={}", request);
 			return;
 		}
-		if (StringUtils.isEmpty(message.getFrom())) {
-			message.setFrom(from);
-		}
-		javaMailSenderImpl.send(message);
-		log.info("sendSimpleMailMessage success. with message={}", message);
+
+		SimpleMailMessage mailMessage = new SimpleMailMessage();
+		mailMessage.setFrom(request.getFrom());
+		mailMessage.setTo(request.getTo());
+
+		mailMessage.setSubject(request.getSubject());
+		mailMessage.setText(request.getText());
+		javaMailSender.send(mailMessage);
+		log.info("sendSimpleMail success. with request={}", request);
 	}
 
-	public void setJavaMailSenderImpl(JavaMailSenderImpl javaMailSenderImpl) {
-		this.javaMailSenderImpl = javaMailSenderImpl;
-	}
 }
