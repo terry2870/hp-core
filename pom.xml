@@ -235,6 +235,11 @@
 				<artifactId>hp-core-excel</artifactId>
 				<version>${hp.core.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.hp.core</groupId>
+				<artifactId>hp-core-admin</artifactId>
+				<version>${hp.core.version}</version>
+			</dependency>
 			
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
@@ -308,5 +313,6 @@
 		<module>echarts</module>
 		<module>elasticsearch</module>
 		<module>excel</module>
+		<module>admin</module>
   </modules>
 </project>
