@@ -9,8 +9,6 @@
 	<link rel="stylesheet" type="text/css" href="css/left-side-menu.css">
 	<link rel="stylesheet" type="text/css" href="font/iconfont.css">
 	<script type="text/javascript" src="js/jquery-3.5.1.min.js"></script>
-	<script type="text/javascript" src="js/jquery.slimscroll.min.js"></script>
-	<script type="text/javascript" src="js/left-side-menu.js"></script>
 </head>
 <body>
 	<#include "layout/header.ftlh">
@@ -20,7 +18,9 @@
 		<#nested>
 	</div>
 	<#include "layout/footer.ftlh">
-	
+	<script type="text/javascript" src="js/bootstrap-plugins/bootstrap.default.js"></script>
+	<script type="text/javascript" src="js/jquery.slimscroll.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap-plugins/leftMenu.js"></script>
 	<script src="js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 </body>
 </html>

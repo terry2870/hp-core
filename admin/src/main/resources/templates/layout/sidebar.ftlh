@@ -1,299 +1,39 @@
-<div class="left-side-menu" >
-    <div class="lsm-expand-btn">
-        <div class="lsm-mini-btn">
-            <label style="display:block">
-                <input type="checkbox" checked="checked">
-                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="50" cy="50" r="30" />
-                    <path class="line--1" d="M0 40h62c18 0 18-20-17 5L31 55" />
-                    <path class="line--2" d="M0 50h80" />
-                    <path class="line--3" d="M0 60h62c18 0 18 20-17-5L31 45" />
-                </svg>
-            </label>
-        </div>
-    </div>
-    <div class="lsm-container">
-        <div class="lsm-scroll" >
-            <div class="lsm-sidebar">
-                <ul>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon_1"></i><span>系统设置</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>地爆天星</span></a></li>
-                            <li><a class="active" ><span>无线月读</span></a></li>
-                            <li><a><span>一乐拉面</span></a></li>
-                            <li class="lsm-sidebar-item">
-                                <a><i class="my-icon lsm-sidebar-icon "></i><span>二级菜单11</span><i class="my-icon lsm-sidebar-more"></i></a>
-                                <ul>
-                                    <li><a><span>地爆天星</span></a></li>
-                                    <li><a><span>无线月读</span></a></li>
-                                    <li><a><span>一乐拉面</span></a></li>
-                                    <li><a><span>血继限界</span></a></li>
-                                    <li><a><span>秽土转生</span></a></li>
-                                    <li><a><span>万象天引</span></a></li>
-                                    <li><a><span>尸鬼封尽</span></a></li>
-                                    <li><a><span>飞雷神之术</span></a></li>
-                                    <li><a><span>多重影分身术</span></a></li>
-                                    <li><a><span>飞雷神之术</span></a></li>
-                                    <li><a><span>须佐之男</span></a></li>
-                                    <li><a><span>外道魔像</span></a></li>
-                                    <li><a><span>双蛇相杀</span></a></li>
-                                </ul>
-                            </li>
-
-                            <li class="lsm-sidebar-item">
-                                <a><i class="my-icon lsm-sidebar-icon "></i><span>二级菜单22</span><i class="my-icon lsm-sidebar-more"></i></a>
-                                <ul >
-                                    <li><a><span>血继限界</span></a></li>
-                                    <li><a><span>秽土转生</span></a></li>
-                                    <li><a><span>万象天引</span></a></li>
-                                    <li><a><span>尸鬼封尽</span></a></li>
-                                    <li><a><span>飞雷神之术</span></a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon_2"></i><span>网络设置</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>地爆天星1</span></a></li>
-                            <li><a><span>神罗天征1</span></a></li>
-                            <li><a><span>八门遁甲1</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon_3"></i><span>退出系统</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国2</span></a></li>
-                            <li><a><span>沙之国3</span></a></li>
-                            <li><a><span>火影忍者3</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon-iconset0308"></i><span>购物车管理</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国4</span></a></li>
-                            <li><a><span>沙之国4</span></a></li>
-                            <li><a><span>火影忍者4</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon-chongzhi1"></i><span>支付中心</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国5</span></a></li>
-                            <li><a><span>沙之国5</span></a></li>
-                            <li><a><span>火影忍者5</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon-chongzhi"></i><span>充值中心</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国6</span></a></li>
-                            <li><a><span>沙之国6</span></a></li>
-                            <li><a><span>火影忍者6</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon-chongzhi-copy"></i><span>充值中心</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国7</span></a></li>
-                            <li><a><span>沙之国7</span></a></li>
-                            <li><a><span>火影忍者7</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon-users"></i><span>用户管理</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国8</span></a></li>
-                            <li><a><span>沙之国8</span></a></li>
-                            <li><a><span>火影忍者8</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon_3"></i><span>订单管理</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国9</span></a></li>
-                            <li><a><span>沙之国9</span></a></li>
-                            <li><a><span>火影忍者9</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon_3"></i><span>订单管理</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国10</span></a></li>
-                            <li><a><span>沙之国10</span></a></li>
-                            <li><a><span>火影忍者10</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon_3"></i><span>订单管理</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国11</span></a></li>
-                            <li><a><span>沙之国11</span></a></li>
-                            <li><a><span>火影忍者11</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon_3"></i><span>订单管理</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国12</span></a></li>
-                            <li><a><span>沙之国12</span></a></li>
-                            <li><a><span>火影忍者12</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon_3"></i><span>订单管理</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国13</span></a></li>
-                            <li><a><span>沙之国13</span></a></li>
-                            <li><a><span>火影忍者13</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon_3"></i><span>订单管理</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国14</span></a></li>
-                            <li><a><span>沙之国14</span></a></li>
-                            <li><a><span>火影忍者14</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon_3"></i><span>订单管理</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国15</span></a></li>
-                            <li><a><span>沙之国14</span></a></li>
-                            <li><a><span>火影忍者15</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon_3"></i><span>订单管理</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国13</span></a></li>
-                            <li><a><span>沙之国16</span></a></li>
-                            <li><a><span>火影忍者16</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon_3"></i><span>订单管理</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国17</span></a></li>
-                            <li><a><span>沙之国18</span></a></li>
-                            <li><a><span>火影忍者18</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon_3"></i><span>订单管理</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国109</span></a></li>
-                            <li><a><span>沙之国45</span></a></li>
-                            <li><a><span>火影忍者45</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon_3"></i><span>订单管理</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国453</span></a></li>
-                            <li><a><span>沙之国45</span></a></li>
-                            <li><a><span>火影忍者</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon_3"></i><span>订单管理</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国45</span></a></li>
-                            <li><a><span>沙之国45</span></a></li>
-                            <li><a><span>火影忍者45</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon_3"></i><span>退出系统</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国2</span></a></li>
-                            <li><a><span>沙之国3</span></a></li>
-                            <li><a><span>火影忍者3</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon-iconset0308"></i><span>购物车管理</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国4</span></a></li>
-                            <li><a><span>沙之国4</span></a></li>
-                            <li><a><span>火影忍者4</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon-chongzhi1"></i><span>支付中心</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国5</span></a></li>
-                            <li><a><span>沙之国5</span></a></li>
-                            <li><a><span>火影忍者5</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon-chongzhi"></i><span>充值中心</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国6</span></a></li>
-                            <li><a><span>沙之国6</span></a></li>
-                            <li><a><span>火影忍者6</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon-chongzhi-copy"></i><span>充值中心</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国7</span></a></li>
-                            <li><a><span>沙之国7</span></a></li>
-                            <li><a><span>火影忍者7</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon-users"></i><span>用户管理</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国8</span></a></li>
-                            <li><a><span>沙之国8</span></a></li>
-                            <li><a><span>火影忍者8</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon_3"></i><span>订单管理</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国9</span></a></li>
-                            <li><a><span>沙之国9</span></a></li>
-                            <li><a><span>火影忍者9</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon_3"></i><span>订单管理</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国10</span></a></li>
-                            <li><a><span>沙之国10</span></a></li>
-                            <li><a><span>火影忍者10</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon_3"></i><span>订单管理</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国11</span></a></li>
-                            <li><a><span>沙之国11</span></a></li>
-                            <li><a><span>火影忍者11</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon_3"></i><span>订单管理</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国45</span></a></li>
-                            <li><a><span>沙之国45</span></a></li>
-                            <li><a><span>火影忍者45</span></a></li>
-                        </ul>
-                    </li>
-                    <li class="lsm-sidebar-item">
-                        <a><i class="my-icon lsm-sidebar-icon icon_3"></i><span>最后一条</span><i class="my-icon lsm-sidebar-more"></i></a>
-                        <ul>
-                            <li><a><span>火之国</span></a></li>
-                            <li><a><span>最后一条子菜单</span></a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
+<div id="leftMenu"></div>
+<script>
+	$(function() {
+		$("#leftMenu").leftMenu({
+			expandId : 1,
+			selectedId : 5,
+			dataList : [
+				{"id":1,"pid":0,"text":"菜单1"},
+				{"id":2,"pid":0,"text":"菜单2"},
+				{"id":3,"pid":0,"text":"菜单3"},
+				{"id":4,"pid":0,"text":"菜单4"},
+				{"id":5,"pid":1,"text":"菜单5"},
+				{"id":6,"pid":1,"text":"菜单6"},
+				{"id":7,"pid":1,"text":"菜单7"},
+				{"id":8,"pid":2,"text":"菜单8"},
+				{"id":9,"pid":2,"text":"菜单9"},
+				{"id":10,"pid":0,"text":"菜单10"},
+				{"id":11,"pid":0,"text":"菜单10"},
+				{"id":12,"pid":0,"text":"菜单10"},
+				{"id":13,"pid":0,"text":"菜单10"},
+				{"id":14,"pid":0,"text":"菜单10"},
+				{"id":15,"pid":0,"text":"菜单10"},
+				{"id":16,"pid":0,"text":"菜单10"},
+				{"id":17,"pid":0,"text":"菜单10"},
+				{"id":18,"pid":0,"text":"菜单10"},
+				{"id":19,"pid":0,"text":"菜单10"},
+				{"id":10,"pid":0,"text":"菜单10"},
+				{"id":21,"pid":0,"text":"菜单10"},
+				{"id":22,"pid":0,"text":"菜单10"},
+				{"id":23,"pid":0,"text":"菜单10"},
+				{"id":24,"pid":0,"text":"菜单24"},
+				{"id":25,"pid":0,"text":"菜单25"}
+			],
+			onClickMenu : function(item, index) {
+				alert(JSON.stringify(item));
+			}
+		});
+	});
+</script>

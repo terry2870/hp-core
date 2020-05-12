@@ -67,7 +67,7 @@ a{text-decoration:none;}
 }
 
 .lsm-mini-btn circle {fill: #fff3;opacity: 0;}
-.lsm-mini-btn label {top: 0; right: 0;}
+.lsm-mini-btn label {top: 0; right: 0;display: block;}
 .lsm-mini-btn label:hover circle {opacity: 1;}
 .lsm-mini-btn input:checked+svg .line--1, .lsm-mini-btn input:checked+svg .line--3 {--length: 8.602325267;}
 .lsm-mini-btn .line--1, .lsm-mini-btn .line--3 {--total-length: 126.38166809082031;}
