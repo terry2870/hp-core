@@ -17,6 +17,8 @@ import ${responseModelPackage}.${modelName}ResponseBO;
 import ${servicePackage}.I${modelName}Service;
 import ${pageModelPackage};
 import ${pageRequestPackage};
+import ${SQLBuilderPackage};
+import ${SQLBuildersPackage};
 import ${pageResponsePackage};
 
 /**
@@ -49,11 +51,12 @@ public class ${modelName}ServiceImpl implements I${modelName}Service {
 	@Override
 	public PageResponse<${modelName}ResponseBO> query${modelName}PageList(${modelName}RequestBO request, PageRequest pageRequest) {
 		log.info("query${modelName}PageList with request={}", request);
-		${modelName} dal = ${modelName}Convert.boRequest2Dal(request);
 		PageModel page = pageRequest.toPageModel();
 
+		SQLBuilder[] builder = new SQLBuilders()
+				.build();
 		// 查询总数
-		int total = ${modelNameFirstLow}DAO.selectCountByParams(dal);
+		int total = ${modelNameFirstLow}DAO.selectCount(builder);
 		if (total == 0) {
 			log.warn("query${modelName}PageList error. with total=0. with request={}", request);
 			return null;
@@ -64,7 +67,7 @@ public class ${modelName}ServiceImpl implements I${modelName}Service {
 		resp.setTotal(total);
 
 		// 查询列表
-		List<${modelName}> list = ${modelNameFirstLow}DAO.selectPageListByParams(dal, page);
+		List<${modelName}> list = ${modelNameFirstLow}DAO.selectPageList(builder, page);
 		if (CollectionUtils.isEmpty(list)) {
 			log.warn("query${modelName}PageList error. with list is empty. with request={}", request);
 			return resp;

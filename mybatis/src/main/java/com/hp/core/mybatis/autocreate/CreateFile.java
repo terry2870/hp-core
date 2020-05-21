@@ -58,6 +58,8 @@ public class CreateFile {
 	public static final String BASE_PAGE_RESPONSE_PACKAGE = "com.hp.core.common.beans.page.PageResponse";
 	public static final String BASE_PAGE_MODEL_PACKAGE = "com.hp.core.database.bean.PageModel";
 	public static final String FREEMARKER_UTIL_PACKAGE = "com.hp.core.freemarker.utils.FreeMarkerUtil";
+	public static final String SQLBUILDER_PACKAGE = "com.hp.core.database.bean.SQLBuilder";
+	public static final String SQLBUILDERS_PACKAGE = "com.hp.core.database.bean.SQLBuilders";
 	public static final String DAL_DIR_NAME = "dal";
 	public static final String COMMON_DIR_NAME = "common";
 	public static final String MODEL_DIR_NAME = "model";

@@ -8,6 +8,6 @@ package ${package};
 import ${baseMapperPackage};
 import ${dalModelPackage}.${modelName};
 
-public interface I${modelName}DAO extends BaseMapper<${modelName}> {
+public interface I${modelName}DAO extends BaseMapper<${modelName}, Integer> {
 
 }
