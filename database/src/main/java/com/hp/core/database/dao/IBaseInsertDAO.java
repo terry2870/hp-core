@@ -11,7 +11,7 @@ import java.util.List;
  * @author huangping
  * 2018年5月29日
  */
-public interface IBaseInsertDAO<T> {
+public interface IBaseInsertDAO<T, PK> {
 
 	/**
 	 * 新增数据

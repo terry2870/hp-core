@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 
+import com.hp.core.database.bean.SQLBuilder;
 import com.hp.core.elasticsearch.bean.IndexInfo;
 
 /**
@@ -26,8 +27,8 @@ public abstract class AbstMinMaxIdIndexServiceImpl<T, E> extends AbstSimpleIndex
 	 * @param param
 	 * @return
 	 */
-	protected long getMinId(T param) {
-		return baseMapper.selectMinId(param);
+	protected int getMinId(SQLBuilder... builders) {
+		return baseMapper.selectMinId(builders);
 	}
 	
 	/**
@@ -35,8 +36,8 @@ public abstract class AbstMinMaxIdIndexServiceImpl<T, E> extends AbstSimpleIndex
 	 * @param param
 	 * @return
 	 */
-	protected long getMaxId(T param) {
-		return baseMapper.selectMaxId(param);
+	protected int getMaxId(SQLBuilder... builders) {
+		return baseMapper.selectMaxId(builders);
 	}
 	
 	/**
@@ -46,8 +47,8 @@ public abstract class AbstMinMaxIdIndexServiceImpl<T, E> extends AbstSimpleIndex
 	 * @param param
 	 * @return
 	 */
-	protected List<T> getDataListFromDB(long minId, long maxId, T param) {
-		return baseMapper.selectListByRange(minId, maxId, param);
+	protected List<T> getDataListFromDB(int minId, int maxId, SQLBuilder... builders) {
+		return baseMapper.selectListByRange(minId, maxId, builders);
 	}
 	
 	/**
@@ -57,24 +58,24 @@ public abstract class AbstMinMaxIdIndexServiceImpl<T, E> extends AbstSimpleIndex
 	 */
 	@Override
 	public void insertIntoES(IndexInfo indexInfo, String newIndexName) {
-		T param = getQueryParams();
+		SQLBuilder[] builders = getSQLBuilder();
 		//最大id
-		long min = getMinId(param);
+		int min = getMinId(builders);
 		//最小id
-		long max = getMaxId(param);
+		long max = getMaxId(builders);
 		if (max == 0 || max < min) {
 			log.warn("reBuildIndex error. with maxid is error. with indexInfo={}, min={}, max={}", indexInfo, min, max);
 			return;
 		}
 		
-		long start = min;
+		int start = min;
 		List<T> list = null;
 		List<IndexQuery> queries = null;
 		while (start <= max) {
 			log.info("insert to es data indexName={}. {}/{}/{}", indexInfo.getIndexName(), min, start, max);
 			
 			//获取列表
-			list = getDataListFromDB(start, start + getSize(), param);
+			list = getDataListFromDB(start, start + getSize(), builders);
 			
 			//开始id自加
 			start = start + getSize();

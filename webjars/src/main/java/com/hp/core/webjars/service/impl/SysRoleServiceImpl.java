@@ -15,6 +15,8 @@ import com.hp.core.common.exceptions.CommonException;
 import com.hp.core.common.utils.DateUtil;
 import com.hp.core.database.bean.PageModel;
 import com.hp.core.database.bean.PageRequest;
+import com.hp.core.database.bean.SQLBuilder;
+import com.hp.core.database.bean.SQLBuilders;
 import com.hp.core.webjars.convert.SysRoleConvert;
 import com.hp.core.webjars.dal.ISysRoleDAO;
 import com.hp.core.webjars.dal.model.SysRole;
@@ -61,11 +63,14 @@ public class SysRoleServiceImpl implements ISysRoleService {
 	@Override
 	public PageResponse<SysRoleResponseBO> querySysRolePageList(SysRoleRequestBO request, PageRequest pageRequest) {
 		log.info("querySysRolePageList with request={}", request);
-		SysRole dal = SysRoleConvert.boRequest2Dal(request);
 		PageModel page = pageRequest.toPageModel();
 
+		SQLBuilder[] builder = new SQLBuilders()
+				.eq("status", request.getStatus())
+				.build()
+				;
 		//查询总数
-		int total = sysRoleDAO.selectCountByParams(dal);
+		int total = sysRoleDAO.selectCount(builder);
 		if (total == 0) {
 			log.warn("querySysRolePageList error. with total=0. with request={}", request);
 			return null;
@@ -76,7 +81,7 @@ public class SysRoleServiceImpl implements ISysRoleService {
 		resp.setTotal(total);
 
 		//查询列表
-		List<SysRole> list = sysRoleDAO.selectPageListByParams(dal, page);
+		List<SysRole> list = sysRoleDAO.selectPageList(builder, page);
 		if (CollectionUtils.isEmpty(list)) {
 			log.warn("querySysRolePageList error. with list is empty. with request={}", request);
 			return resp;
@@ -118,20 +123,23 @@ public class SysRoleServiceImpl implements ISysRoleService {
 	 * @param request
 	 */
 	public void saveSysRoleCheck(SysRoleRequestBO request) {
-		SysRole role = new SysRole();
-		role.setRoleName(request.getRoleName());
-		List<SysRole> list = sysRoleDAO.selectListByParams(role);
-		if (CollectionUtils.isNotEmpty(list)) {
-			if (request.getId() == null || request.getId().intValue() == 0) {
-				//新增
+		SysRole role = sysRoleDAO.selectOne(new SQLBuilders()
+				.eq("role_name", request.getRoleName())
+				.build()
+				);
+		if (role == null) {
+			return;
+		}
+		
+		if (request.getId() == null || request.getId().intValue() == 0) {
+			//新增
+			log.warn("saveSysRole error. roleName is exists. with request={}", request);
+			throw new CommonException(500, "角色名已经存在");
+		} else {
+			//修改
+			if (!role.getId().equals(request.getId())) {
 				log.warn("saveSysRole error. roleName is exists. with request={}", request);
 				throw new CommonException(500, "角色名已经存在");
-			} else {
-				//修改
-				if (!list.get(0).getId().equals(request.getId())) {
-					log.warn("saveSysRole error. roleName is exists. with request={}", request);
-					throw new CommonException(500, "角色名已经存在");
-				}
 			}
 		}
 	}

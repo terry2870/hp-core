@@ -4,24 +4,20 @@
 package com.hp.core.mybatis.provider;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.jdbc.SQL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.core.database.bean.DynamicColumnBean;
 import com.hp.core.database.bean.DynamicEntityBean;
 import com.hp.core.database.bean.OrderBy;
 import com.hp.core.database.bean.PageModel;
 import com.hp.core.database.bean.SQLBuilder;
-import com.hp.core.database.enums.QueryTypeEnum;
-import com.hp.core.database.exceptions.ProviderSQLException;
 import com.hp.core.database.interceptor.BaseSQLAOPFactory;
 import com.hp.core.mybatis.constant.SQLProviderConstant;
 
@@ -40,15 +36,9 @@ public class BaseSelectProvider {
 	 */
 	public static String selectMaxId(Map<String, Object> target) {
 		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
-		StringBuilder sql = new StringBuilder()
-				.append("select max(")
-				.append(entity.getPrimaryKeyColumnName())
-				.append(") from ")
-				.append(entity.getTableName())
-				.append(" where 1=1 ");
-		setSQLByParams(target.get(SQLProviderConstant.TARGET_OBJECT_ALIAS), entity, sql);
+		String sql = getSQL(target, "max("+ entity.getPrimaryKeyColumnName() +")");
 		log.debug("selectMaxId get sql \r\nsql={} \r\nentity={}", sql, entity);
-		return sql.toString();
+		return sql;
 	}
 	
 	/**
@@ -57,284 +47,96 @@ public class BaseSelectProvider {
 	 */
 	public static String selectMinId(Map<String, Object> target) {
 		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
-		StringBuilder sql = new StringBuilder()
-				.append("select min(")
-				.append(entity.getPrimaryKeyColumnName())
-				.append(") from ")
-				.append(entity.getTableName())
-				.append(" where 1=1 ");
-		setSQLByParams(target.get(SQLProviderConstant.TARGET_OBJECT_ALIAS), entity, sql);
+		String sql = getSQL(target, "min("+ entity.getPrimaryKeyColumnName() +")");
 		log.debug("selectMinId get sql \r\nsql={} \r\nentity={}", sql, entity);
-		return sql.toString();
+		return sql;
 	}
 	
 	/**
 	 * 根据id范围查询
-	 * @param params
+	 * @param target
 	 * @return
 	 */
-	public static String selectListByRange(Map<String, Object> params) {
+	public static String selectListByRange(Map<String, Object> target) {
 		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
-		StringBuilder sql = new StringBuilder()
-				.append("select ")
-				.append(entity.getSelectColumns())
-				.append(" from ")
-				.append(entity.getTableName())
-				.append(" where ")
-				.append(entity.getPrimaryKeyColumnName())
-				.append(" >= #{minId} and ")
-				.append(entity.getPrimaryKeyColumnName())
-				.append(" < #{maxId} ");
-		setSQLByParams(params.get(SQLProviderConstant.TARGET_OBJECT_ALIAS), entity, sql);
+		String sql = getSQL(target, entity.getSelectColumns(), entity.getPrimaryKeyColumnName() + " >= #{minId}", entity.getPrimaryKeyColumnName() + " < #{maxId}");
 		log.debug("selectListByRange get sql \r\nsql={} \r\nentity={}", sql, entity);
-		return sql.toString();
+		return sql;
 	}
 	
 	/**
-	 * 无条件，查询总数
+	 * 查询总数
 	 * @return
 	 */
-	public static String selectAllCount() {
+	public static String selectCount(Map<String, Object> target) {
 		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
-		SQL sql = new SQL()
-				.SELECT("count(*)")
-				.FROM(entity.getTableName());
+		String sql = getSQL(target, "count(*)");
 		log.debug("selectAllCount get sql \r\nsql={} \r\nentity={}", sql, entity);
 		return sql.toString();
 	}
-
+	
 	/**
 	 * 根据主键查询
 	 * @param id
 	 * @return
 	 */
-	public static String selectByPrimaryKey(Object id) {
+	public static String selectByPrimaryKey(Map<String, Object> target) {
 		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
-		SQL sql = new SQL()
-				.SELECT(entity.getSelectColumns())
-				.FROM(entity.getTableName())
-				.WHERE(entity.getPrimaryKeyColumnName() + "=#{id}");
-		log.debug("selectByPrimaryKey get sql \r\nsql={} \r\nid={}  \r\nentity={}", sql, id, entity);
+		String sql = getSQL(new HashMap<>(), entity.getSelectColumns(), entity.getPrimaryKeyColumnName() + "=#{id}");
+		log.debug("selectByPrimaryKey get sql \r\nsql={} \r\ntarget={}  \r\nentity={}", sql, target, entity);
 		return sql.toString();
 	}
 	
 	/**
 	 * 根据主键，批量查询
-	 * @param params
+	 * @param target
 	 * @return
 	 */
-	public static String selectByPrimaryKeys(Map<String, Object> params) {
+	public static String selectByPrimaryKeys(Map<String, Object> target) {
 		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
-		List<?> list = (List<?>) params.get("list");
-		StringBuilder sql = new StringBuilder("SELECT ")
-				.append("\n")
-				.append(entity.getSelectColumns())
-				.append("\n")
-				.append(" FROM ")
-				.append(entity.getTableName())
-				.append(" WHERE ")
-				.append(entity.getPrimaryKeyColumnName())
-				.append(" IN (");
+		StringBuilder inSQL = new StringBuilder();
+		inSQL.append(entity.getPrimaryKeyColumnName())
+			.append(" IN (")
+			.append("")
+			;
+		List<?> list = (List<?>) target.get("list");
 		for (int i = 0; i < list.size(); i++) {
-			sql.append("#{list[").append(i).append("]}");
+			inSQL.append("#{list[").append(i).append("]}");
 			if (i != list.size() - 1) {
-				sql.append(", ");
+				inSQL.append(", ");
 			}
 		}
-		sql.append(")");
-		log.debug("selectByPrimaryKeys get sql \r\nsql={} \r\nlist={}  \r\nentity={}", sql, list.size(), entity);
-		return sql.toString();
-	}
-	
-	/**
-	 * 根据主键，批量查询（并且按照list里面id顺序排序）
-	 * @param params
-	 * @return
-	 */
-	public static String selectByPrimaryKeysWithInSort(Map<String, Object> params) {
-		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
-		String sql = selectByPrimaryKeys(params);
-		List<?> list = (List<?>) params.get("list");
-		sql += "order by field ("+ entity.getPrimaryKeyColumnName() +", "+ StringUtils.join(list, ",") +")";
+		inSQL.append(")");
 		
-		log.info("selectByPrimaryKeysWithInSort get sql \r\nsql={} \r\nlist={}  \r\nentity={}", sql, list.size(), entity);
+		String sql = getSQL(target, entity.getSelectColumns(), inSQL.toString());
+		log.debug("selectByPrimaryKeys get sql \r\nsql={} \r\nlist={}  \r\nentity={}", sql, list.size(), entity);
 		return sql;
 	}
 	
 	/**
-	 * 根据条件，查询数量
+	 * 根据主键，批量查询（并且按照list里面id顺序排序）
 	 * @param target
 	 * @return
 	 */
-	public static String selectCountByParams(Map<String, Object> target) {
-		if (target == null) {
-			return selectAllCount();
-		}
+	public static String selectByPrimaryKeysWithInSort(Map<String, Object> target) {
 		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
-		StringBuilder sql = new StringBuilder("SELECT count(*) FROM ")
-				.append(entity.getTableName())
-				.append(" WHERE 1=1");
-		
-		//遍历属性字段，不为空的都加入sql查询条件
-		setSQLByParams(target.get(SQLProviderConstant.TARGET_OBJECT_ALIAS), entity, sql);
-		log.debug("selectCountByParams get sql \r\nsql={} \r\nparams={}, \r\nentity={}", sql, target, entity);
-		return sql.toString();
+		String sql = selectByPrimaryKeys(target);
+		List<?> list = (List<?>) target.get("list");
+		sql += " order by field ("+ entity.getPrimaryKeyColumnName() +", "+ StringUtils.join(list, ",") +")";
+		log.debug("selectByPrimaryKeysWithInSort get sql \r\nsql={} \r\nlist={}  \r\nentity={}", sql, list.size(), entity);
+		return sql;
 	}
 	
 	/**
-	 * 根据条件，查询list（分页）
+	 * 查询列表
 	 * @param target
 	 * @return
 	 */
-	public static String selectListByParams(Map<String, Object> target) {
-		if (target == null) {
-			log.error("selectListByParams error. with params is null.");
-			throw new ProviderSQLException("params is null");
-		}
+	public static String selectList(Map<String, Object> target) {
 		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
-		StringBuilder sql = new StringBuilder("SELECT ")
-				.append(entity.getSelectColumns())
-				.append(" FROM ")
-				.append(entity.getTableName())
-				.append(" WHERE 1=1");
-		setSQLByParams(target.get(SQLProviderConstant.TARGET_OBJECT_ALIAS), entity, sql);
-		
-		if (target.containsKey(SQLProviderConstant.ORDER_BY)) {
-			getOrderBy((OrderBy[]) target.get(SQLProviderConstant.ORDER_BY), sql);
-		}
-		
-		if (target.containsKey(SQLProviderConstant.PAGE_OBJECT_ALIAS)) {
-			getPageSQL((PageModel) target.get(SQLProviderConstant.PAGE_OBJECT_ALIAS), sql);
-		}
-		
-		log.debug("selectListByParams get sql \r\nsql={} \r\nparams={}, \r\nentity={}", sql, target, entity);
-		return sql.toString();
-	}
-	
-	/**
-	 * 根据条件，查询list（分页）
-	 * @param target
-	 * @return
-	 */
-	public static String selectPageListByParamsAndLargeThanId(Map<String, Object> target) {
-		if (target == null) {
-			log.error("selectPageListByParamsAndLargeThanId error. with params is null.");
-			throw new ProviderSQLException("params is null");
-		}
-		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
-		StringBuilder sql = new StringBuilder("SELECT ")
-				.append(entity.getSelectColumns())
-				.append(" FROM ")
-				.append(entity.getTableName())
-				.append(" WHERE 1=1");
-		setSQLByParams(target.get(SQLProviderConstant.TARGET_OBJECT_ALIAS), entity, sql);
-
-		if (target.containsKey(SQLProviderConstant.LARGETHAN_ID_OBJECT_ALIAS)) {
-			getLargeThanSQL((Long)target.get(SQLProviderConstant.LARGETHAN_ID_OBJECT_ALIAS), entity, sql);
-		}
-
-		if (target.containsKey(SQLProviderConstant.PAGE_OBJECT_ALIAS)) {
-			getPageSQL((PageModel) target.get(SQLProviderConstant.PAGE_OBJECT_ALIAS), sql);
-		}
-		log.debug("selectPageListByParamsAndLargeThanId get sql \r\nsql={} \r\nparams={}, \r\nentity={}", sql, target, entity);
-		return sql.toString();
-	}
-	
-	/**
-	 * 主键必须大于当前Id
-	 * @param largeThanId
-	 * @param entity
-	 * @param sql
-	 */
-	private static void getLargeThanSQL(Long largeThanId, DynamicEntityBean entity, StringBuilder sql) {
-		if(largeThanId == null){
-			largeThanId = 0L;
-		}
-
-		if(largeThanId.longValue() > 0L){
-			sql.append(" and ").append(entity.getPrimaryKeyColumnName()).append(">").append(largeThanId);
-		}
-
-		getOrderBy(new OrderBy[] {OrderBy.of(entity.getPrimaryKeyColumnName())}, sql);
-	}
-	
-	/**
-	 * 根据条件，查询单个
-	 * @param target
-	 * @return
-	 */
-	public static String selectOneByParams(Map<String, Object> target) {
-		if (target == null) {
-			log.error("selectOneByParams error. with params is null.");
-			throw new ProviderSQLException("params is null");
-		}
-		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
-		StringBuilder sql = new StringBuilder("SELECT ")
-				.append(entity.getSelectColumns())
-				.append(" FROM ")
-				.append(entity.getTableName())
-				.append(" WHERE 1=1");
-		setSQLByParams(target.get(SQLProviderConstant.TARGET_OBJECT_ALIAS), entity, sql);
-		
-		if (target.containsKey(SQLProviderConstant.ORDER_BY)) {
-			getOrderBy((OrderBy[]) target.get(SQLProviderConstant.ORDER_BY), sql);
-		}
-		
-		sql.append(" limit 1");
-		
-		log.debug("selectOneByParams get sql \r\nsql={} \r\nparams={}, \r\nentity={}", sql, target, entity);
-		return sql.toString();
-	}
-	
-	/**
-	 * 根据传入的sqlbuild，查询数量
-	 * @param target
-	 * @return
-	 */
-	public static String selectCountByBuilder(Map<String, Object> target) {
-		if (target == null) {
-			log.error("selectCountByBuilder error. with params is null.");
-			throw new ProviderSQLException("params is null");
-		}
-		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
-		StringBuilder sql = new StringBuilder("SELECT count(1) FROM ")
-				.append(entity.getTableName())
-				.append(" WHERE 1=1")
-				.append(SQLBuilderHelper.getSQLBySQLBuild((SQLBuilder[]) target.get(SQLProviderConstant.SQL_BUILD_ALIAS)))
-				;
-
-		log.debug("selectCountByBuilder get sql \r\nsql={} \r\nparams={}, \r\nentity={}", sql, target, entity);
-		return sql.toString();
-	}
-	
-	/**
-	 * 根据传入的sqlbuild，查询
-	 * @param target
-	 * @return
-	 */
-	public static String selectListByBuilder(Map<String, Object> target) {
-		if (target == null) {
-			log.error("selectListByBuilder error. with params is null.");
-			throw new ProviderSQLException("params is null");
-		}
-		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
-		StringBuilder sql = new StringBuilder("SELECT ")
-				.append(entity.getSelectColumns())
-				.append(" FROM ")
-				.append(entity.getTableName())
-				.append(" WHERE 1=1")
-				.append(SQLBuilderHelper.getSQLBySQLBuild((SQLBuilder[]) target.get(SQLProviderConstant.SQL_BUILD_ALIAS)))
-				;
-		
-		if (target.containsKey(SQLProviderConstant.ORDER_BY)) {
-			getOrderBy((OrderBy[]) target.get(SQLProviderConstant.ORDER_BY), sql);
-		}
-		
-		if (target.containsKey(SQLProviderConstant.PAGE_OBJECT_ALIAS)) {
-			getPageSQL((PageModel) target.get(SQLProviderConstant.PAGE_OBJECT_ALIAS), sql);
-		}
-		log.debug("selectListByBuilder get sql \r\nsql={} \r\nparams={}, \r\nentity={}", sql, target, entity);
-		return sql.toString();
+		String sql = getSQL(target, entity.getSelectColumns());
+		log.debug("selectList get sql \r\nsql={} \r\nentity={}", sql, entity);
+		return sql;
 	}
 	
 	/**
@@ -342,26 +144,75 @@ public class BaseSelectProvider {
 	 * @param target
 	 * @return
 	 */
-	public static String selectOneByBuilder(Map<String, Object> target) {
-		if (target == null) {
-			log.error("selectOneByBuilder error. with params is null.");
-			throw new ProviderSQLException("params is null");
-		}
+	public static String selectOne(Map<String, Object> target) {
 		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
-		StringBuilder sql = new StringBuilder("SELECT ")
-				.append(entity.getSelectColumns())
-				.append(" FROM ")
-				.append(entity.getTableName())
-				.append(" WHERE 1=1")
-				.append(SQLBuilderHelper.getSQLBySQLBuild((SQLBuilder[]) target.get(SQLProviderConstant.SQL_BUILD_ALIAS)))
-				;
+		String sql = selectList(target);
+		sql += " LIMIT 1";
+		log.debug("selectOne get sql \r\nsql={} \r\nparams={}, \r\nentity={}", sql, target, entity);
+		return sql;
+	}
+	
+	/**
+	 * 查询大于该id的数据
+	 * @param target
+	 * @return
+	 */
+	public static String selectPageListLargeThanId(Map<String, Object> target) {
+		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
 		
+		String sql = getSQL(target, entity.getSelectColumns(), entity.getPrimaryKeyColumnName() + " > #{largeThanId}");
+		log.debug("selectPageListLargeThanId get sql \r\nsql={} \r\ntarget={}, \r\nentity={}", sql, target, entity);
+		return sql;
+	}
+	
+	/**
+	 * 查询主键列表
+	 * @param target
+	 * @return
+	 */
+	public static String selectPrimaryKeyList(Map<String, Object> target) {
+		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
+		String sql = getSQL(target, entity.getPrimaryKeyColumnName());
+		log.debug("selectPrimaryKeyList get sql \r\nsql={} \r\ntarget={}, \r\nentity={}", sql, target, entity);
+		return sql;
+	}
+	
+	/**
+	 * 生成sql
+	 * @param target
+	 * @return
+	 */
+	private static String getSQL(Map<String, Object> target, String selected, String... query) {
+		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
+		StringBuilder sql = new StringBuilder()
+				.append("select ")
+				.append(selected)
+				.append(" from ")
+				.append(entity.getTableName())
+				.append(" where 1=1 ");
+		//额外查询条件
+		if (ArrayUtils.isNotEmpty(query)) {
+			for (String q : query) {
+				sql.append(" and ").append(q);
+			}
+		}
+		
+		//设置查询条件
+		if (target.containsKey(SQLProviderConstant.SQL_BUILD_ALIAS)) {
+			sql.append(SQLBuilderHelper.getSQLBySQLBuild((SQLBuilder[]) target.get(SQLProviderConstant.SQL_BUILD_ALIAS)));
+		}
+		//setSQLByParams(target.get(SQLProviderConstant.TARGET_OBJECT_ALIAS), entity, sql);
+		
+		//排序
 		if (target.containsKey(SQLProviderConstant.ORDER_BY)) {
 			getOrderBy((OrderBy[]) target.get(SQLProviderConstant.ORDER_BY), sql);
 		}
 		
-		sql.append(" LIMIT 1");
-		log.debug("selectOneByBuilder get sql \r\nsql={} \r\nparams={}, \r\nentity={}", sql, target, entity);
+		//分页
+		if (target.containsKey(SQLProviderConstant.PAGE_OBJECT_ALIAS)) {
+			getPageSQL((PageModel) target.get(SQLProviderConstant.PAGE_OBJECT_ALIAS), sql);
+		}
+		
 		return sql.toString();
 	}
 	
@@ -404,122 +255,6 @@ public class BaseSelectProvider {
 		if (CollectionUtils.isNotEmpty(orderByStringList)) {
 			sql.append(" order by ").append(StringUtils.join(orderByStringList, ", "));
 		}
-	}
-	
-	/**
-	 * 设置查询条件
-	 * @param params
-	 * @param entity
-	 * @param sql
-	 */
-	private static void setSQLByParams(Object params, DynamicEntityBean entity, StringBuilder sql) {
-		if (params == null) {
-			return;
-		}
-		String key = null;
-		Object value = null;
-		try {
-			for (DynamicColumnBean column : entity.getColumns()) {
-				key = column.getFieldName();
-				value = BeanUtils.getProperty(params, key);
-				if (checkNull(column, value)) {
-					//为空，跳过
-					continue;
-				}
-				if (QueryTypeEnum.EQUALS.equals(column.getQueryType())) {
-					sql.append(" AND ")
-						.append(column.getColumnName())
-						.append(" = #{")
-						.append(SQLProviderConstant.TARGET_OBJECT_ALIAS)
-						.append(".")
-						.append(column.getFieldName())
-						.append("}");
-				} else if (QueryTypeEnum.NOT_EQUALS.equals(column.getQueryType())) {
-					sql.append(" AND ")
-					.append(column.getColumnName())
-					.append(" != #{")
-					.append(SQLProviderConstant.TARGET_OBJECT_ALIAS)
-					.append(".")
-					.append(column.getFieldName())
-					.append("}");
-				} else if (QueryTypeEnum.LIKE.equals(column.getQueryType())) {
-					sql.append(" AND INSTR(")
-						.append(column.getColumnName())
-						.append(", #{")
-						.append(SQLProviderConstant.TARGET_OBJECT_ALIAS)
-						.append(".")
-						.append(column.getFieldName())
-						.append("}) > 0");
-				} else if (QueryTypeEnum.IN.equals(column.getQueryType())) {
-					sql.append(" AND ")
-					.append(column.getColumnName())
-					.append(" IN (").append(value).append(")");
-				} else if (QueryTypeEnum.NOT_IN.equals(column.getQueryType())) {
-					sql.append(" AND ")
-					.append(column.getColumnName())
-					.append(" NOT IN (").append(value).append(")");
-				} else if (QueryTypeEnum.GT.equals(column.getQueryType())) {
-					sql.append(" AND ")
-					.append(column.getColumnName())
-					.append(" > #{")
-					.append(SQLProviderConstant.TARGET_OBJECT_ALIAS)
-					.append(".")
-					.append(column.getFieldName())
-					.append("}");
-				} else if (QueryTypeEnum.LT.equals(column.getQueryType())) {
-					sql.append(" AND ")
-					.append(column.getColumnName())
-					.append(" < #{")
-					.append(SQLProviderConstant.TARGET_OBJECT_ALIAS)
-					.append(".")
-					.append(column.getFieldName())
-					.append("}");
-				} else if (QueryTypeEnum.GTE.equals(column.getQueryType())) {
-					sql.append(" AND ")
-					.append(column.getColumnName())
-					.append(" >= #{")
-					.append(SQLProviderConstant.TARGET_OBJECT_ALIAS)
-					.append(".")
-					.append(column.getFieldName())
-					.append("}");
-				} else if (QueryTypeEnum.LTE.equals(column.getQueryType())) {
-					sql.append(" AND ")
-					.append(column.getColumnName())
-					.append(" <= #{")
-					.append(SQLProviderConstant.TARGET_OBJECT_ALIAS)
-					.append(".")
-					.append(column.getFieldName())
-					.append("}");
-				} else if (QueryTypeEnum.PREFIX.equals(column.getQueryType())) {
-					sql.append(" AND ")
-					.append(column.getColumnName())
-					.append(" like '")
-					.append(value)
-					.append(" %'");
-				} else if (QueryTypeEnum.SUFFIX.equals(column.getQueryType())) {
-					sql.append(" AND ")
-					.append(column.getColumnName())
-					.append(" like '%")
-					.append(value)
-					.append("'");
-				}
-				
-			}
-		} catch (Exception e) {
-			log.error("get setSQLByParams sql error. with params is {}", params, e);
-		}
-	}
-	
-	private static boolean checkNull(DynamicColumnBean column, Object value) {
-		if (value == null) {
-			//null
-			return true;
-		}
-		if (String.class.getName().equals(column.getJavaType().getName()) && StringUtils.isEmpty((String) value)) {
-			//空字符串
-			return true;
-		}
-		return false;
 	}
 	
 }

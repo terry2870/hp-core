@@ -17,6 +17,8 @@ import com.hp.core.common.utils.DateUtil;
 import com.hp.core.common.utils.MD5Util;
 import com.hp.core.database.bean.PageModel;
 import com.hp.core.database.bean.PageRequest;
+import com.hp.core.database.bean.SQLBuilder;
+import com.hp.core.database.bean.SQLBuilders;
 import com.hp.core.webjars.convert.SysUserConvert;
 import com.hp.core.webjars.dal.ISysUserDAO;
 import com.hp.core.webjars.dal.model.SysUser;
@@ -75,11 +77,15 @@ public class SysUserServiceImpl implements ISysUserService {
 	@Override
 	public PageResponse<SysUserResponseBO> querySysUserPageList(SysUserRequestBO request, PageRequest pageRequest) {
 		log.info("querySysUserPageList with request={}", request);
-		SysUser dal = SysUserConvert.boRequest2Dal(request);
 		PageModel page = pageRequest.toPageModel();
 
+		SQLBuilder[] builder = new SQLBuilders()
+				.like("login_name", request.getLoginName())
+				.like("user_name", request.getUserName())
+				.build()
+				;
 		//查询总数
-		int total = sysUserDAO.selectCountByParams(dal);
+		int total = sysUserDAO.selectCount(builder);
 		if (total == 0) {
 			log.warn("querySysUserPageList error. with total=0. with request={}", request);
 			return null;
@@ -90,7 +96,7 @@ public class SysUserServiceImpl implements ISysUserService {
 		resp.setTotal(total);
 
 		//查询列表
-		List<SysUser> list = sysUserDAO.selectPageListByParams(dal, page);
+		List<SysUser> list = sysUserDAO.selectPageList(builder, page);
 		if (CollectionUtils.isEmpty(list)) {
 			log.warn("querySysUserPageList error. with list is empty. with request={}", request);
 			return resp;
@@ -183,18 +189,21 @@ public class SysUserServiceImpl implements ISysUserService {
 	 * @param request
 	 */
 	private void saveSysUserCheck(SysUserRequestBO request) {
-		//检查登录名
-		SysUser user = new SysUser();
-		user.setLoginName(request.getLoginName());
-		List<SysUser> list = sysUserDAO.selectListByParams(user);
-		if (CollectionUtils.isNotEmpty(list)) {
+		//检查登录名		
+		SQLBuilder[] builder = new SQLBuilders()
+				.like("login_name", request.getLoginName())
+				.build()
+				;
+		
+		SysUser user = sysUserDAO.selectOne(builder);
+		if (user != null) {
 			if (request.getId() == null || request.getId().intValue() == 0) {
 				//新增
 				log.warn("saveSysUser error. loginName is exists. with request={}", request);
 				throw new CommonException(500, "登录名已经存在");
 			} else {
 				//修改
-				if (!list.get(0).getId().equals(request.getId())) {
+				if (!user.getId().equals(request.getId())) {
 					log.warn("saveSysUser error. loginName is exists. with request={}", request);
 					throw new CommonException(500, "登录名已经存在");
 				}
@@ -202,17 +211,20 @@ public class SysUserServiceImpl implements ISysUserService {
 		}
 		
 		//检查用户名
-		user = new SysUser();
-		user.setUserName(request.getUserName());
-		list = sysUserDAO.selectListByParams(user);
-		if (CollectionUtils.isNotEmpty(list)) {
+		builder = new SQLBuilders()
+				.like("user_name", request.getUserName())
+				.build()
+				;
+		
+		user = sysUserDAO.selectOne(builder);
+		if (user != null) {
 			if (request.getId() == null || request.getId().intValue() == 0) {
 				//新增
 				log.warn("saveUser error. userName is exists. with request={}", request);
 				throw new CommonException(500, "用户名已经存在");
 			} else {
 				//修改
-				if (!list.get(0).getId().equals(request.getId())) {
+				if (!user.getId().equals(request.getId())) {
 					log.warn("saveUser error. userName is exists. with request={}", request);
 					throw new CommonException(500, "用户名已经存在");
 				}

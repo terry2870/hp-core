@@ -19,7 +19,7 @@ import com.hp.core.mybatis.provider.BaseDeleteSQLProvider;
  * @author huangping
  * 2018年5月29日
  */
-public interface BaseDeleteMapper<T> extends IBaseDeleteDAO<T> {
+public interface BaseDeleteMapper<T, PK> extends IBaseDeleteDAO<T, PK> {
 
 	/**
 	 * 根据主键删除
@@ -27,7 +27,7 @@ public interface BaseDeleteMapper<T> extends IBaseDeleteDAO<T> {
 	 * @return
 	 */
 	@DeleteProvider(type = BaseDeleteSQLProvider.class, method = "deleteByPrimaryKey")
-	public Integer deleteByPrimaryKey(Object id);
+	public Integer deleteByPrimaryKey(PK id);
 	
 	/**
 	 * 根据主键批量删除
@@ -35,7 +35,7 @@ public interface BaseDeleteMapper<T> extends IBaseDeleteDAO<T> {
 	 * @return
 	 */
 	@DeleteProvider(type = BaseDeleteSQLProvider.class, method = "deleteByPrimaryKeys")
-	public Integer deleteByPrimaryKeys(List<?> ids);
+	public Integer deleteByPrimaryKeys(List<PK> ids);
 	
 	/**
 	 * 根据传入的参数，删除

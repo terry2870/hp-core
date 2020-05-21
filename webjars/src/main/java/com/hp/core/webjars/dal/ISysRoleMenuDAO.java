@@ -5,7 +5,7 @@ import java.util.List;
 import com.hp.core.mybatis.mapper.BaseMapper;
 import com.hp.core.webjars.dal.model.SysRoleMenu;
 
-public interface ISysRoleMenuDAO extends BaseMapper<SysRoleMenu> {
+public interface ISysRoleMenuDAO extends BaseMapper<SysRoleMenu, Integer> {
 	
 	/**
 	 * 根据角色id，查询

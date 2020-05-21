@@ -8,11 +8,10 @@ package com.hp.core.mybatis.mapper;
  * 继承该接口，可以实现最基本的增删改查操作
  * @author huangping 2018年1月26日
  */
-public interface BaseMapper<T> 
+public interface BaseMapper<T, PK> 
 	extends
-	BaseSelectMapper<T>,
-	BaseUpdateMapper<T>,
-	BaseInsertMapper<T>,
-	BaseDeleteMapper<T> {
-
+	BaseSelectMapper<T, PK>,
+	BaseUpdateMapper<T, PK>,
+	BaseInsertMapper<T, PK>,
+	BaseDeleteMapper<T, PK> {
 }

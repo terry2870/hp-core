@@ -36,6 +36,8 @@ import org.springframework.data.elasticsearch.core.query.UpdateQueryBuilder;
 import com.alibaba.fastjson.JSON;
 import com.hp.core.common.exceptions.CommonException;
 import com.hp.core.common.utils.DateUtil;
+import com.hp.core.database.bean.SQLBuilder;
+import com.hp.core.database.bean.SQLBuilders;
 import com.hp.core.elasticsearch.bean.IndexInfo;
 import com.hp.core.elasticsearch.constant.SearchIndexConstant;
 import com.hp.core.elasticsearch.factory.IndexInfoFactory;
@@ -54,7 +56,7 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 	private static Logger log = LoggerFactory.getLogger(AbstSimpleIndexServiceImpl.class);
 	
 	@Autowired
-	protected BaseMapper<T> baseMapper;
+	protected BaseMapper<T, Integer> baseMapper;
 	
 	@Autowired
 	protected ElasticsearchTemplate elasticsearchTemplate;
@@ -217,22 +219,15 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 	 * 建索引时，查询最大最小id时，额外的参数
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	protected T getQueryParams() {
-		IndexInfo indexInfo = getIndexInfo();
-		try {
-			return (T) (indexInfo.getDalModelClass().newInstance());
-		} catch (Exception e) {
-			log.error("getQueryParams error.", e);
-		}
-		return null;
+	protected SQLBuilder[] getSQLBuilder() {
+		return new SQLBuilders().build();
 	}
 	
 	/**
 	 * 每次从数据库获取的最大条数
 	 * @return
 	 */
-	protected long getSize() {
+	protected int getSize() {
 		return 5000;
 	}
 	

@@ -15,115 +15,106 @@ import com.hp.core.database.bean.SQLBuilder;
  * @author huangping
  * 2018年5月21日
  */
-public interface IBaseSelectDAO<T> {
+public interface IBaseSelectDAO<T, PK> {
 
 	/**
-	 *  无条件查询所有总数
+	 * 查询最大的id
+	 * @param target
 	 * @return
 	 */
-	public Integer selectAllCount();
+	public PK selectMaxId(SQLBuilder... builder);
+	
+	/**
+	 * 查询最小id
+	 * @param target
+	 * @return
+	 */
+	public PK selectMinId(SQLBuilder... builder);
+	
+	/**
+	 * 根据id范围查询
+	 * @param minId
+	 * @param maxId
+	 * @param target
+	 * @return
+	 */
+	public List<T> selectListByRange(PK minId, PK maxId, SQLBuilder... builder);
+	
+	
+	/**
+	 * 查询总数
+	 * @param builder
+	 * @return
+	 */
+	public PK selectCount(SQLBuilder... builder);
 	
 	/**
 	 * 根据主键查询
 	 * @param id
 	 * @return
 	 */
-	public T selectByPrimaryKey(Object id);
-	
-	/**
-	 * 根据条件，查询数量
-	 * @param target
-	 * @return
-	 */
-	public Integer selectCountByParams(T target);
-	
-	/**
-	 * 根据条件，查询list（不分页）
-	 * @param target
-	 * @return
-	 */
-	public default List<T> selectListByParams(T target) {
-		return selectListByParamsWithOrder(target);
-	}
-	
-	/**
-	 * 根据条件查询，带排序
-	 * @param target
-	 * @param orderBy
-	 * @return
-	 */
-	public List<T> selectListByParamsWithOrder(T target, OrderBy... orderBy);
-	
-	/**
-	 * 根据条件，查询单个
-	 * @param params
-	 * @return
-	 */
-	public T selectOneByParams(T target);
-	
-	/**
-	 * 根据条件，查询list（分页）
-	 * @param params
-	 * @param page
-	 * @return
-	 */
-	public List<T> selectPageListByParams(T target, PageModel page);
+	public T selectByPrimaryKey(PK id);
 	
 	/**
 	 * 根据主键，批量查询
-	 * @param ids
+	 * @param primaryKeyIdList
 	 * @return
 	 */
-	public List<T> selectByPrimaryKeys(List<?> ids);
+	public List<T> selectByPrimaryKeys(List<PK> primaryKeyIdList);
 	
 	/**
 	 * 根据主键，批量查询（并且按照list里面id顺序排序）
-	 * @param ids
+	 * @param primaryKeyIdList
 	 * @return
 	 */
-	public List<T> selectByPrimaryKeysWithInSort(List<?> ids);
-	
-	/**
-	 * 根据传入的sqlbuild，查询数量
-	 * @param builder
-	 * @return
-	 */
-	public Integer selectCountByBuilder(SQLBuilder... builder);
+	public List<T> selectByPrimaryKeysWithInSort(List<PK> primaryKeyIdList);
 	
 	/**
 	 * 根据传入的sqlbuild，查询
-	 * @param build
-	 * @return
-	 */
-	public List<T> selectListByBuilder(SQLBuilder... builder);
-	
-	/**
-	 * 根据传入的sqlbuild，查询
-	 * @param build
-	 * @return
-	 */
-	public List<T> selectListByBuilderWithOrder(SQLBuilder[] builder, OrderBy... orderBy);
-	
-	/**
-	 * 根据传入的sqlbuild，查询分页数据
-	 * @param builder
-	 * @param page
-	 * @return
-	 */
-	public List<T> selectPageListByBuilder(SQLBuilder[] builder, PageModel page);
-	
-	/**
-	 * 根据传入的sqlbuild，查询一个
-	 * @param builder
-	 * @return
-	 */
-	public T selectOneByBuilder(SQLBuilder... builder);
-	
-	/**
-	 * 根据传入的sqlbuild，查询一个
 	 * @param builder
 	 * @param orderBy
 	 * @return
 	 */
-	public T selectOneByBuilderWithOrder(SQLBuilder[] builder, OrderBy... orderBy);
+	public List<T> selectList(SQLBuilder[] builder, OrderBy... orderBy);
+	
+	/**
+	 * 根据传入的sqlbuild，查询（分页）
+	 * @param builder
+	 * @param page
+	 * @return
+	 */
+	public List<T> selectPageList(SQLBuilder[] builder, PageModel page);
+	
+	/**
+	 * 根据传入的sqlbuild，查询一个
+	 * @param builder
+	 * @return
+	 */
+	public T selectOne(SQLBuilder... builder);
+	
+	/**
+	 * 查询大于该id的数据
+	 * @param largeThanId
+	 * @param page
+	 * @param builder
+	 * @return
+	 */
+	public List<T> selectPageListLargeThanId(PK largeThanId, PageModel page, SQLBuilder... builder);
+	
+	/**
+	 * 查询主键列表
+	 * @param builder
+	 * @param orderBy
+	 * @return
+	 */
+	public List<PK> selectPrimaryKeyList(SQLBuilder[] builder, OrderBy... orderBy);
+	
+	/**
+	 * 查询主键列表
+	 * @param builder
+	 * @param page
+	 * @return
+	 */
+	public List<PK> selectPrimaryKeyPageList(SQLBuilder[] builder, PageModel page);
+
 }

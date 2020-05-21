@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,8 +97,8 @@ public class BaseDeleteSQLProvider {
 	 * @param params
 	 * @return
 	 */
-	public static String deleteByBuilder(Map<String, Object> params) {
-		if (params == null) {
+	public static String deleteByBuilder(Map<String, Object> target) {
+		if (MapUtils.isEmpty(target)) {
 			log.error("deleteByBuilder error. with params is null.");
 			throw new ProviderSQLException("params is null");
 		}
@@ -106,14 +108,14 @@ public class BaseDeleteSQLProvider {
 				.append(entity.getTableName())
 				.append(" WHERE 1=1 ");
 		
-		String where = SQLBuilderHelper.getSQLBySQLBuild((SQLBuilder[]) params.get(SQLProviderConstant.SQL_BUILD_ALIAS));
+		String where = SQLBuilderHelper.getSQLBySQLBuild((SQLBuilder[]) target.get(SQLProviderConstant.SQL_BUILD_ALIAS));
 		
-		if (where == null || where.length() == 0) {
-			log.error("deleteByBuilder error. with where sql is empty. not allow. with \r\nparams={}, \r\nentity={}", params, entity);
+		if (StringUtils.isEmpty(where)) {
+			log.error("deleteByBuilder error. with where sql is empty. not allow. with \r\nparams={}, \r\nentity={}", target, entity);
 			throw new ProviderSQLException("deleteByBuilder error. with where sql is empty");
 		}
 		
-		log.debug("deleteByBuilder get sql \r\nsql={} \r\nparams={}, \r\nentity={}", sql, params, entity);
+		log.debug("deleteByBuilder get sql \r\nsql={} \r\nparams={}, \r\nentity={}", sql, target, entity);
 		return sql.append(where).toString();
 	}
 	
@@ -145,4 +147,5 @@ public class BaseDeleteSQLProvider {
 		}
 		return sql;
 	}
+
 }

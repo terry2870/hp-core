@@ -21,7 +21,7 @@ import com.hp.core.mybatis.provider.BaseSelectProvider;
  * @author huangping
  * 2018年5月21日
  */
-public interface BaseSelectMapper<T> extends IBaseSelectDAO<T> {
+public interface BaseSelectMapper<T, PK> extends IBaseSelectDAO<T, PK> {
 
 	/**
 	 * 查询最大的id
@@ -29,7 +29,7 @@ public interface BaseSelectMapper<T> extends IBaseSelectDAO<T> {
 	 * @return
 	 */
 	@SelectProvider(type = BaseSelectProvider.class, method = "selectMaxId")
-	public Long selectMaxId(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target);
+	public PK selectMaxId(@Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder... builder);
 	
 	/**
 	 * 查询最小id
@@ -37,7 +37,7 @@ public interface BaseSelectMapper<T> extends IBaseSelectDAO<T> {
 	 * @return
 	 */
 	@SelectProvider(type = BaseSelectProvider.class, method = "selectMinId")
-	public Long selectMinId(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target);
+	public PK selectMinId(@Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder... builder);
 	
 	/**
 	 * 根据id范围查询
@@ -47,14 +47,13 @@ public interface BaseSelectMapper<T> extends IBaseSelectDAO<T> {
 	 * @return
 	 */
 	@SelectProvider(type = BaseSelectProvider.class, method = "selectListByRange")
-	public List<T> selectListByRange(@Param("minId") long minId, @Param("maxId") long maxId, @Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target);
+	public List<T> selectListByRange(@Param("minId") PK minId, @Param("maxId") PK maxId, @Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder... builder);
 	
 	/**
-	 *  无条件查询所有总数
-	 * @return
+	 * 查询总数
 	 */
-	@SelectProvider(type = BaseSelectProvider.class, method = "selectAllCount")
-	public Integer selectAllCount();
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectCount")
+	public PK selectCount(@Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder... builder);
 	
 	/**
 	 * 根据主键查询
@@ -62,141 +61,63 @@ public interface BaseSelectMapper<T> extends IBaseSelectDAO<T> {
 	 * @return
 	 */
 	@SelectProvider(type = BaseSelectProvider.class, method = "selectByPrimaryKey")
-	public T selectByPrimaryKey(Object id);
-	
-	/**
-	 * 根据条件，查询数量
-	 * @param target
-	 * @return
-	 */
-	@SelectProvider(type = BaseSelectProvider.class, method = "selectCountByParams")
-	public Integer selectCountByParams(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target);
-	
-	/**
-	 * 根据条件，查询list（不分页）
-	 * @param params
-	 * @return
-	 */
-	public default List<T> selectListByParams(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target) {
-		return selectListByParamsWithOrder(target);
-	}
-	
-	/**
-	 * 根据条件，查询list（不分页）
-	 * @param target
-	 * @param orderBy
-	 * @return
-	 */
-	@SelectProvider(type = BaseSelectProvider.class, method = "selectListByParams")
-	public List<T> selectListByParamsWithOrder(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target, @Param(SQLProviderConstant.ORDER_BY) OrderBy... orderBy);
-	
-	/**
-	 * 自定义sql，查询列表
-	 * @param sql
-	 * @return
-	 */
-	//@SelectProvider(type = BaseSelectProvider.class, method = "selectListBySQL")
-	//public List<T> selectList(@Param(SQLProviderConstant.SQL_OBJECT_ALIAS) SQL sql);
-	
-	/**
-	 * 根据条件，查询单个
-	 * @param params
-	 * @return
-	 */
-	@SelectProvider(type = BaseSelectProvider.class, method = "selectOneByParams")
-	public T selectOneByParams(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target);
-	
-	/**
-	 * 根据条件，查询单个（带排序）
-	 * @param target
-	 * @param orderBy
-	 * @return
-	 */
-	@SelectProvider(type = BaseSelectProvider.class, method = "selectOneByParams")
-	public T selectOneByParamsWithOrder(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target, @Param(SQLProviderConstant.ORDER_BY) OrderBy... orderBy);
-	
-	/**
-	 * 根据条件，查询list（分页）
-	 * @param params
-	 * @param page
-	 * @return
-	 */
-	@SelectProvider(type = BaseSelectProvider.class, method = "selectListByParams")
-	public List<T> selectPageListByParams(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target, @Param(SQLProviderConstant.PAGE_OBJECT_ALIAS) PageModel page);
-	
-	/**
-	 * 根据条件，查询list（分页）
-	 * @param target
-	 * @param page
-	 * @param largeThanId
-	 * @return
-	 */
-	@SelectProvider(type = BaseSelectProvider.class, method = "selectPageListByParamsAndLargeThanId")
-	public List<T> selectPageListByParamsAndLargeThanId(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target, @Param(SQLProviderConstant.PAGE_OBJECT_ALIAS) PageModel page, @Param(SQLProviderConstant.LARGETHAN_ID_OBJECT_ALIAS) Long largeThanId);
+	public T selectByPrimaryKey(@Param(SQLProviderConstant.KEY_PROPERTY_ID) PK id);
 	
 	/**
 	 * 根据主键，批量查询
-	 * @param ids
+	 * @param primaryKeyIdList
 	 * @return
 	 */
 	@SelectProvider(type = BaseSelectProvider.class, method = "selectByPrimaryKeys")
-	public List<T> selectByPrimaryKeys(List<?> ids);
+	public List<T> selectByPrimaryKeys(List<PK> primaryKeyIdList);
 	
 	/**
 	 * 根据主键，批量查询（并且按照list里面id顺序排序）
-	 * @param ids
+	 * @param primaryKeyIdList
 	 * @return
 	 */
 	@SelectProvider(type = BaseSelectProvider.class, method = "selectByPrimaryKeysWithInSort")
-	public List<T> selectByPrimaryKeysWithInSort(List<?> ids);
-	
-	/**
-	 * 根据传入的sqlbuild，查询数量
-	 * @param builder
-	 * @return
-	 */
-	@SelectProvider(type = BaseSelectProvider.class, method = "selectCountByBuilder")
-	public Integer selectCountByBuilder(@Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder... builder);
+	public List<T> selectByPrimaryKeysWithInSort(List<PK> primaryKeyIdList);
 	
 	/**
 	 * 根据传入的sqlbuild，查询
-	 * @param build
-	 * @return
-	 */
-	@SelectProvider(type = BaseSelectProvider.class, method = "selectListByBuilder")
-	public List<T> selectListByBuilder(@Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder... builder);
-	
-	/**
-	 * 根据传入的sqlbuild，查询
-	 * @param build
-	 * @return
-	 */
-	@SelectProvider(type = BaseSelectProvider.class, method = "selectListByBuilder")
-	public List<T> selectListByBuilderWithOrder(@Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder[] builder, @Param(SQLProviderConstant.ORDER_BY) OrderBy... orderBy);
-	
-	/**
-	 * 根据传入的sqlbuild，查询分页数据
-	 * @param builder
-	 * @param page
-	 * @return
-	 */
-	@SelectProvider(type = BaseSelectProvider.class, method = "selectListByBuilder")
-	public List<T> selectPageListByBuilder(@Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder[] builder, @Param(SQLProviderConstant.PAGE_OBJECT_ALIAS) PageModel page);
-	
-	/**
-	 * 根据传入的sqlbuild，查询一个
-	 * @param builder
-	 * @return
-	 */
-	@SelectProvider(type = BaseSelectProvider.class, method = "selectOneByBuilder")
-	public T selectOneByBuilder(@Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder... builder);
-	
-	/**
-	 * 根据传入的sqlbuild，查询一个
 	 * @param builder
 	 * @param orderBy
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectList")
+	public List<T> selectList(@Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder[] builder, @Param(SQLProviderConstant.ORDER_BY) OrderBy... orderBy);
+	
+	/**
+	 * 根据传入的sqlbuild，查询（分页）
+	 * @param builder
+	 * @param page
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectList")
+	public List<T> selectPageList(@Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder[] builder, @Param(SQLProviderConstant.PAGE_OBJECT_ALIAS) PageModel page);
+	
+	/**
+	 * 根据传入的sqlbuild，查询一个
+	 * @param builder
 	 * @return
 	 */
-	@SelectProvider(type = BaseSelectProvider.class, method = "selectOneByBuilder")
-	public T selectOneByBuilderWithOrder(@Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder[] builder, @Param(SQLProviderConstant.ORDER_BY) OrderBy... orderBy);
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectOne")
+	public T selectOne(@Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder... builder);
+	
+	/**
+	 * 查询大于该id的数据
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectPageListLargeThanId")
+	public List<T> selectPageListLargeThanId(@Param(SQLProviderConstant.LARGETHAN_ID_OBJECT_ALIAS) PK largeThanId, @Param(SQLProviderConstant.PAGE_OBJECT_ALIAS) PageModel page, @Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder... builder);
+	
+	/**
+	 * 查询主键列表
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectPrimaryKeyList")
+	public List<PK> selectPrimaryKeyList(@Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder[] builder, @Param(SQLProviderConstant.ORDER_BY) OrderBy... orderBy);
+	
+	/**
+	 * 查询主键列表(分页)
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectPrimaryKeyList")
+	public List<PK> selectPrimaryKeyPageList(@Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder[] builder, @Param(SQLProviderConstant.PAGE_OBJECT_ALIAS) PageModel page);
 }

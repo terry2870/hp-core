@@ -14,7 +14,7 @@ import com.hp.core.mybatis.provider.BaseUpdateSQLProvider;
  * @author huangping
  * 2018年5月29日
  */
-public interface BaseUpdateMapper<T> extends IBaseUpdateDAO<T> {
+public interface BaseUpdateMapper<T, PK> extends IBaseUpdateDAO<T, PK> {
 
 	/**
 	 * 根据主键更新数据

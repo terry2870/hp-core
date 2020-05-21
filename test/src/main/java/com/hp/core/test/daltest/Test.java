@@ -33,18 +33,12 @@ public class Test extends BaseJUnitTest {
 	
 	@org.junit.Test
 	public void test() {
-		Integer count = testTableDAO.selectAllCount();
-		TestTable t = new TestTable();
-		t.setId(3);
-		List<TestTable> l = testTableDAO.selectListByParamsWithOrder(t, OrderBy.of("id", "desc"));
-		
+		Integer count = testTableDAO.selectCount();
 		System.out.println("count= " + count);
 	}
 	
 	@org.junit.Test
 	public void test2() {
-		Integer count = testTableDAO2.selectAllCount();
-		System.out.println("count= " + count);
 	}
 	
 }

@@ -14,114 +14,82 @@ import com.hp.core.database.dao.IBaseSelectDAO;
  * @author huangping
  * 2018年12月10日
  */
-public class BaseSelectDAOImpl<T> implements IBaseSelectDAO<T> {
+public class BaseSelectDAOImpl<T, PK> implements IBaseSelectDAO<T, PK> {
 
-	/* (non-Javadoc)
-	 * @see com.hp.core.database.dao.IBaseSelectDAO#selectAllCount()
-	 */
 	@Override
-	public Integer selectAllCount() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hp.core.database.dao.IBaseSelectDAO#selectByPrimaryKey(java.lang.Object)
-	 */
-	@Override
-	public T selectByPrimaryKey(Object id) {
-		System.out.println("----------------- " + id);
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hp.core.database.dao.IBaseSelectDAO#selectCountByParams(java.lang.Object)
-	 */
-	@Override
-	public Integer selectCountByParams(T target) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hp.core.database.dao.IBaseSelectDAO#selectListByParamsWithOrder(java.lang.Object, com.hp.core.database.bean.OrderBy[])
-	 */
-	@Override
-	public List<T> selectListByParamsWithOrder(T target, OrderBy... orderBy) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hp.core.database.dao.IBaseSelectDAO#selectOneByParams(java.lang.Object)
-	 */
-	@Override
-	public T selectOneByParams(T target) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hp.core.database.dao.IBaseSelectDAO#selectPageListByParams(java.lang.Object, com.hp.core.common.beans.page.PageModel)
-	 */
-	@Override
-	public List<T> selectPageListByParams(T target, PageModel page) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hp.core.database.dao.IBaseSelectDAO#selectByPrimaryKeys(java.util.List)
-	 */
-	@Override
-	public List<T> selectByPrimaryKeys(List<?> ids) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hp.core.database.dao.IBaseSelectDAO#selectByPrimaryKeysWithInSort(java.util.List)
-	 */
-	@Override
-	public List<T> selectByPrimaryKeysWithInSort(List<?> ids) {
+	public PK selectMaxId(SQLBuilder... builder) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Integer selectCountByBuilder(SQLBuilder... builder) {
+	public PK selectMinId(SQLBuilder... builder) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<T> selectListByBuilder(SQLBuilder... builder) {
+	public List<T> selectListByRange(PK minId, PK maxId, SQLBuilder... builder) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<T> selectListByBuilderWithOrder(SQLBuilder[] builder, OrderBy... orderBy) {
+	public PK selectCount(SQLBuilder... builder) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<T> selectPageListByBuilder(SQLBuilder[] builder, PageModel page) {
+	public T selectByPrimaryKey(PK id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public T selectOneByBuilder(SQLBuilder... builder) {
+	public List<T> selectByPrimaryKeys(List<PK> primaryKeyIdList) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public T selectOneByBuilderWithOrder(SQLBuilder[] builder, OrderBy... orderBy) {
+	public List<T> selectByPrimaryKeysWithInSort(List<PK> primaryKeyIdList) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-}
+	@Override
+	public List<T> selectList(SQLBuilder[] builder, OrderBy... orderBy) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<T> selectPageList(SQLBuilder[] builder, PageModel page) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public T selectOne(SQLBuilder... builder) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<T> selectPageListLargeThanId(PK largeThanId, PageModel page, SQLBuilder... builder) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PK> selectPrimaryKeyList(SQLBuilder[] builder, OrderBy... orderBy) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PK> selectPrimaryKeyPageList(SQLBuilder[] builder, PageModel page) {
+		// TODO Auto-generated method stub
+		return null;
+	}}

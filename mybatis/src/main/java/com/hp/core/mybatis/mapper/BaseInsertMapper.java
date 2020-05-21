@@ -19,7 +19,7 @@ import com.hp.core.mybatis.provider.BaseInsertSQLProvider;
  * @author huangping
  * 2018年5月29日
  */
-public interface BaseInsertMapper<T> extends IBaseInsertDAO<T> {
+public interface BaseInsertMapper<T, PK> extends IBaseInsertDAO<T, PK> {
 
 	/**
 	 * 新增数据

@@ -5,7 +5,7 @@ import java.util.List;
 import com.hp.core.mybatis.mapper.BaseMapper;
 import com.hp.core.webjars.dal.model.SysUserRole;
 
-public interface ISysUserRoleDAO extends BaseMapper<SysUserRole> {
+public interface ISysUserRoleDAO extends BaseMapper<SysUserRole, Integer> {
 	
 	
 	/**

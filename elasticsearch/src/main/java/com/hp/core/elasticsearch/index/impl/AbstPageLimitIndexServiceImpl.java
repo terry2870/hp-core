@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 
 import com.hp.core.database.bean.PageModel;
+import com.hp.core.database.bean.SQLBuilder;
 import com.hp.core.elasticsearch.bean.IndexInfo;
 
 /**
@@ -24,27 +25,27 @@ public abstract class AbstPageLimitIndexServiceImpl<T, E> extends AbstSimpleInde
 	
 	/**
 	 * 获取总数
-	 * @param param
+	 * @param builder
 	 * @return
 	 */
-	protected int getTotal(T param) {
-		return baseMapper.selectCountByParams(param);
+	protected int getTotal(SQLBuilder[] builder) {
+		return baseMapper.selectCount(builder);
 	}
 	
 	/**
 	 * 分页查询列表
-	 * @param param
+	 * @param builder
 	 * @param page
 	 * @return
 	 */
-	protected List<T> getDataListFromDB(T param, PageModel page) {
-		return baseMapper.selectPageListByParams(param, page);
+	protected List<T> getDataListFromDB(SQLBuilder[] builder, PageModel page) {
+		return baseMapper.selectPageList(builder, page);
 	}
 	
 	@Override
 	public void insertIntoES(IndexInfo indexInfo, String newIndexName) {
-		T param = getQueryParams();
-		int total = getTotal(param);
+		SQLBuilder[] builder = getSQLBuilder();
+		int total = getTotal(builder);
 		if (total == 0) {
 			return;
 		}
@@ -60,7 +61,7 @@ public abstract class AbstPageLimitIndexServiceImpl<T, E> extends AbstSimpleInde
 			log.info("insert to es data indexName={}. {}/{}", indexInfo.getIndexName(), currentPage, totalPage);
 			//分页查询数据
 			page = PageModel.of(currentPage, size);
-			list = getDataListFromDB(param, page);
+			list = getDataListFromDB(builder, page);
 			
 			//页数自加
 			currentPage++;

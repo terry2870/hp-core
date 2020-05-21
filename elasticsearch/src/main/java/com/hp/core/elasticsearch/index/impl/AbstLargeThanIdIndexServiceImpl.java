@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 
 import com.hp.core.database.bean.PageModel;
+import com.hp.core.database.bean.SQLBuilder;
 import com.hp.core.elasticsearch.bean.IndexInfo;
 
 /**
@@ -26,8 +27,8 @@ public abstract class AbstLargeThanIdIndexServiceImpl<T, E> extends AbstSimpleIn
      * @param largeThanId
      * @return
      */
-    protected List<T> getDataListFromDB(T param, PageModel page, Long largeThanId) {
-        return baseMapper.selectPageListByParamsAndLargeThanId(param, page, largeThanId);
+    protected List<T> getDataListFromDB(SQLBuilder[] builders, PageModel page, Integer largeThanId) {
+        return baseMapper.selectPageListLargeThanId(largeThanId, page);
     }
 
     /**
@@ -35,18 +36,18 @@ public abstract class AbstLargeThanIdIndexServiceImpl<T, E> extends AbstSimpleIn
      *
      * @return
      */
-    protected Long getDbPrimaryKey(T t) {
+    protected Integer getDbPrimaryKey(T t) {
         try {
             String value = BeanUtils.getProperty(t, "id");
-            return Long.valueOf(value);
+            return Integer.valueOf(value);
         } catch (Exception e) {
-            return 0L;
+            return 0;
         }
     }
 
     @Override
     public void insertIntoES(IndexInfo indexInfo, String newIndexName) {
-        T param = getQueryParams();
+    	SQLBuilder[] builders = getSQLBuilder();
 
         int size = (int) getSize();
         int currentPage = 1;
@@ -55,11 +56,11 @@ public abstract class AbstLargeThanIdIndexServiceImpl<T, E> extends AbstSimpleIn
         PageModel page = PageModel.of(currentPage, size);
         List<T> list;
         List<IndexQuery> queries;
-        Long largeThanId = 0L;
+        Integer largeThanId = 0;
         while (true){
             log.info("insert to es data indexName={}. {}/{}", indexInfo.getIndexName(), currentPage, largeThanId);
 
-            list = getDataListFromDB(param, page, largeThanId);
+            list = getDataListFromDB(builders, page, largeThanId);
 
             //页数自加
             currentPage++;
@@ -69,7 +70,7 @@ public abstract class AbstLargeThanIdIndexServiceImpl<T, E> extends AbstSimpleIn
 
             //更新largeThanId
             largeThanId = refreshLargeThanId(list);
-            if (largeThanId.equals(0L)) {
+            if (largeThanId.equals(0)) {
                 log.error("insert to es data with getting largeThanId fail indexName={}");
                 break;
             }
@@ -86,9 +87,9 @@ public abstract class AbstLargeThanIdIndexServiceImpl<T, E> extends AbstSimpleIn
         };
     }
 
-    private Long refreshLargeThanId(List<T> list) {
+    private Integer refreshLargeThanId(List<T> list) {
         T t;
-        long largeThanId;
+        int largeThanId;
         for (int i = list.size() - 1; i >= 0; i--) {
             t = list.get(i);
             if (t == null) {
@@ -100,6 +101,6 @@ public abstract class AbstLargeThanIdIndexServiceImpl<T, E> extends AbstSimpleIn
             }
         }
 
-        return 0L;
+        return 0;
     }
 }

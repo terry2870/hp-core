@@ -9,7 +9,7 @@ package com.hp.core.database.dao;
  * @author huangping
  * 2018年5月29日
  */
-public interface IBaseUpdateDAO<T> {
+public interface IBaseUpdateDAO<T, PK> {
 
 	/**
 	 * 根据主键更新数据

@@ -4,15 +4,10 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-/**
- * 对应的dao接口
- * @author huangping
- * 2018-08-06
- */
 import com.hp.core.mybatis.mapper.BaseMapper;
 import com.hp.core.webjars.dal.model.SysMenu;
 
-public interface ISysMenuDAO extends BaseMapper<SysMenu> {
+public interface ISysMenuDAO extends BaseMapper<SysMenu, Integer> {
 
 	/**
 	 * 查询该用户的菜单（非超级管理员）
