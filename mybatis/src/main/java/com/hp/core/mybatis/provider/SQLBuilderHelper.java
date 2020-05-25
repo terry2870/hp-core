@@ -142,10 +142,11 @@ public class SQLBuilderHelper {
 			//null
 			return true;
 		}
-		if (build.getJavaType() != null && StringUtils.equals(String.class.getName(), build.getJavaType().getName()) && StringUtils.isEmpty((String) build.getValue())) {
+		if (build.getValue() instanceof String && StringUtils.isEmpty((String) build.getValue())) {
 			//空字符串
 			return true;
 		}
+		
 		return false;
 	}
 }

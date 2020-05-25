@@ -4,7 +4,7 @@
 <meta charset="utf-8">
     <title>三级导航</title>
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="css/left-side-menu.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery.leftMenu.css">
 	<link rel="stylesheet" type="text/css" href="font/iconfont.css">
 	<script type="text/javascript" src="js/jquery-3.5.1.min.js"></script>
     
@@ -12,7 +12,9 @@
 <body>
 <div class ="top"  style="width: 100%;height: 80px;background-color: #397bc5"></div>
 <div id="leftMenu"></div>
-<div class="center-content">sdfsdf</div>
+<div class="center-content">
+	<nav id="pagination"></nav>
+</div>
 <script>
 	$(function() {
 		$("#leftMenu").leftMenu({
@@ -49,11 +51,21 @@
 				alert(JSON.stringify(item));
 			}
 		});
+
+		$("#pagination").pagination({
+			total : 102,
+			pageSize : 10,
+			currentPage : 1,
+			onSelectPage : function(currentPage) {
+				//alert(currentPage);
+			}
+		});
 	});
 </script>
 	<script type="text/javascript" src="js/bootstrap-plugins/bootstrap.default.js"></script>
     <script type="text/javascript" src="js/jquery.slimscroll.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap-plugins/leftMenu.js"></script>
+	<script type="text/javascript" src="js/bootstrap-plugins/jquery.leftMenu.js"></script>
+	<script type="text/javascript" src="js/bootstrap-plugins/bootstrap.pagination.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
 </body>
 </html>

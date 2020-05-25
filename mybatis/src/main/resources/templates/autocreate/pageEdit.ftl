@@ -12,7 +12,7 @@
 </form>
 <script>
 	$(function() {
-		var id = "${r'${id}'}";
+		let id = "${r'${id}'}";
 		if (id > 0) {
 			$.post("${r"${request.contextPath}"}/${modelName}Controller/query${modelName}ById", {
 				id : id
