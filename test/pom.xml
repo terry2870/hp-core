@@ -51,5 +51,9 @@
 			<groupId>com.hp.core</groupId>
 			<artifactId>hp-core-jdbc</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.hp.core</groupId>
+			<artifactId>hp-core-excel</artifactId>
+		</dependency>
 	</dependencies>
 </project>

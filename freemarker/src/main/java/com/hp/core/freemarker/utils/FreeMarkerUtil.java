@@ -6,6 +6,7 @@ package com.hp.core.freemarker.utils;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.StringWriter;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -53,9 +54,7 @@ public class FreeMarkerUtil {
 	 * @param root
 	 */
 	public static void createFile(String templateFileName, String outFileName, Object root) {
-		
 		FreeMarkerConfigurer cfg2 = SpringContextUtil.getBean("local_freeMarkerConfigurer", FreeMarkerConfigurer.class);
-		
 		Configuration cfg = cfg2.getConfiguration();
 		
 		String outPath = outFileName.contains("/") ? outFileName.substring(0,  outFileName.lastIndexOf("/")) : "./";
@@ -79,5 +78,27 @@ public class FreeMarkerUtil {
 		}
 	}
 
-
+	/**
+	 * 根据模板，生成字符串
+	 * @param templateName
+	 * @param root
+	 * @return
+	 */
+	public static String getStringTemplate(String templateName, Object root) {
+		FreeMarkerConfigurer cfg2 = SpringContextUtil.getBean("local_freeMarkerConfigurer", FreeMarkerConfigurer.class);
+		Configuration cfg = cfg2.getConfiguration();
+		cfg.setObjectWrapper(new DefaultObjectWrapper(Configuration.VERSION_2_3_28));
+		try (
+				StringWriter stringWriter = new StringWriter();
+			){
+			Template temp = cfg.getTemplate(templateName);
+			temp.process(root, stringWriter);
+			return stringWriter.toString();
+		} catch (Exception e) {
+			log.error("getStringTemplate error. with error=", e);
+			return null;
+		}
+		
+		
+	}
 }

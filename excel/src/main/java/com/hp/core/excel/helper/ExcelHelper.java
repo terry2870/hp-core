@@ -94,6 +94,7 @@ public class ExcelHelper {
 			out.flush();
 		} catch (Exception e) {
 		} finally {
+			dataList = null;
 			IOUtils.closeQuietly(wb);
 			IOUtils.closeQuietly(out);
 		}
