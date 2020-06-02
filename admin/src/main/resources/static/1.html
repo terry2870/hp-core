@@ -14,6 +14,7 @@
 <div id="leftMenu"></div>
 <div class="center-content">
 	<nav id="pagination"></nav>
+	<div id="card"></div>
 </div>
 <script>
 	$(function() {
@@ -60,12 +61,35 @@
 				//alert(currentPage);
 			}
 		});
+		$("#card").card({
+			//width : 200,
+			//height : 300,
+			top : 100,
+			left : "20%",
+			cardStyle : $.bootstrapClass.PRIMARY,
+			header : {
+				html : "asdasdas",
+				style : {
+					color : "white"
+				}
+			},
+			body : {
+				html : "dddlkjklj"
+			},
+			footer : {
+				html : "sssss"
+			},
+			onAfterClose : function() {
+				//$(this).card("destroy");
+			}
+		});
 	});
 </script>
 	<script type="text/javascript" src="js/bootstrap-plugins/bootstrap.default.js"></script>
     <script type="text/javascript" src="js/jquery.slimscroll.min.js"></script>
 	<script type="text/javascript" src="js/bootstrap-plugins/jquery.leftMenu.js"></script>
 	<script type="text/javascript" src="js/bootstrap-plugins/bootstrap.pagination.js"></script>
+	<script type="text/javascript" src="js/bootstrap-plugins/bootstrap.card.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
 </body>
 </html>

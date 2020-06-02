@@ -82,6 +82,10 @@ public class PageModel extends BaseBean {
 	public static PageModel of(int currentPage, int pageSize, String sortColumn) {
 		return new PageModel(currentPage, pageSize, sortColumn);
 	}
+	
+	public static PageModel emptyPage() {
+		return PageModel.of(0, 0);
+	}
 
 	public int getPageSize() {
 		return pageSize;
