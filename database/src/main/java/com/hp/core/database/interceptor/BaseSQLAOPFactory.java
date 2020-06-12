@@ -51,12 +51,12 @@ public class BaseSQLAOPFactory {
 	/**
 	 * 存放所有dao继承的父类时候的泛型
 	 */
-	private Map<String, GenericParadigmBean> genericParadigmClassMap = new ConcurrentHashMap<>();
+	private volatile Map<String, GenericParadigmBean> genericParadigmClassMap = new ConcurrentHashMap<>();
 
 	/**
 	 * 存放所有的需要持久化的实体的对象
 	 */
-	private static Map<String, DynamicEntityBean> entityBeanMap = new ConcurrentHashMap<>();
+	private static volatile Map<String, DynamicEntityBean> entityBeanMap = new ConcurrentHashMap<>();
 
 	
 	/**

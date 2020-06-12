@@ -35,6 +35,10 @@ public class MapUtil {
 	public static final <K, V> Map<K, V> list2Map(Iterable<V> values, Function<K, ? super V> keyFunction) {
 		return list2Map(values, new FunctionExPlus<V, K, V>() {
 			@Override
+			public boolean check(V input) {
+				return keyFunction.check(input);
+			}
+			@Override
 			public K applyKey(V input) {
 				return keyFunction.apply(input);
 			}
@@ -66,6 +70,9 @@ public class MapUtil {
 		while (iterator.hasNext()) {
 			value = iterator.next();
 			if (value == null) {
+				continue;
+			}
+			if (!keyFunction.check(value)) {
 				continue;
 			}
 			key = keyFunction.applyKey(value);
@@ -100,6 +107,10 @@ public class MapUtil {
 	 */
 	public static final <K, V> Map<K, List<V>> transformListMap(Iterable<V> values, Function<K, V> keyFunction, int maxNum) {
 		return transformListMap(values, new FunctionExPlus<V, K, V>() {
+			@Override
+			public boolean check(V input) {
+				return keyFunction.check(input);
+			}
 			@Override
 			public K applyKey(V input) {
 				return keyFunction.apply(input);
@@ -148,6 +159,9 @@ public class MapUtil {
 		while (iterator.hasNext()) {
 			t = iterator.next();
 			key = keyFunction.applyKey(t);
+			if (!keyFunction.check(t)) {
+				continue;
+			}
 			value = keyFunction.applyValue(t);
 			if (builder.containsKey(key)) {
 				if (maxNum != 0 && builder.get(key).size() >= maxNum) {
@@ -172,7 +186,14 @@ public class MapUtil {
 	 * @param <V>	返回的map的value
 	 */
 	public static interface Function<K, V> {
-		
+		/**
+		 * 检查是否加入map
+		 * @param input
+		 * @return
+		 */
+		default boolean check(V input) {
+			return true;
+		}
 		/**
 		 * 获取key值
 		 * @param input
@@ -190,6 +211,15 @@ public class MapUtil {
 	 * @param <V>	返回的map的value
 	 */
 	public static interface FunctionExPlus<T, K, V> {
+		/**
+		 * 检查是否加入map
+		 * @param input
+		 * @return
+		 */
+		default boolean check(T input) {
+			return true;
+		}
+		
 		/**
 		 * 获取key
 		 * @param input
