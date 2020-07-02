@@ -8,13 +8,11 @@ import java.math.BigDecimal;
 import org.springframework.data.elasticsearch.annotations.GeoPointField;
 import org.springframework.data.elasticsearch.annotations.ScriptedField;
 
-import com.hp.core.common.beans.BaseBean;
-
 /**
  * @author huangping
  * Mar 18, 2019
  */
-public class GeoDistanceResponse extends BaseBean {
+public class GeoDistanceResponse extends BaseSearchResponse {
 
 	/**
 	 * 

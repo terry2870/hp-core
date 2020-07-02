@@ -6,6 +6,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 
 import com.hp.core.database.bean.PageModel;
@@ -46,7 +47,7 @@ public abstract class AbstLargeThanIdIndexServiceImpl<T, E> extends AbstSimpleIn
     }
 
     @Override
-    public void insertIntoES(IndexInfo indexInfo, String newIndexName) {
+    public void insertIntoES(IndexInfo indexInfo, IndexCoordinates newIndexCoordinates) {
     	SQLBuilder[] builders = getSQLBuilder();
 
         int size = (int) getSize();
@@ -76,14 +77,14 @@ public abstract class AbstLargeThanIdIndexServiceImpl<T, E> extends AbstSimpleIn
             }
 
             //组装成索引对象
-            queries = getIndexQueryDataListByDataList(list, newIndexName, indexInfo.getType());
+            queries = getIndexQueryDataListByDataList(list);
 
             if (CollectionUtils.isEmpty(queries)) {
                 continue;
             }
 
             //批量插入到新索引
-            elasticsearchTemplate.bulkIndex(queries);
+            elasticsearchRestTemplate.bulkIndex(queries, newIndexCoordinates);
         };
     }
 

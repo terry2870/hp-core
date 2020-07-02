@@ -8,10 +8,8 @@ import java.util.concurrent.ScheduledFuture;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
-import org.springframework.stereotype.Component;
 
 import com.hp.core.common.utils.DateUtil;
 import com.hp.core.task.enums.TaskModeEnum;
@@ -20,13 +18,11 @@ import com.hp.core.task.enums.TaskModeEnum;
  * @author ping.huang
  * 2016年6月18日
  */
-@Component
 public class TaskJob {
 
-	static Logger log = LoggerFactory.getLogger(TaskJob.class);
+	private static Logger log = LoggerFactory.getLogger(TaskJob.class);
 	
-	@Autowired
-	TaskScheduler scheduler;
+	private TaskScheduler scheduler;
 	
 	/**
 	 * 添加或修改任务
@@ -87,5 +83,9 @@ public class TaskJob {
 			return true;
 		}
 		return cancel(o, force);
+	}
+
+	public void setScheduler(TaskScheduler scheduler) {
+		this.scheduler = scheduler;
 	}
 }

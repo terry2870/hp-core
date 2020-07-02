@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 
 import com.hp.core.database.bean.SQLBuilder;
@@ -57,7 +58,7 @@ public abstract class AbstMinMaxIdIndexServiceImpl<T, E> extends AbstSimpleIndex
 	 * @param newIndexName
 	 */
 	@Override
-	public void insertIntoES(IndexInfo indexInfo, String newIndexName) {
+	public void insertIntoES(IndexInfo indexInfo, IndexCoordinates newIndexCoordinates) {
 		SQLBuilder[] builders = getSQLBuilder();
 		//最大id
 		int min = getMinId(builders);
@@ -86,14 +87,14 @@ public abstract class AbstMinMaxIdIndexServiceImpl<T, E> extends AbstSimpleIndex
 			}
 			
 			//组装成索引对象
-			queries = getIndexQueryDataListByDataList(list, newIndexName, indexInfo.getType());
+			queries = getIndexQueryDataListByDataList(list);
 			
 			if (CollectionUtils.isEmpty(queries)) {
 				continue;
 			}
 
 			//批量插入到新索引
-			elasticsearchTemplate.bulkIndex(queries);
+			elasticsearchRestTemplate.bulkIndex(queries, newIndexCoordinates);
 		}
 	}
 

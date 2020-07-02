@@ -24,7 +24,7 @@ import com.hp.core.excel.helper.ExcelHelper;
  * @author huangping
  * May 25, 2020
  */
-public class T {
+public class Tttt {
 
 	
 	public static void main(String[] args) {

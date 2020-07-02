@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 
 import com.hp.core.database.bean.PageModel;
@@ -43,7 +44,7 @@ public abstract class AbstPageLimitIndexServiceImpl<T, E> extends AbstSimpleInde
 	}
 	
 	@Override
-	public void insertIntoES(IndexInfo indexInfo, String newIndexName) {
+	public void insertIntoES(IndexInfo indexInfo, IndexCoordinates newIndexCoordinates) {
 		SQLBuilder[] builder = getSQLBuilder();
 		int total = getTotal(builder);
 		if (total == 0) {
@@ -58,7 +59,7 @@ public abstract class AbstPageLimitIndexServiceImpl<T, E> extends AbstSimpleInde
 		List<T> list = null;
 		List<IndexQuery> queries = null;
 		while (currentPage <= totalPage) {
-			log.info("insert to es data indexName={}. {}/{}", indexInfo.getIndexName(), currentPage, totalPage);
+			log.info("insert to es data indexName={}. {}/{}", newIndexCoordinates.getIndexName(), currentPage, totalPage);
 			//分页查询数据
 			page = PageModel.of(currentPage, size);
 			list = getDataListFromDB(builder, page);
@@ -70,14 +71,14 @@ public abstract class AbstPageLimitIndexServiceImpl<T, E> extends AbstSimpleInde
 			}
 			
 			//组装成索引对象
-			queries = getIndexQueryDataListByDataList(list, newIndexName, indexInfo.getType());
+			queries = getIndexQueryDataListByDataList(list);
 			
 			if (CollectionUtils.isEmpty(queries)) {
 				continue;
 			}
 
 			//批量插入到新索引
-			elasticsearchTemplate.bulkIndex(queries);
+			elasticsearchRestTemplate.bulkIndex(queries, newIndexCoordinates);
 		}
 		
 	}

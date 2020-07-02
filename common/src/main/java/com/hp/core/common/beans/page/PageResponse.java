@@ -126,4 +126,11 @@ public class PageResponse<T> extends BaseBean {
 	public void setFooter(List<T> footer) {
 		this.footer = footer;
 	}
+	
+	public void addRow(T t) {
+		if (this.rows == null) {
+			this.rows = new ArrayList<>();
+		}
+		this.rows.add(t);
+	}
 }

@@ -3,43 +3,39 @@
  */
 package com.hp.core.elasticsearch.index.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.action.ActionFuture;
-import org.elasticsearch.action.admin.cluster.state.ClusterStateResponse;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.client.ClusterAdminClient;
-import org.elasticsearch.client.Requests;
-import org.elasticsearch.cluster.metadata.AliasMetaData;
-import org.elasticsearch.cluster.metadata.IndexMetaData;
-import org.elasticsearch.cluster.metadata.MetaData;
-import org.elasticsearch.index.query.QueryBuilders;
+import org.apache.http.util.EntityUtils;
+import org.elasticsearch.client.Request;
+import org.elasticsearch.client.Response;
+import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate.ClientCallback;
+import org.springframework.data.elasticsearch.core.IndexOperations;
+import org.springframework.data.elasticsearch.core.document.Document;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.AliasQuery;
-import org.springframework.data.elasticsearch.core.query.DeleteQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.UpdateQuery;
-import org.springframework.data.elasticsearch.core.query.UpdateQueryBuilder;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.hp.core.common.exceptions.CommonException;
 import com.hp.core.common.utils.DateUtil;
 import com.hp.core.database.bean.SQLBuilder;
 import com.hp.core.database.bean.SQLBuilders;
 import com.hp.core.elasticsearch.bean.IndexInfo;
-import com.hp.core.elasticsearch.constant.SearchIndexConstant;
 import com.hp.core.elasticsearch.factory.IndexInfoFactory;
 import com.hp.core.elasticsearch.index.IESIndexService;
 import com.hp.core.mybatis.mapper.BaseMapper;
@@ -57,9 +53,10 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 	
 	@Autowired
 	protected BaseMapper<T, Integer> baseMapper;
-	
 	@Autowired
-	protected ElasticsearchTemplate elasticsearchTemplate;
+	protected ElasticsearchRestTemplate elasticsearchRestTemplate;
+	@Autowired
+	protected ElasticsearchRepository<E, Integer> elasticsearchRepository;
 	
 	/**
 	 * 根据数据库对象，获取ES对象
@@ -85,9 +82,9 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 	/**
 	 * 插入数据到新的索引
 	 * @param indexInfo
-	 * @param newIndexName
+	 * @param newIndexCoordinates
 	 */
-	public abstract void insertIntoES(IndexInfo indexInfo, String newIndexName);
+	public abstract void insertIntoES(IndexInfo indexInfo, IndexCoordinates newIndexCoordinates);
 	
 	/**
 	 * 根据id，批量查询
@@ -107,11 +104,12 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 			return;
 		}
 		
+		//从数据库查询最新数据
 		List<T> list = getByIds(ids);
 		if (CollectionUtils.isEmpty(list)) {
 			return;
 		}
-		
+
 		IndexInfo indexInfo = getIndexInfo();
 		
 		List<UpdateQuery> queries = getUpdateQueryDataListByDataList(list, indexInfo);
@@ -119,7 +117,7 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 			return;
 		}
 
-		elasticsearchTemplate.bulkUpdate(queries);
+		elasticsearchRestTemplate.bulkUpdate(queries, getIndexCoordinatesByIndexName(indexInfo.getAlias()));
 	}
 
 	@Override
@@ -132,15 +130,14 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 		if (CollectionUtils.isEmpty(list)) {
 			return;
 		}
-
+		
 		IndexInfo indexInfo = getIndexInfo();
 
-		List<IndexQuery> queries = getIndexQueryDataListByDataList(list, indexInfo.getAlias(), indexInfo.getType());
+		List<IndexQuery> queries = getIndexQueryDataListByDataList(list);
 		if (CollectionUtils.isEmpty(queries)) {
 			return;
 		}
-
-		elasticsearchTemplate.bulkIndex(queries);
+		elasticsearchRestTemplate.bulkIndex(queries, getIndexCoordinatesByIndexName(indexInfo.getAlias()));
 	}
 	
 	@Override
@@ -150,12 +147,11 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 		}
 
 		IndexInfo indexInfo = getIndexInfo();
-
-		DeleteQuery deleteQuery = new DeleteQuery();
-		deleteQuery.setIndex(indexInfo.getAlias());
-		deleteQuery.setType(indexInfo.getType());
-		deleteQuery.setQuery(QueryBuilders.termsQuery("id", ids));
-		elasticsearchTemplate.delete(deleteQuery);
+		
+		IndexCoordinates indexCoordinates = getIndexCoordinatesByIndexName(indexInfo.getAlias());
+		for (Integer id : ids) {
+			elasticsearchRestTemplate.delete(id.toString(), indexCoordinates);
+		}
 	}
 
 	/**
@@ -197,16 +193,10 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 		if (e == null) {
 			return null;
 		}
-		IndexRequest indexRequest = new IndexRequest(indexInfo.getAlias(), indexInfo.getType(), getId(e));
 		
-		indexRequest.source(JSON.parseObject(JSON.toJSONString(e)));
-		return new UpdateQueryBuilder()
-				.withId(getId(e))
-				.withIndexName(indexInfo.getAlias())
-				.withType(indexInfo.getType())
-				.withIndexRequest(indexRequest)
-				.withClass(indexInfo.getMappingClass())
-				.withDoUpsert(true)
+		return UpdateQuery.builder(getId(e))
+				.withDocAsUpsert(true)
+				.withDocument(Document.parse(JSON.toJSONString(e)))
 				.build();
 	}
 	
@@ -236,6 +226,7 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 		long stime = DateUtil.getCurrentTimeMilliSeconds();
 		//获取索引名称
 		IndexInfo indexInfo = getIndexInfo();
+		
 		log.info("start reBuildIndex with indexInfo={}", indexInfo);
 		if (indexInfo == null || indexInfo.isEmpty()) {
 			log.warn("reBuildIndex error. with indexName is empty.");
@@ -243,43 +234,43 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 		}
 		
 		//创建新索引
-		String newIndexName = createNewIndex(indexInfo);
-		if (StringUtils.isEmpty(newIndexName)) {
+		IndexCoordinates newIndexCoordinates = createNewIndex(indexInfo);
+		if (newIndexCoordinates == null) {
 			throw new CommonException(500, "reBuildIndex error.");
 		}
-		
+		IndexOperations newIndexOperations = elasticsearchRestTemplate.indexOps(newIndexCoordinates);
 		try {
 			//插入新数据到新的索引
-			insertIntoES(indexInfo, newIndexName);
+			insertIntoES(indexInfo, newIndexCoordinates);
 			log.info("insertIntoES success. with indexInfo={}", indexInfo);
 			
 			//获取关联该别名的索引
-			Set<String> indexList = getIndexByAlias(indexInfo.getAlias());
+			List<String> oldIndexList = getIndexByAlias(indexInfo.getAlias());
 			
 			//为新索引添加该别名
-			boolean result = addAlias(newIndexName, indexInfo.getAlias());
+			boolean result = addAlias(newIndexOperations, indexInfo.getAlias());
 			
 			if (!result) {
 				//如果添加索引别名失败，则删除新建的索引
 				log.error("reBuildIndex error. with indexInfo={}", indexInfo);
-				deleteIndex(newIndexName);
+				deleteIndex(newIndexOperations);
 			} else {
 				//成功的话，删除旧的索引
-				if (CollectionUtils.isNotEmpty(indexList)) {
-					for (String index : indexList) {
-						deleteIndex(index);
+				if (CollectionUtils.isNotEmpty(oldIndexList)) {
+					for (String oldIndex : oldIndexList) {
+						deleteIndex(elasticsearchRestTemplate.indexOps(IndexCoordinates.of(oldIndex)));
 					}
 				}
-				log.info("reBuildIndex success. with indexInfo={}, indexName={}", indexInfo, newIndexName);
+				log.info("reBuildIndex success. with indexInfo={}, newIndexCoordinates={}", indexInfo, newIndexCoordinates);
 			}
 		} catch (Exception e) {
-			log.error("reBuildIndex error. with indexInfo={}, newIndexName={}", indexInfo, newIndexName, e);
+			log.error("reBuildIndex error. with indexInfo={}, newIndexCoordinates={}", indexInfo, newIndexCoordinates, e);
 			//删除新建的索引
-			deleteIndex(newIndexName);
+			deleteIndex(newIndexOperations);
 			throw e;
 		}
 		long etime = DateUtil.getCurrentTimeMilliSeconds();
-		log.info("reBuildIndex success. width indexName={}, cost time={} seconds", newIndexName, (etime - stime) / 1000);
+		log.info("reBuildIndex success. width newIndexCoordinates={}, cost time={} seconds", newIndexCoordinates, (etime - stime) / 1000);
 	}
 	
 	/**
@@ -287,13 +278,17 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 	 * @param indexInfo
 	 * @return
 	 */
-	private String createNewIndex(IndexInfo indexInfo) {
+	private IndexCoordinates createNewIndex(IndexInfo indexInfo) {
 		//创建新的索引
 		String newIndexName = indexInfo.getIndexName() + "_index_" + DateUtil.getToday("yyyyMMddHHmmss");
+		IndexCoordinates newIndex = IndexCoordinates.of(newIndexName);
+		IndexOperations newIndexOperations = elasticsearchRestTemplate.indexOps(newIndex);
 		try {
-			Map setting = elasticsearchTemplate.getSetting(indexInfo.getMappingClass());
-
-			Map setting1 = new TreeMap();
+			//Map<String, Object> setting = elasticsearchRestTemplate.indexOps(IndexCoordinates.of(indexInfo.getIndexName())).getSettings();
+			//Map<String, Object> setting = elasticsearchRestTemplate.indexOps(indexInfo.getMappingClass()).getSettings();
+			//Map<String, Object> setting = indexInfo.getIndexOperations(elasticsearchRestTemplate).getSettings();
+			//Document newDocument = Document.from(setting);
+			/*Map setting1 = new TreeMap();
 			for(Object e : setting.entrySet()){
 				if(!(e instanceof Map.Entry)){
 					continue;
@@ -304,17 +299,18 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 				if(!ArrayUtils.contains(SearchIndexConstant.INDEX_SETTINGS_EXCEPT_KEYS, e1.getKey())){
 					setting1.put(e1.getKey(), e1.getValue());
 				}
-			}
-
-			boolean result1 = elasticsearchTemplate.createIndex(newIndexName, setting1);
-			boolean result2 = elasticsearchTemplate.putMapping(newIndexName, indexInfo.getType(), elasticsearchTemplate.getMapping(indexInfo.getMappingClass()));
+			}*/
+			boolean result1 = newIndexOperations.create();
+			Document newDocument = newIndexOperations.createMapping(indexInfo.getMappingClass());
+			boolean result2 = newIndexOperations.putMapping(newDocument);
+			//boolean result2 = elasticsearchRestTemplate.putMapping(newIndexName, indexInfo.getType(), elasticsearchTemplate.getMapping(indexInfo.getMappingClass()));
 			if (result1 && result2) {
 				log.info("createNewIndex success with indexInfo={}, indexName={}", indexInfo, newIndexName);
-				return newIndexName;
+				return newIndex;
 			}
 		} catch (Exception e) {
 			log.error("createNewIndex error. with indexInfo={}", indexInfo, e);
-			deleteIndex(newIndexName);
+			deleteIndex(newIndexOperations);
 		}
 		return null;
 	}
@@ -322,11 +318,9 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 	/**
 	 * 获取es的list对象
 	 * @param list
-	 * @param newIndexName
-	 * @param type
 	 * @return
 	 */
-	protected List<IndexQuery> getIndexQueryDataListByDataList(List<T> list, String newIndexName, String type) {
+	protected List<IndexQuery> getIndexQueryDataListByDataList(List<T> list) {
 		if (CollectionUtils.isEmpty(list)) {
 			return null;
 		}
@@ -343,7 +337,7 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 			if (e == null) {
 				continue;
 			}
-			indexQuery = getIndexQuery(e, newIndexName, type);
+			indexQuery = getIndexQuery(e);
 			if (indexQuery == null) {
 				continue;
 			}
@@ -355,20 +349,43 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 	/**
 	 * 获取IndexQuery
 	 * @param e
-	 * @param indexName
-	 * @param type
 	 * @return
 	 */
-	private IndexQuery getIndexQuery(E e, String indexName, String type) {
+	private IndexQuery getIndexQuery(E e) {
 		if (e == null) {
 			return null;
 		}
 		return new IndexQueryBuilder()
 				.withId(getId(e))
-				.withIndexName(indexName)
 				.withObject(e)
-				.withType(type)
 				.build();
+	}
+	
+	/**
+	 * 查询关联该别名的索引名称
+	 * @param alias
+	 * @return
+	 */
+	private List<String> getIndexNameByAlias(String alias) {
+		return elasticsearchRestTemplate.execute(new ClientCallback<List<String>>() {
+			@Override
+			public List<String> doWithClient(RestHighLevelClient client) throws IOException {
+				RestClient restClient = client.getLowLevelClient();
+				Response response = restClient.performRequest(new Request("GET", '/' + alias + "/_alias/*"));
+				String aliasResponse = EntityUtils.toString(response.getEntity());
+				if (StringUtils.isEmpty(aliasResponse)) {
+					return null;
+				}
+				
+				JSONObject root = JSON.parseObject(aliasResponse);
+				List<String> list = new ArrayList<>(root.size());
+				for (Entry<String, Object> entry : root.entrySet()) {
+					list.add(entry.getKey());
+				}
+				
+				return list;
+			}
+		});
 	}
 	
 	/**
@@ -376,51 +393,40 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 	 * @param alias
 	 * @return
 	 */
-	private Set<String> getIndexByAlias(String alias) {
-		ClusterAdminClient c = elasticsearchTemplate.getClient().admin().cluster();
-		ActionFuture<ClusterStateResponse> a = c.state(Requests.clusterStateRequest().clear().metaData(true));
-		ClusterStateResponse response = a.actionGet();
-		MetaData md = response.getState().getMetaData();
-		String realIndexName = null;
-		Set<String> indexNameList = new HashSet<>();
-		for (IndexMetaData imd : md) {
-			realIndexName = imd.getIndex().getName();
-			for (AliasMetaData amd : imd.getAliases().values().toArray(AliasMetaData.class)) {
-				if (alias.equals(amd.getAlias())) {
-					indexNameList.add(realIndexName);
-				}
-			}
-			
-		}
-		return indexNameList;
+	private List<String> getIndexByAlias(String alias) {
+		return getIndexNameByAlias(alias);
 	}
+	
+	
 	
 	/**
 	 * 添加新索引到该别名
-	 * @param indexName
+	 * @param newIndexOperations
 	 * @param alias
 	 * @return
 	 */
-	private boolean addAlias(String indexName, String alias) {
-		if (StringUtils.isEmpty(indexName) || StringUtils.isEmpty(alias)) {
-			log.warn("addAlias error. with indexName or alias is empty.. with indexName={}, alias={}", indexName, alias);
+	private boolean addAlias(IndexOperations newIndexOperations, String alias) {
+		if (newIndexOperations == null || StringUtils.isEmpty(alias)) {
+			log.warn("addAlias error. with indexName or alias is empty.. with newIndexOperations={}, alias={}", newIndexOperations, alias);
 			return false;
 		}
-		AliasQuery aliasQuery = new AliasQuery();
-		aliasQuery.setAliasName(alias);
-		aliasQuery.setIndexName(indexName);
-		return elasticsearchTemplate.addAlias(aliasQuery);
+		AliasQuery aliasQuery = new AliasQuery(alias);
+		return newIndexOperations.addAlias(aliasQuery);
 	}
 	
 	/**
 	 * 删除索引
-	 * @param indexName
+	 * @param newIndexOperations
 	 */
-	private void deleteIndex(String indexName) {
-		if (!elasticsearchTemplate.indexExists(indexName)) {
+	private void deleteIndex(IndexOperations newIndexOperations) {
+		if (!newIndexOperations.exists()) {
 			return;
 		}
-		elasticsearchTemplate.deleteIndex(indexName);
+		newIndexOperations.delete();
+	}
+	
+	private IndexCoordinates getIndexCoordinatesByIndexName(String indexName) {
+		return IndexCoordinates.of(indexName);
 	}
 
 }

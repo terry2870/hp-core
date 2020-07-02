@@ -17,9 +17,11 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.elasticsearch.search.suggest.Suggest;
 import org.elasticsearch.search.suggest.SuggestBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.ScriptField;
@@ -44,7 +46,7 @@ import com.hp.core.elasticsearch.search.IESSearchService;
 public abstract class AbstGeneralSearchServiceImpl<REQUEST extends BaseSearchRequest, RESPONSE> implements IESSearchService<REQUEST, RESPONSE> {
 	
 	@Autowired
-	private ElasticsearchTemplate elasticsearchTemplate;
+	private ElasticsearchRestTemplate elasticsearchRestTemplate;
 	
 	/**
 	 * 添加另外的查询条件
@@ -123,12 +125,8 @@ public abstract class AbstGeneralSearchServiceImpl<REQUEST extends BaseSearchReq
 			//查询条件检查失败
 			return null;
 		}
-
-		IndexInfo indexInfo = getIndexInfo();
-
-		NativeSearchQueryBuilder searchQuery = new NativeSearchQueryBuilder()
-				.withIndices(indexInfo.getAlias())
-				.withTypes(indexInfo.getType());
+		
+		NativeSearchQueryBuilder searchQuery = new NativeSearchQueryBuilder();
 
 		//查询条件
 		withQuery(request, searchQuery);
@@ -146,6 +144,10 @@ public abstract class AbstGeneralSearchServiceImpl<REQUEST extends BaseSearchReq
 	@Override
 	public PageResponse<RESPONSE> search(REQUEST request, PageRequest page, List<OrderBy> sortList) {
 		PageResponse<RESPONSE> resp = new PageResponse<>(page.getPage(), page.getLimit());
+		
+		IndexInfo indexInfo = getIndexInfo();
+		IndexCoordinates indexCoordinates = IndexCoordinates.of(indexInfo.getAlias());
+		
 		NativeSearchQueryBuilder searchQuery = searchQueryBuilder(request, page, sortList);
 		if(searchQuery == null){
 			return resp;
@@ -158,18 +160,25 @@ public abstract class AbstGeneralSearchServiceImpl<REQUEST extends BaseSearchReq
 		withSort(request, searchQuery, sortList);
 		
 		//查询
-		Page<RESPONSE> result = elasticsearchTemplate.queryForPage(searchQuery.build(), getResponseClass());
+		SearchHits<RESPONSE> result = elasticsearchRestTemplate.search(searchQuery.build(), getResponseClass(), indexCoordinates);
 		if (result == null) {
 			return resp;
 		}
 		
 		//总数
-		resp.setTotal((int) result.getTotalElements());
+		resp.setTotal((int) result.getTotalHits());
+		
+		if (resp.getTotal() == 0) {
+			return resp;
+		}
 		
 		//列表
-		List<RESPONSE> list = result.getContent();
-		dealResponseList(request, list);
-		resp.setRows(list);
+		List<SearchHit<RESPONSE>> hitList = result.getSearchHits();
+		
+		for (SearchHit<RESPONSE> hit : hitList) {
+			resp.addRow(hit.getContent());
+		}
+		
 		return resp;
 	}
 
@@ -180,7 +189,7 @@ public abstract class AbstGeneralSearchServiceImpl<REQUEST extends BaseSearchReq
 			return 0;
 		}
 
-		return elasticsearchTemplate.count(searchQuery.build());
+		return elasticsearchRestTemplate.count(searchQuery.build(), Long.class);
 	}
 
 	@Override
@@ -192,8 +201,9 @@ public abstract class AbstGeneralSearchServiceImpl<REQUEST extends BaseSearchReq
 		}
 
 		IndexInfo indexInfo = getIndexInfo();
+		IndexCoordinates indexCoordinates = IndexCoordinates.of(indexInfo.getAlias());
 
-		SearchResponse searchResponse = elasticsearchTemplate.suggest(suggestBuilder, indexInfo.getAlias());
+		SearchResponse searchResponse = elasticsearchRestTemplate.suggest(suggestBuilder, indexCoordinates);
 		if(searchResponse == null || !RestStatus.OK.equals(searchResponse.status())){
 			return null;
 		}

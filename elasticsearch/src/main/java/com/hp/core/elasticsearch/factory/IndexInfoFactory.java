@@ -51,19 +51,19 @@ public class IndexInfoFactory {
 	 * key		索引实现类的className
 	 * value	索引信息
 	 */
-	private static Map<String, IndexInfo> classIndexInfoMap = new ConcurrentHashMap<>();
+	private static volatile Map<String, IndexInfo> classIndexInfoMap = new ConcurrentHashMap<>();
 	
 	/**
 	 * 存放所有类，对应的索引信息
 	 * key		索引名称
 	 * value	索引信息
 	 */
-	private static Map<String, IndexInfo> indexInfoMap = new ConcurrentHashMap<>();
+	private static volatile Map<String, IndexInfo> indexInfoMap = new ConcurrentHashMap<>();
 	
 	/**
 	 * 存放所有的索引信息
 	 */
-	private static List<IndexInfo> indexInfoList = Collections.synchronizedList(new ArrayList<>());
+	private static volatile List<IndexInfo> indexInfoList = Collections.synchronizedList(new ArrayList<>());
 		
 	/**
 	 * 根据索引名称，获取索引信息
@@ -155,7 +155,9 @@ public class IndexInfoFactory {
 			log.warn("getIndexInfo error. class must be with annotation with Document");
 			throw new CommonException(500, "class must be with annotation with Document");
 		}
-		return new IndexInfo(document.indexName(), SearchIndexConstant.getType(document.indexName()), SearchIndexConstant.getAlias(document.indexName()), dalModelClassName, mappingClassName);
+		
+		IndexInfo index =  new IndexInfo(document.indexName(), SearchIndexConstant.getType(document.indexName()), SearchIndexConstant.getAlias(document.indexName()), dalModelClassName, mappingClassName);
+		return index;
 	}
 	
 }

@@ -20,6 +20,11 @@ public class SQLProviderConstant {
 	public static final String SQL_BUILD_ALIAS = "build";
 	
 	/**
+	 * sql构造器
+	 */
+	public static final String SQL_BUILDS_ALIAS = "builds";
+	
+	/**
 	 * 传递的分页对象
 	 */
 	public static final String PAGE_OBJECT_ALIAS = "page";
