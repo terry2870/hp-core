@@ -17,8 +17,8 @@ import com.hp.core.common.utils.DateUtil;
 import com.hp.core.common.utils.MD5Util;
 import com.hp.core.database.bean.PageModel;
 import com.hp.core.database.bean.PageRequest;
-import com.hp.core.database.bean.SQLBuilder;
 import com.hp.core.database.bean.SQLBuilders;
+import com.hp.core.database.bean.SQLWhere;
 import com.hp.core.webjars.convert.SysUserConvert;
 import com.hp.core.webjars.dal.ISysUserDAO;
 import com.hp.core.webjars.dal.model.SysUser;
@@ -79,13 +79,13 @@ public class SysUserServiceImpl implements ISysUserService {
 		log.info("querySysUserPageList with request={}", request);
 		PageModel page = pageRequest.toPageModel();
 
-		SQLBuilder[] builder = new SQLBuilders()
+		List<SQLWhere> whereList = SQLWhere.builder()
 				.like("login_name", request.getLoginName())
 				.like("user_name", request.getUserName())
 				.build()
 				;
 		//查询总数
-		int total = sysUserDAO.selectCount(builder);
+		int total = sysUserDAO.selectCount(whereList);
 		if (total == 0) {
 			log.warn("querySysUserPageList error. with total=0. with request={}", request);
 			return null;
@@ -95,8 +95,12 @@ public class SysUserServiceImpl implements ISysUserService {
 		resp.setPageSize(pageRequest.getRows());
 		resp.setTotal(total);
 
+		SQLBuilders builders = SQLBuilders.emptyBuilder()
+				.withWhere(whereList)
+				.withPage(page)
+				;
 		//查询列表
-		List<SysUser> list = sysUserDAO.selectPageList(builder, page);
+		List<SysUser> list = sysUserDAO.selectList(builders);
 		if (CollectionUtils.isEmpty(list)) {
 			log.warn("querySysUserPageList error. with list is empty. with request={}", request);
 			return resp;
@@ -189,13 +193,15 @@ public class SysUserServiceImpl implements ISysUserService {
 	 * @param request
 	 */
 	private void saveSysUserCheck(SysUserRequestBO request) {
-		//检查登录名		
-		SQLBuilder[] builder = new SQLBuilders()
-				.like("login_name", request.getLoginName())
-				.build()
+		//检查登录名
+		SQLBuilders builders = SQLBuilders.emptyBuilder()
+				.withWhere(SQLWhere.builder()
+						.like("login_name", request.getLoginName())
+						.build()
+						)
 				;
 		
-		SysUser user = sysUserDAO.selectOne(builder);
+		SysUser user = sysUserDAO.selectOne(builders);
 		if (user != null) {
 			if (request.getId() == null || request.getId().intValue() == 0) {
 				//新增
@@ -211,12 +217,13 @@ public class SysUserServiceImpl implements ISysUserService {
 		}
 		
 		//检查用户名
-		builder = new SQLBuilders()
-				.like("user_name", request.getUserName())
-				.build()
+		builders = SQLBuilders.emptyBuilder()
+				.withWhere(SQLWhere.builder()
+						.like("user_name", request.getUserName())
+						.build()
+						)
 				;
-		
-		user = sysUserDAO.selectOne(builder);
+		user = sysUserDAO.selectOne(builders);
 		if (user != null) {
 			if (request.getId() == null || request.getId().intValue() == 0) {
 				//新增

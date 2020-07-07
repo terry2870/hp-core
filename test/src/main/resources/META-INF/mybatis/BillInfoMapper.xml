@@ -8,4 +8,9 @@
 		select * from bill_info where id=#{id}
 	</select>
 
+	<select id="select" resultMap="BaseResultMap">
+		select * from bill_info
+		where id=#{a.b.id}
+	</select>
+
 </mapper>

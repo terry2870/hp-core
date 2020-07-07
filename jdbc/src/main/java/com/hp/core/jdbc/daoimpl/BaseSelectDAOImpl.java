@@ -5,91 +5,88 @@ package com.hp.core.jdbc.daoimpl;
 
 import java.util.List;
 
-import com.hp.core.database.bean.OrderBy;
-import com.hp.core.database.bean.PageModel;
-import com.hp.core.database.bean.SQLBuilder;
+import com.hp.core.database.bean.SQLBuilders;
+import com.hp.core.database.bean.SQLWhere;
 import com.hp.core.database.dao.IBaseSelectDAO;
 
 /**
  * @author huangping
  * 2018年12月10日
  */
-public class BaseSelectDAOImpl<T, PK> implements IBaseSelectDAO<T, PK> {
+public class BaseSelectDAOImpl<MODEL, PK> implements IBaseSelectDAO<MODEL, PK> {
 
 	@Override
-	public PK selectMaxId(SQLBuilder... builder) {
+	public PK selectCount(List<SQLWhere> whereList) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public PK selectMinId(SQLBuilder... builder) {
+	public List<MODEL> selectList(SQLBuilders builders) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<T> selectListByRange(PK minId, PK maxId, SQLBuilder... builder) {
+	public MODEL selectOne(SQLBuilders builders) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public PK selectCount(SQLBuilder... builder) {
+	public PK selectMaxId(SQLWhere... where) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public T selectByPrimaryKey(PK id) {
+	public PK selectMinId(SQLWhere... where) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<T> selectByPrimaryKeys(List<PK> primaryKeyIdList) {
+	public List<MODEL> selectListByRange(PK minId, PK maxId, SQLBuilders... builders) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<T> selectByPrimaryKeysWithInSort(List<PK> primaryKeyIdList) {
+	public List<MODEL> selectListByLargeThanId(PK largeThanId, SQLBuilders... builders) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<T> selectList(SQLBuilder[] builder, OrderBy... orderBy) {
+	public MODEL selectByPrimaryKey(PK id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<T> selectPageList(SQLBuilder[] builder, PageModel page) {
+	public List<MODEL> selectByPrimaryKeys(List<PK> primaryKeyIdList) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public T selectOne(SQLBuilder... builder) {
+	public List<MODEL> selectByPrimaryKeysWithInSort(List<PK> primaryKeyIdList) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<T> selectPageListLargeThanId(PK largeThanId, PageModel page, SQLBuilder... builder) {
+	public <T> List<T> selectListForTargetClass(SQLBuilders builders, Class<T> clazz) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<PK> selectPrimaryKeyList(SQLBuilder[] builder, OrderBy... orderBy) {
+	public <T> T selectOneForTargetClass(SQLBuilders builders, Class<T> clazz) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public List<PK> selectPrimaryKeyPageList(SQLBuilder[] builder, PageModel page) {
-		// TODO Auto-generated method stub
-		return null;
-	}}
+	
+
+}

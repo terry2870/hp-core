@@ -10,26 +10,28 @@ import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 
 import com.hp.core.database.bean.PageModel;
-import com.hp.core.database.bean.SQLBuilder;
+import com.hp.core.database.bean.SQLBuilders;
 import com.hp.core.elasticsearch.bean.IndexInfo;
 
 /**
  * 使用查询大于某id的再pagel imit分页方式，来创建索引
- * Created by frank.sang on 2019/5/29.
+ * @author huangping
+ * Jul 7, 2020
+ * @param <DB_MODEL>
+ * @param <ES_MODEL>
  */
-public abstract class AbstLargeThanIdIndexServiceImpl<T, E> extends AbstSimpleIndexServiceImpl<T, E> {
+public abstract class AbstLargeThanIdIndexServiceImpl<DB_MODEL, ES_MODEL> extends AbstSimpleIndexServiceImpl<DB_MODEL, ES_MODEL> {
     private static Logger log = LoggerFactory.getLogger(AbstLargeThanIdIndexServiceImpl.class);
 
     /**
-     * 获取
-     *
-     * @param param
+     * 获取比这个id大的数据
+     * @param builders
      * @param page
      * @param largeThanId
      * @return
      */
-    protected List<T> getDataListFromDB(SQLBuilder[] builders, PageModel page, Integer largeThanId) {
-        return baseMapper.selectPageListLargeThanId(largeThanId, page);
+    protected List<DB_MODEL> getDataListFromDB(SQLBuilders builders, PageModel page, Integer largeThanId) {
+        return baseMapper.selectListByLargeThanId(largeThanId, builders);
     }
 
     /**
@@ -37,7 +39,7 @@ public abstract class AbstLargeThanIdIndexServiceImpl<T, E> extends AbstSimpleIn
      *
      * @return
      */
-    protected Integer getDbPrimaryKey(T t) {
+    protected Integer getDbPrimaryKey(DB_MODEL t) {
         try {
             String value = BeanUtils.getProperty(t, "id");
             return Integer.valueOf(value);
@@ -48,14 +50,14 @@ public abstract class AbstLargeThanIdIndexServiceImpl<T, E> extends AbstSimpleIn
 
     @Override
     public void insertIntoES(IndexInfo indexInfo, IndexCoordinates newIndexCoordinates) {
-    	SQLBuilder[] builders = getSQLBuilder();
+    	SQLBuilders builders = getSQLBuilders();
 
         int size = (int) getSize();
         int currentPage = 1;
 
         //永远都是查第一页
         PageModel page = PageModel.of(currentPage, size);
-        List<T> list;
+        List<DB_MODEL> list;
         List<IndexQuery> queries;
         Integer largeThanId = 0;
         while (true){
@@ -88,8 +90,8 @@ public abstract class AbstLargeThanIdIndexServiceImpl<T, E> extends AbstSimpleIn
         };
     }
 
-    private Integer refreshLargeThanId(List<T> list) {
-        T t;
+    private Integer refreshLargeThanId(List<DB_MODEL> list) {
+    	DB_MODEL t;
         int largeThanId;
         for (int i = list.size() - 1; i >= 0; i--) {
             t = list.get(i);

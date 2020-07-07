@@ -8,7 +8,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.Param;
 
-import com.hp.core.database.bean.SQLBuilder;
+import com.hp.core.database.bean.SQLWhere;
 import com.hp.core.database.dao.IBaseDeleteDAO;
 import com.hp.core.mybatis.constant.SQLProviderConstant;
 import com.hp.core.mybatis.provider.BaseDeleteSQLProvider;
@@ -19,7 +19,7 @@ import com.hp.core.mybatis.provider.BaseDeleteSQLProvider;
  * @author huangping
  * 2018年5月29日
  */
-public interface BaseDeleteMapper<T, PK> extends IBaseDeleteDAO<T, PK> {
+public interface BaseDeleteMapper<MODEL, PK> extends IBaseDeleteDAO<MODEL, PK> {
 
 	/**
 	 * 根据主键删除
@@ -43,13 +43,13 @@ public interface BaseDeleteMapper<T, PK> extends IBaseDeleteDAO<T, PK> {
 	 * @return
 	 */
 	@DeleteProvider(type = BaseDeleteSQLProvider.class, method = "deleteByParams")
-	public Integer deleteByParams(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) T target);
+	public Integer deleteByParams(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) MODEL target);
 	
 	/**
-	 * 根据传入的sqlbuild，删除
-	 * @param target
+	 * 根据传入的条件删除
+	 * @param whereList
 	 * @return
 	 */
 	@DeleteProvider(type = BaseDeleteSQLProvider.class, method = "deleteByBuilder")
-	public Integer deleteByBuilder(@Param(SQLProviderConstant.SQL_BUILD_ALIAS) SQLBuilder... builder);
+	public Integer deleteByBuilder(@Param(SQLProviderConstant.SQL_WHERE_ALIAS) List<SQLWhere> whereList);
 }

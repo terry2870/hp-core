@@ -15,8 +15,8 @@ import com.hp.core.common.exceptions.CommonException;
 import com.hp.core.common.utils.DateUtil;
 import com.hp.core.database.bean.PageModel;
 import com.hp.core.database.bean.PageRequest;
-import com.hp.core.database.bean.SQLBuilder;
 import com.hp.core.database.bean.SQLBuilders;
+import com.hp.core.database.bean.SQLWhere;
 import com.hp.core.webjars.convert.SysRoleConvert;
 import com.hp.core.webjars.dal.ISysRoleDAO;
 import com.hp.core.webjars.dal.model.SysRole;
@@ -65,12 +65,11 @@ public class SysRoleServiceImpl implements ISysRoleService {
 		log.info("querySysRolePageList with request={}", request);
 		PageModel page = pageRequest.toPageModel();
 
-		SQLBuilder[] builder = new SQLBuilders()
+		List<SQLWhere> whereList = SQLWhere.builder()
 				.eq("status", request.getStatus())
-				.build()
-				;
+				.build();
 		//查询总数
-		int total = sysRoleDAO.selectCount(builder);
+		int total = sysRoleDAO.selectCount(whereList);
 		if (total == 0) {
 			log.warn("querySysRolePageList error. with total=0. with request={}", request);
 			return null;
@@ -80,8 +79,12 @@ public class SysRoleServiceImpl implements ISysRoleService {
 		resp.setPageSize(pageRequest.getRows());
 		resp.setTotal(total);
 
+		SQLBuilders builders = SQLBuilders.emptyBuilder()
+				.withWhere(whereList)
+				.withPage(page)
+				;
 		//查询列表
-		List<SysRole> list = sysRoleDAO.selectPageList(builder, page);
+		List<SysRole> list = sysRoleDAO.selectList(builders);
 		if (CollectionUtils.isEmpty(list)) {
 			log.warn("querySysRolePageList error. with list is empty. with request={}", request);
 			return resp;
@@ -123,9 +126,11 @@ public class SysRoleServiceImpl implements ISysRoleService {
 	 * @param request
 	 */
 	public void saveSysRoleCheck(SysRoleRequestBO request) {
-		SysRole role = sysRoleDAO.selectOne(new SQLBuilders()
-				.eq("role_name", request.getRoleName())
-				.build()
+		SysRole role = sysRoleDAO.selectOne(SQLBuilders.emptyBuilder()
+				.withWhere(SQLWhere.builder()
+						.eq("role_name", request.getRoleName())
+						.build()
+						)
 				);
 		if (role == null) {
 			return;

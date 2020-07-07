@@ -3,12 +3,15 @@
  */
 package com.hp.core.mybatis.provider;
 
-import org.apache.commons.lang3.ArrayUtils;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.core.database.bean.SQLBuilder;
+import com.hp.core.database.bean.SQLBuilders;
+import com.hp.core.database.bean.SQLWhere;
 import com.hp.core.mybatis.constant.SQLProviderConstant;
 
 /**
@@ -19,23 +22,26 @@ public class SQLBuilderHelper {
 
 	private static Logger log = LoggerFactory.getLogger(SQLBuilderHelper.class);
 	
+	private static final String SQL_WHERE_VALUE_PREFIX = SQLProviderConstant.SQL_BUILDS_ALIAS + ".whereList";
+	
 	/**
 	 * 根据builds，获取查询条件
-	 * @param builders
+	 * @param whereList
 	 * @return
 	 */
-	public static String getSQLBySQLBuild(SQLBuilder[] builders) {
-		if (ArrayUtils.isEmpty(builders)) {
+	public static String getSQLBySQLBuild(SQLBuilders builders) {
+		List<SQLWhere> whereList = builders.getWhereList();
+		if (CollectionUtils.isEmpty(whereList)) {
 			return StringUtils.EMPTY;
 		}
 		
 		StringBuilder sb = new StringBuilder();
 		try {
-			for (int i = 0; i < builders.length; i++) {
-				sb.append(getSQLBySQLBuild(builders[i], i));
+			for (int i = 0; i < whereList.size(); i++) {
+				sb.append(getSQL(whereList.get(i), i, StringUtils.isEmpty(builders.getSqlWherePrefix()) ? SQL_WHERE_VALUE_PREFIX : builders.getSqlWherePrefix()));
 			}
 		} catch (Exception e) {
-			log.error("get setSQLBySQLBuilds sql error. with builders is {}", builders, e);
+			log.error("get setSQLBySQLBuilds sql error. with whereList is {}", whereList, e);
 		}
 		return sb.toString();
 	}
@@ -46,84 +52,84 @@ public class SQLBuilderHelper {
 	 * @param sql
 	 * @param index
 	 */
-	public static String getSQLBySQLBuild(SQLBuilder builder, int index) {
-		if (checkNull(builder)) {
+	private static String getSQL(SQLWhere where, int index, String sqlWherePrefix) {
+		if (checkNull(where.getValue())) {
 			return StringUtils.EMPTY;
 		}
 		
 		StringBuilder sql = new StringBuilder();
-		switch (builder.getOperator()) {
+		switch (where.getOperator()) {
 		case EQUALS:
 			sql.append(" AND ")
-			.append(builder.getField())
+			.append(where.getField())
 			.append(" = #{")
-			.append(SQLProviderConstant.SQL_BUILD_ALIAS)
+			.append(sqlWherePrefix)
 			.append("[").append(index).append("].value}");
 			break;
 		case NOT_EQUALS:
 			sql.append(" AND ")
-			.append(builder.getField())
+			.append(where.getField())
 			.append(" != #{")
-			.append(SQLProviderConstant.SQL_BUILD_ALIAS)
+			.append(sqlWherePrefix)
 			.append("[").append(index).append("].value}");
 			break;
 		case LIKE:
 			sql.append(" AND INSTR(")
-			.append(builder.getField())
+			.append(where.getField())
 			.append(", #{")
-			.append(SQLProviderConstant.SQL_BUILD_ALIAS)
+			.append(sqlWherePrefix)
 			.append("[").append(index).append("].value}) > 0");
 			break;
 		case IN:
 			sql.append(" AND ")
-			.append(builder.getField())
-			.append(" IN (").append(builder.getValue()).append(")");
+			.append(where.getField())
+			.append(" IN (").append(where.getValue()).append(")");
 			break;
 		case NOT_IN:
 			sql.append(" AND ")
-			.append(builder.getField())
-			.append(" NOT IN (").append(builder.getValue()).append(")");
+			.append(where.getField())
+			.append(" NOT IN (").append(where.getValue()).append(")");
 			break;
 		case GT:
 			sql.append(" AND ")
-			.append(builder.getField())
+			.append(where.getField())
 			.append(" > #{")
-			.append(SQLProviderConstant.SQL_BUILD_ALIAS)
+			.append(sqlWherePrefix)
 			.append("[").append(index).append("].value}");
 			break;
 		case LT:
 			sql.append(" AND ")
-			.append(builder.getField())
+			.append(where.getField())
 			.append(" < #{")
-			.append(SQLProviderConstant.SQL_BUILD_ALIAS)
+			.append(sqlWherePrefix)
 			.append("[").append(index).append("].value}");
 			break;
 		case GTE:
 			sql.append(" AND ")
-			.append(builder.getField())
+			.append(where.getField())
 			.append(" >= #{")
-			.append(SQLProviderConstant.SQL_BUILD_ALIAS)
+			.append(sqlWherePrefix)
 			.append("[").append(index).append("].value}");
 			break;
 		case LTE:
 			sql.append(" AND ")
-			.append(builder.getField())
+			.append(where.getField())
 			.append(" <= #{")
-			.append(SQLProviderConstant.SQL_BUILD_ALIAS)
+			.append(sqlWherePrefix)
 			.append("[").append(index).append("].value}");
 			break;
 		case PREFIX:
 			sql.append(" AND ")
-			.append(builder.getField())
+			.append(where.getField())
 			.append(" like '")
-			.append(builder.getValue())
+			.append(where.getValue())
 			.append("%'");
 			break;
 		case SUFFIX:
 			sql.append(" AND ")
-			.append(builder.getField())
+			.append(where.getField())
 			.append(" like '%")
-			.append(builder.getValue())
+			.append(where.getValue())
 			.append("'");
 			break;
 		default:
@@ -134,15 +140,15 @@ public class SQLBuilderHelper {
 	
 	/**
 	 * 检查是否为空
-	 * @param build
+	 * @param value
 	 * @return
 	 */
-	private static boolean checkNull(SQLBuilder build) {
-		if (build == null || build.getValue() == null) {
+	private static boolean checkNull(Object value) {
+		if (value == null) {
 			//null
 			return true;
 		}
-		if (build.getValue() instanceof String && StringUtils.isEmpty((String) build.getValue())) {
+		if (value instanceof String && StringUtils.isEmpty((String) value)) {
 			//空字符串
 			return true;
 		}

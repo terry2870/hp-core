@@ -11,7 +11,7 @@ import java.util.List;
  * @author huangping
  * 2018年5月29日
  */
-public interface IBaseInsertDAO<T, PK> {
+public interface IBaseInsertDAO<MODEL, PK> {
 
 	/**
 	 * 新增数据
@@ -19,7 +19,7 @@ public interface IBaseInsertDAO<T, PK> {
 	 * @param target
 	 * @return
 	 */
-	public Integer insert(T target);
+	public Integer insert(MODEL target);
 	
 	/**
 	 * 根据条件，新增字段
@@ -27,12 +27,12 @@ public interface IBaseInsertDAO<T, PK> {
 	 * @param target
 	 * @return
 	 */
-	public Integer insertSelective(T target);
+	public Integer insertSelective(MODEL target);
 	
 	/**
 	 * 批量插入
 	 * @param list
 	 * @return
 	 */
-	public Integer insertBatch(List<T> list);
+	public Integer insertBatch(List<MODEL> list);
 }

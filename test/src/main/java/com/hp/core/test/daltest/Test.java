@@ -26,7 +26,7 @@ public class Test extends BaseJUnitTest {
 	
 	@org.junit.Test
 	public void test() {
-		Integer count = testTableDAO.selectCount();
+		Integer count = testTableDAO.selectCount(null);
 		System.out.println("count= " + count);
 	}
 	

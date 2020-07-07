@@ -11,7 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 
-import com.hp.core.database.bean.SQLBuilder;
+import com.hp.core.database.bean.SQLBuilders;
+import com.hp.core.database.bean.SQLWhere;
 import com.hp.core.elasticsearch.bean.IndexInfo;
 
 /**
@@ -25,30 +26,30 @@ public abstract class AbstMinMaxIdIndexServiceImpl<T, E> extends AbstSimpleIndex
 	
 	/**
 	 * 获取最小的id
-	 * @param param
+	 * @param wheres
 	 * @return
 	 */
-	protected int getMinId(SQLBuilder... builders) {
-		return baseMapper.selectMinId(builders);
+	protected int getMinId(SQLWhere[] wheres) {
+		return baseMapper.selectMinId(wheres);
 	}
 	
 	/**
 	 * 获取最大的id
-	 * @param param
+	 * @param wheres
 	 * @return
 	 */
-	protected int getMaxId(SQLBuilder... builders) {
-		return baseMapper.selectMaxId(builders);
+	protected int getMaxId(SQLWhere[] wheres) {
+		return baseMapper.selectMaxId(wheres);
 	}
 	
 	/**
 	 * 从数据库获取数据
 	 * @param minId
 	 * @param maxId
-	 * @param param
+	 * @param builders
 	 * @return
 	 */
-	protected List<T> getDataListFromDB(int minId, int maxId, SQLBuilder... builders) {
+	protected List<T> getDataListFromDB(int minId, int maxId, SQLBuilders builders) {
 		return baseMapper.selectListByRange(minId, maxId, builders);
 	}
 	
@@ -59,11 +60,12 @@ public abstract class AbstMinMaxIdIndexServiceImpl<T, E> extends AbstSimpleIndex
 	 */
 	@Override
 	public void insertIntoES(IndexInfo indexInfo, IndexCoordinates newIndexCoordinates) {
-		SQLBuilder[] builders = getSQLBuilder();
+		SQLBuilders builders = getSQLBuilders();
+		SQLWhere[] wheres = CollectionUtils.isEmpty(builders.getWhereList()) ? null : builders.getWhereList().toArray(new SQLWhere[] {});
 		//最大id
-		int min = getMinId(builders);
+		int min = getMinId(wheres);
 		//最小id
-		long max = getMaxId(builders);
+		long max = getMaxId(wheres);
 		if (max == 0 || max < min) {
 			log.warn("reBuildIndex error. with maxid is error. with indexInfo={}, min={}, max={}", indexInfo, min, max);
 			return;

@@ -17,27 +17,14 @@ public class SQLProviderConstant {
 	/**
 	 * sql构造器
 	 */
-	public static final String SQL_BUILD_ALIAS = "build";
-	
-	/**
-	 * sql构造器
-	 */
 	public static final String SQL_BUILDS_ALIAS = "builds";
 	
-	/**
-	 * 传递的分页对象
-	 */
-	public static final String PAGE_OBJECT_ALIAS = "page";
+	public static final String SQL_WHERE_ALIAS = "whereList";
 	
 	/**
 	 * 主键的key
 	 */
 	public static final String KEY_PROPERTY_ID = "id";
-	
-	/**
-	 * 排序的对象
-	 */
-	public static final String ORDER_BY = "orderBy";
 	
 	public static final String SQL_OBJECT_ALIAS = "sql";
 	
@@ -45,4 +32,7 @@ public class SQLProviderConstant {
 	 * 大于Id
 	 */
 	public static final String LARGETHAN_ID_OBJECT_ALIAS = "largeThanId";
+	
+	public static final String MIN_ID_ALIAS = "minId";
+	public static final String MAX_ID_ALIAS = "maxId";
 }

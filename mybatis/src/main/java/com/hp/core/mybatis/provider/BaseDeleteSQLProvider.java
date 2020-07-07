@@ -21,7 +21,8 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.core.database.bean.DynamicColumnBean;
 import com.hp.core.database.bean.DynamicEntityBean;
-import com.hp.core.database.bean.SQLBuilder;
+import com.hp.core.database.bean.SQLBuilders;
+import com.hp.core.database.bean.SQLWhere;
 import com.hp.core.database.exceptions.ProviderSQLException;
 import com.hp.core.database.interceptor.BaseSQLAOPFactory;
 import com.hp.core.mybatis.constant.SQLProviderConstant;
@@ -108,7 +109,14 @@ public class BaseDeleteSQLProvider {
 				.append(entity.getTableName())
 				.append(" WHERE 1=1 ");
 		
-		String where = SQLBuilderHelper.getSQLBySQLBuild((SQLBuilder[]) target.get(SQLProviderConstant.SQL_BUILD_ALIAS));
+		@SuppressWarnings("unchecked")
+		List<SQLWhere> whereList = (List<SQLWhere>) target.get(SQLProviderConstant.SQL_WHERE_ALIAS);
+		
+		SQLBuilders builders = SQLBuilders.emptyBuilder()
+				.withSqlWherePrefix(SQLProviderConstant.SQL_WHERE_ALIAS)
+				.withWhere(whereList);
+		
+		String where = SQLBuilderHelper.getSQLBySQLBuild(builders);
 		
 		if (StringUtils.isEmpty(where)) {
 			log.error("deleteByBuilder error. with where sql is empty. not allow. with \r\nparams={}, \r\nentity={}", target, entity);

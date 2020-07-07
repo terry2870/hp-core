@@ -55,8 +55,8 @@ public class Application {
 		
 		@RequestMapping("/test")
 		public Response<Object> test() {
-			System.out.println(dao1.selectCount());
-			System.out.println(dao2.selectCount());
+			System.out.println(dao1.selectCount(null));
+			System.out.println(dao2.selectCount(null));
 			return Response.success();
 		}
 	}

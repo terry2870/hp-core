@@ -33,7 +33,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hp.core.common.exceptions.CommonException;
 import com.hp.core.common.utils.DateUtil;
-import com.hp.core.database.bean.SQLBuilder;
 import com.hp.core.database.bean.SQLBuilders;
 import com.hp.core.elasticsearch.bean.IndexInfo;
 import com.hp.core.elasticsearch.factory.IndexInfoFactory;
@@ -44,19 +43,19 @@ import com.hp.core.mybatis.mapper.BaseMapper;
  * 普遍的索引实现
  * @author huangping
  * Mar 15, 2019
- * @param <T>	数据库对象
- * @param <E>	ES里面对象
+ * @param <DB_MODEL>	数据库对象
+ * @param <ES_MODEL>	ES里面对象
  */
-public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexService {
+public abstract class AbstSimpleIndexServiceImpl<DB_MODEL, ES_MODEL> implements IESIndexService {
 
 	private static Logger log = LoggerFactory.getLogger(AbstSimpleIndexServiceImpl.class);
 	
 	@Autowired
-	protected BaseMapper<T, Integer> baseMapper;
+	protected BaseMapper<DB_MODEL, Integer> baseMapper;
 	@Autowired
 	protected ElasticsearchRestTemplate elasticsearchRestTemplate;
 	@Autowired
-	protected ElasticsearchRepository<E, Integer> elasticsearchRepository;
+	protected ElasticsearchRepository<ES_MODEL, Integer> elasticsearchRepository;
 	
 	/**
 	 * 根据数据库对象，获取ES对象
@@ -70,14 +69,14 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 	 * @param list
 	 * @return
 	 */
-	public abstract List<E> getESModelFromDBModel(List<T> list);
+	public abstract List<ES_MODEL> getESModelFromDBModel(List<DB_MODEL> list);
 	
 	/**
 	 * 获取es的id字段
 	 * @param e
 	 * @return
 	 */
-	public abstract String getId(E e);
+	public abstract String getId(ES_MODEL e);
 	
 	/**
 	 * 插入数据到新的索引
@@ -91,7 +90,7 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 	 * @param ids
 	 * @return
 	 */
-	public List<T> getByIds(List<Integer> ids) {
+	public List<DB_MODEL> getByIds(List<Integer> ids) {
 		if (CollectionUtils.isEmpty(ids)) {
 			return null;
 		}
@@ -105,7 +104,7 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 		}
 		
 		//从数据库查询最新数据
-		List<T> list = getByIds(ids);
+		List<DB_MODEL> list = getByIds(ids);
 		if (CollectionUtils.isEmpty(list)) {
 			return;
 		}
@@ -126,7 +125,7 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 			return;
 		}
 
-		List<T> list = getByIds(ids);
+		List<DB_MODEL> list = getByIds(ids);
 		if (CollectionUtils.isEmpty(list)) {
 			return;
 		}
@@ -160,20 +159,20 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 	 * @param indexInfo
 	 * @return
 	 */
-	private List<UpdateQuery> getUpdateQueryDataListByDataList(List<T> list, IndexInfo indexInfo) {
+	private List<UpdateQuery> getUpdateQueryDataListByDataList(List<DB_MODEL> list, IndexInfo indexInfo) {
 		if (CollectionUtils.isEmpty(list)) {
 			return null;
 		}
 		
 		//转换为es对象
-		List<E> l = getESModelFromDBModel(list);
+		List<ES_MODEL> l = getESModelFromDBModel(list);
 		if (CollectionUtils.isEmpty(l)) {
 			return null;
 		}
 		
 		List<UpdateQuery> queries = new ArrayList<>();
 		UpdateQuery updateQuery = null;
-		for (E e : l) {
+		for (ES_MODEL e : l) {
 			updateQuery = getUpdateQuery(e, indexInfo);
 			if (updateQuery == null) {
 				continue;
@@ -189,7 +188,7 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 	 * @param indexInfo
 	 * @return
 	 */
-	private UpdateQuery getUpdateQuery(E e, IndexInfo indexInfo) {
+	private UpdateQuery getUpdateQuery(ES_MODEL e, IndexInfo indexInfo) {
 		if (e == null) {
 			return null;
 		}
@@ -209,8 +208,8 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 	 * 建索引时，查询最大最小id时，额外的参数
 	 * @return
 	 */
-	protected SQLBuilder[] getSQLBuilder() {
-		return new SQLBuilders().build();
+	protected SQLBuilders getSQLBuilders() {
+		return SQLBuilders.emptyBuilder();
 	}
 	
 	/**
@@ -320,7 +319,7 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 	 * @param list
 	 * @return
 	 */
-	protected List<IndexQuery> getIndexQueryDataListByDataList(List<T> list) {
+	protected List<IndexQuery> getIndexQueryDataListByDataList(List<DB_MODEL> list) {
 		if (CollectionUtils.isEmpty(list)) {
 			return null;
 		}
@@ -328,12 +327,12 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 		IndexQuery indexQuery = null;
 		
 		//转换为es对象
-		List<E> l = getESModelFromDBModel(list);
+		List<ES_MODEL> l = getESModelFromDBModel(list);
 		if (CollectionUtils.isEmpty(l)) {
 			return null;
 		}
 		
-		for (E e : l) {
+		for (ES_MODEL e : l) {
 			if (e == null) {
 				continue;
 			}
@@ -351,7 +350,7 @@ public abstract class AbstSimpleIndexServiceImpl<T, E> implements IESIndexServic
 	 * @param e
 	 * @return
 	 */
-	private IndexQuery getIndexQuery(E e) {
+	private IndexQuery getIndexQuery(ES_MODEL e) {
 		if (e == null) {
 			return null;
 		}

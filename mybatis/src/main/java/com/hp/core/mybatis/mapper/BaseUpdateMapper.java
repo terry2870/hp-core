@@ -14,7 +14,7 @@ import com.hp.core.mybatis.provider.BaseUpdateSQLProvider;
  * @author huangping
  * 2018年5月29日
  */
-public interface BaseUpdateMapper<T, PK> extends IBaseUpdateDAO<T, PK> {
+public interface BaseUpdateMapper<MODEL, PK> extends IBaseUpdateDAO<MODEL, PK> {
 
 	/**
 	 * 根据主键更新数据
@@ -22,7 +22,7 @@ public interface BaseUpdateMapper<T, PK> extends IBaseUpdateDAO<T, PK> {
 	 * @return
 	 */
 	@UpdateProvider(type = BaseUpdateSQLProvider.class, method = "updateByPrimaryKey")
-	public Integer updateByPrimaryKey(T target);
+	public Integer updateByPrimaryKey(MODEL target);
 	
 	/**
 	 * 根据条件，更新字段
@@ -30,5 +30,5 @@ public interface BaseUpdateMapper<T, PK> extends IBaseUpdateDAO<T, PK> {
 	 * @return
 	 */
 	@UpdateProvider(type = BaseUpdateSQLProvider.class, method = "updateByPrimaryKeySelective")
-	public Integer updateByPrimaryKeySelective(T target);
+	public Integer updateByPrimaryKeySelective(MODEL target);
 }

@@ -5,116 +5,108 @@ package com.hp.core.database.dao;
 
 import java.util.List;
 
-import com.hp.core.database.bean.OrderBy;
-import com.hp.core.database.bean.PageModel;
-import com.hp.core.database.bean.SQLBuilder;
+import com.hp.core.database.bean.SQLBuilders;
+import com.hp.core.database.bean.SQLWhere;
 
 /**
  * 基本的查询操作
  * 继承该接口，可以实现一些简单的查询操作
  * @author huangping
+ * @param <MODEL>	数据库对象
+ * @param <PK>		数据库主键
  * 2018年5月21日
  */
-public interface IBaseSelectDAO<T, PK> {
+public interface IBaseSelectDAO<MODEL, PK> {
 
 	/**
-	 * 查询最大的id
-	 * @param target
+	 * 查询总数
+	 * @param whereList
 	 * @return
 	 */
-	public PK selectMaxId(SQLBuilder... builder);
+	public PK selectCount(List<SQLWhere> whereList);
+	
+	/**
+	 * 根据传入的sqlbuild，查询
+	 * @param builder
+	 */
+	public List<MODEL> selectList(SQLBuilders builders);
+	
+	/**
+	 * 根据传入的builders，查询一个
+	 * @param builders
+	 * @return
+	 */
+	public MODEL selectOne(SQLBuilders builders);
+	
+	/**
+	 * 查询最大的id
+	 * @param where
+	 * @return
+	 */
+	public PK selectMaxId(SQLWhere... where);
 	
 	/**
 	 * 查询最小id
-	 * @param target
+	 * @param where
 	 * @return
 	 */
-	public PK selectMinId(SQLBuilder... builder);
+	public PK selectMinId(SQLWhere... where);
 	
 	/**
 	 * 根据id范围查询
 	 * @param minId
 	 * @param maxId
-	 * @param target
+	 * @param builders
 	 * @return
 	 */
-	public List<T> selectListByRange(PK minId, PK maxId, SQLBuilder... builder);
-	
+	public List<MODEL> selectListByRange(PK minId, PK maxId, SQLBuilders... builders);
 	
 	/**
-	 * 查询总数
-	 * @param builder
+	 * 根据条件，查询大于某一个id值的数据
+	 * @param largeThanId
+	 * @param builders
 	 * @return
 	 */
-	public PK selectCount(SQLBuilder... builder);
+	public List<MODEL> selectListByLargeThanId(PK largeThanId, SQLBuilders... builders);
 	
 	/**
 	 * 根据主键查询
 	 * @param id
 	 * @return
 	 */
-	public T selectByPrimaryKey(PK id);
+	public MODEL selectByPrimaryKey(PK id);
 	
 	/**
 	 * 根据主键，批量查询
 	 * @param primaryKeyIdList
 	 * @return
 	 */
-	public List<T> selectByPrimaryKeys(List<PK> primaryKeyIdList);
+	public List<MODEL> selectByPrimaryKeys(List<PK> primaryKeyIdList);
 	
 	/**
 	 * 根据主键，批量查询（并且按照list里面id顺序排序）
 	 * @param primaryKeyIdList
 	 * @return
 	 */
-	public List<T> selectByPrimaryKeysWithInSort(List<PK> primaryKeyIdList);
+	public List<MODEL> selectByPrimaryKeysWithInSort(List<PK> primaryKeyIdList);
 	
 	/**
-	 * 根据传入的sqlbuild，查询
-	 * @param builder
-	 * @param orderBy
+	 * 查询列表
+	 * （返回指定的一个类型字段的list）
+	 * @param <T>
+	 * @param builders
+	 * @param clazz
 	 * @return
 	 */
-	public List<T> selectList(SQLBuilder[] builder, OrderBy... orderBy);
-	
-	/**
-	 * 根据传入的sqlbuild，查询（分页）
-	 * @param builder
-	 * @param page
-	 * @return
-	 */
-	public List<T> selectPageList(SQLBuilder[] builder, PageModel page);
+	public <T> List<T> selectListForTargetClass(SQLBuilders builders, Class<T> clazz);
 	
 	/**
 	 * 根据传入的sqlbuild，查询一个
+	 * （返回指定的一个类型字段的对象）
 	 * @param builder
+	 * @param clazz
 	 * @return
 	 */
-	public T selectOne(SQLBuilder... builder);
-	
-	/**
-	 * 查询大于该id的数据
-	 * @param largeThanId
-	 * @param page
-	 * @param builder
-	 * @return
-	 */
-	public List<T> selectPageListLargeThanId(PK largeThanId, PageModel page, SQLBuilder... builder);
-	
-	/**
-	 * 查询主键列表
-	 * @param builder
-	 * @param orderBy
-	 * @return
-	 */
-	public List<PK> selectPrimaryKeyList(SQLBuilder[] builder, OrderBy... orderBy);
-	
-	/**
-	 * 查询主键列表
-	 * @param builder
-	 * @param page
-	 * @return
-	 */
-	public List<PK> selectPrimaryKeyPageList(SQLBuilder[] builder, PageModel page);
+	public <T> T selectOneForTargetClass(SQLBuilders builders, Class<T> clazz);
 
 }

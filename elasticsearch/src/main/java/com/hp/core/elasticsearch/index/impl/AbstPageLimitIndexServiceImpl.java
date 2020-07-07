@@ -12,7 +12,8 @@ import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 
 import com.hp.core.database.bean.PageModel;
-import com.hp.core.database.bean.SQLBuilder;
+import com.hp.core.database.bean.SQLBuilders;
+import com.hp.core.database.bean.SQLWhere;
 import com.hp.core.elasticsearch.bean.IndexInfo;
 
 /**
@@ -26,27 +27,29 @@ public abstract class AbstPageLimitIndexServiceImpl<T, E> extends AbstSimpleInde
 	
 	/**
 	 * 获取总数
-	 * @param builder
+	 * @param whereList
 	 * @return
 	 */
-	protected int getTotal(SQLBuilder[] builder) {
-		return baseMapper.selectCount(builder);
+	protected int getTotal(List<SQLWhere> whereList) {
+		return baseMapper.selectCount(whereList);
 	}
 	
 	/**
 	 * 分页查询列表
-	 * @param builder
+	 * @param builders
 	 * @param page
 	 * @return
 	 */
-	protected List<T> getDataListFromDB(SQLBuilder[] builder, PageModel page) {
-		return baseMapper.selectPageList(builder, page);
+	protected List<T> getDataListFromDB(SQLBuilders builders, PageModel page) {
+		builders.withPage(page);
+		return baseMapper.selectList(builders);
 	}
 	
 	@Override
 	public void insertIntoES(IndexInfo indexInfo, IndexCoordinates newIndexCoordinates) {
-		SQLBuilder[] builder = getSQLBuilder();
-		int total = getTotal(builder);
+		SQLBuilders builders = getSQLBuilders();
+		List<SQLWhere> whereList = (builders == null || CollectionUtils.isEmpty(builders.getWhereList())) ? null : builders.getWhereList();
+		int total = getTotal(whereList);
 		if (total == 0) {
 			return;
 		}
@@ -62,7 +65,7 @@ public abstract class AbstPageLimitIndexServiceImpl<T, E> extends AbstSimpleInde
 			log.info("insert to es data indexName={}. {}/{}", newIndexCoordinates.getIndexName(), currentPage, totalPage);
 			//分页查询数据
 			page = PageModel.of(currentPage, size);
-			list = getDataListFromDB(builder, page);
+			list = getDataListFromDB(builders, page);
 			
 			//页数自加
 			currentPage++;
