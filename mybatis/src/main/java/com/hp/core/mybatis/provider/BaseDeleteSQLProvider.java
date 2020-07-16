@@ -116,7 +116,7 @@ public class BaseDeleteSQLProvider {
 				.withSqlWherePrefix(SQLProviderConstant.SQL_WHERE_ALIAS)
 				.withWhere(whereList);
 		
-		String where = SQLBuilderHelper.getSQLBySQLBuild(builders);
+		String where = MybatisSQLBuilderHelper.getSQLBySQLBuild(builders);
 		
 		if (StringUtils.isEmpty(where)) {
 			log.error("deleteByBuilder error. with where sql is empty. not allow. with \r\nparams={}, \r\nentity={}", target, entity);

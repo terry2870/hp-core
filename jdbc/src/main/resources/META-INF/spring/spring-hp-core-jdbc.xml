@@ -21,31 +21,10 @@
 	http://www.springframework.org/schema/tx
 	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
 	">
-	<bean id="databasesMap" class="org.springframework.beans.factory.config.YamlMapFactoryBean">
-		<property name="resources">
-			<list>
-                <value>${hp.core.database.config:classpath:databases.yml}</value>
-            </list>
-		</property>
+	
+	<bean id="dynamicJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate" primary="true">
+		<property name="dataSource" ref="dynamicDatasource" />
 	</bean>
-	
-
-	<bean id="dynamicDatasource" class="com.hp.core.database.datasource.DynamicDatasource" depends-on="SpringContextUtil">
-		<property name="databasesMap" ref="databasesMap" />
-	</bean>
-	
-	<aop:config>
-		<aop:pointcut id="daoMethodPoint" expression="${hp.core.database.interceptor.expression:}" />
-		<aop:advisor pointcut-ref="daoMethodPoint" advice-ref="DAOMethodInterceptorHandle" />
-	</aop:config>
-	
-	<!-- 配置spring的PlatformTransactionManager，名字为默认值 -->  
-	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
-		<property name="dataSource" ref="dynamicDatasource" />  
-	</bean>  
-
-	<!-- 开启事务控制的注解支持 -->  
-	<tx:annotation-driven transaction-manager="transactionManager"/>
 
 </beans>
 

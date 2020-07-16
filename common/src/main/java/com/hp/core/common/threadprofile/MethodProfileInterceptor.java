@@ -4,7 +4,7 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.beans.factory.InitializingBean;
 
-public class MethodProfileInterceptor implements MethodInterceptor,InitializingBean {
+public class MethodProfileInterceptor implements MethodInterceptor, InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -14,8 +14,6 @@ public class MethodProfileInterceptor implements MethodInterceptor,InitializingB
 
 	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {
-		// TODO Auto-generated method stub
-
 		/**
 		 * 被代理的方法的，类名、方法名、参数
 		 */
@@ -30,29 +28,19 @@ public class MethodProfileInterceptor implements MethodInterceptor,InitializingB
 		 * 返回结果
 		 */
 		Object result = null ;
-		try{
-
+		try {
 			/**
 			 * 执行被代理（拦截）的调用
 			 */
 			result = invocation.proceed();
-
-		}
-		catch (Exception e){
+		} catch (Exception e) {
 			throw  e;
-		}
-		finally{
-
+		} finally {
 			/**
 			 * 全局性能统计，并记录堆栈，函数调用结束
 			 */
 			ThreadProfile.exit();
-
 		}
-
-
-
-
 		return result;
 	}
 

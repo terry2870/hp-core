@@ -10,22 +10,18 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- *
- *  所有的工程都会加载这个
- *
- *  服务的interceptor，用来做慢的服务调用统计
- *
- * Created by chunhua.zhang@yoho.cn on 2016/2/23.
+ * 所有的工程都会加载这个
+ * 服务的interceptor，用来做慢的服务调用统计
+ * @author huangping
+ * Jul 14, 2020
  */
 public class ThreadProfileInterceptor implements HandlerInterceptor {
 
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-
     //多少毫秒会打印异常日志
     private  int threshold = 200;
-
 
     public final static String HTTP_HEADER_SERVICE_NAME = "X-YH-SERVICE-NAME";
 

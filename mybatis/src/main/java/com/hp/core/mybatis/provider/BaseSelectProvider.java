@@ -227,7 +227,7 @@ public class BaseSelectProvider {
 		
 		//设置查询条件
 		if (CollectionUtils.isNotEmpty(builders.getWhereList())) {
-			sql.append(SQLBuilderHelper.getSQLBySQLBuild(builders));
+			sql.append(MybatisSQLBuilderHelper.getSQLBySQLBuild(builders));
 		}
 		
 		//排序

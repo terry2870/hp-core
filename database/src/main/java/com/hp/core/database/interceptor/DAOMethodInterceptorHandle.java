@@ -3,12 +3,10 @@
  */
 package com.hp.core.database.interceptor;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.reflect.MethodSignature;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.ClassUtils;
 
 import com.hp.core.common.threadprofile.ThreadProfile;
 import com.hp.core.database.bean.DAOInterfaceInfoBean;
@@ -17,7 +15,7 @@ import com.hp.core.database.bean.DAOInterfaceInfoBean.DBDelayInfo;
 /**
  * @author huangping 2018年4月11日
  */
-public class DAOMethodInterceptorHandle {
+public abstract class DAOMethodInterceptorHandle implements MethodInterceptor {
 
 	private static Logger log = LoggerFactory.getLogger(DAOMethodInterceptorHandle.class);
 	
@@ -27,44 +25,40 @@ public class DAOMethodInterceptorHandle {
 	private static final long MAX_DB_DELAY_TIME = 150;
 	
 	/**
+	 * 获取dao操作的对象，方法等
+	 * @param invocation
+	 * @return
+	 */
+	public abstract DAOInterfaceInfoBean getDAOInterfaceInfoBean(MethodInvocation invocation);
+	
+	/**
 	 * 获取当前线程的数据源路由的key
 	 */
 	public static DAOInterfaceInfoBean getRouteDAOInfo() {
 		return routeKey.get();
 	}
 	
-	public void before(JoinPoint join) {
-		log.debug("start before");
+	@Override
+	public Object invoke(MethodInvocation invocation) throws Throwable {
+		//获取dao的操作方法，参数等信息
+		this.setRouteDAOInfo(getDAOInterfaceInfoBean(invocation));
 		
-		DAOInterfaceInfoBean bean = new DAOInterfaceInfoBean();
-		Class<?> clazz = join.getThis().getClass();
-		Class<?>[] targetInterfaces = ClassUtils.getAllInterfacesForClass(clazz, clazz.getClassLoader());
-		Class<?>[] parentClass = targetInterfaces[0].getInterfaces();
-		if (ArrayUtils.isNotEmpty(parentClass)) {
-			bean.setParentClassName(parentClass[0]);
-		}
-		
-		bean.setClassName(targetInterfaces[0]);
-		bean.setMapperNamespace(targetInterfaces[0].getName());
-		MethodSignature signature = (MethodSignature) join.getSignature();
-		bean.setMethod(signature.getMethod());
-		bean.setStatementId(join.getSignature().getName());
-		bean.setParameters(join.getArgs());
-		this.setRouteDAOInfo(bean);
-		
+		//设置进入查询
 		entry();
-	}
-	
-	public void throwing(JoinPoint join, Exception ex) {
-		log.debug("start throwing");
-		log.error("execute db error. with exceptions is: ", ex);
-	}
-
-	public void after(JoinPoint point) {
-		log.debug("start after");
-		exit();
-		//释放当前线程的数据
-		this.removeRouteDAOInfo();
+		Object obj = null;
+		try {
+			//执行实际方法
+			obj = invocation.proceed();
+			return obj;
+		} catch (Exception e) {
+			throw  e;
+		} finally {
+			//退出查询
+			exit();
+			
+			//释放当前线程的数据
+			this.removeRouteDAOInfo();
+		}
 	}
 	
 	/**

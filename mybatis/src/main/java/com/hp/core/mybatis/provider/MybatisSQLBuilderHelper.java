@@ -18,9 +18,9 @@ import com.hp.core.mybatis.constant.SQLProviderConstant;
  * @author huangping
  * Oct 24, 2019
  */
-public class SQLBuilderHelper {
+public class MybatisSQLBuilderHelper {
 
-	private static Logger log = LoggerFactory.getLogger(SQLBuilderHelper.class);
+	private static Logger log = LoggerFactory.getLogger(MybatisSQLBuilderHelper.class);
 	
 	private static final String SQL_WHERE_VALUE_PREFIX = SQLProviderConstant.SQL_BUILDS_ALIAS + ".whereList";
 	
