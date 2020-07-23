@@ -11,11 +11,13 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.hp.core.database.datasource.AbstConnectionPoolFactory;
 import com.hp.core.database.datasource.impl.DBCPConnectionPoolFactoryImpl;
+import com.hp.core.database.datasource.impl.DruidConnectionPoolFactoryImpl;
 
 public enum ConnectionPoolFactoryEnum {
 
 	DBCP,
 	C3P0,
+	DRUID,
 	;
 	
 	/**
@@ -27,11 +29,28 @@ public enum ConnectionPoolFactoryEnum {
 		if (StringUtils.isEmpty(poolName)) {
 			poolName = DBCP.toString();
 		}
-		if (poolName.equals(DBCP.toString())) {
-			return new DBCPConnectionPoolFactoryImpl();
+		
+		ConnectionPoolFactoryEnum e = ConnectionPoolFactoryEnum.valueOf(poolName);
+		if (e == null) {
+			poolName = DBCP.toString();
 		}
 		
-		return new DBCPConnectionPoolFactoryImpl();
+		AbstConnectionPoolFactory bean = null;
+		switch (e) {
+		case DBCP:
+			bean =  new DBCPConnectionPoolFactoryImpl();
+			break;
+		case C3P0:
+			
+			break;
+		case DRUID:
+			bean = new DruidConnectionPoolFactoryImpl();
+			break;
+		default:
+			break;
+		}
+		
+		return bean;
 	}
 	
 }

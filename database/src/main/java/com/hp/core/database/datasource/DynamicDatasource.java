@@ -267,6 +267,7 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 	 * @param bean
 	 */
 	private void dealDatasourceBaseInfo(Map<String, Object> map, DatasourceConfigBean bean) {
+		Object minIdle = map.get("minIdle");
 		Object maxTotal = map.get("maxTotal");
 		Object maxIdle = map.get("maxIdle");
 		Object initialSize = map.get("initialSize");
@@ -278,6 +279,11 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 		Object connectionParam = map.get("connectionParam");
 		Object databaseType = map.get("databaseType");
 		Object driverClassName = map.get("driverClassName");
+		Object poolPreparedStatements = map.get("poolPreparedStatements");
+		Object maxPoolPreparedStatementPerConnectionSize = map.get("maxPoolPreparedStatementPerConnectionSize");
+		if (minIdle != null) {
+			bean.setMinIdle((int) minIdle);
+		}
 		if (maxTotal != null) {
 			bean.setMaxTotal((int) maxTotal);
 		}
@@ -310,6 +316,12 @@ public class DynamicDatasource extends AbstractRoutingDataSource implements Init
 		}
 		if (driverClassName != null) {
 			bean.setDriverClassName((String) driverClassName);
+		}
+		if (poolPreparedStatements != null) {
+			bean.setPoolPreparedStatements((boolean) poolPreparedStatements);
+		}
+		if (maxPoolPreparedStatementPerConnectionSize != null) {
+			bean.setMaxPoolPreparedStatementPerConnectionSize((int) maxPoolPreparedStatementPerConnectionSize);
 		}
 		bean.setUsername(map.get("username").toString());
 		bean.setPassword(map.get("password").toString());

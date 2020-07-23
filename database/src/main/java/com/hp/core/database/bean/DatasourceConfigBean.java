@@ -53,6 +53,7 @@ public class DatasourceConfigBean extends BaseBean {
 	//对应的dao
 	private List<String> daos;
 	
+	private int minIdle = 8;
 	private int maxTotal = 50;
 	private int maxIdle = 5;
 	private int initialSize = 5;
@@ -61,8 +62,8 @@ public class DatasourceConfigBean extends BaseBean {
 	private boolean testWhileIdle = true;
 	private int numTestsPerEvictionRun = 3;
 	private String validationQuery = "select 1";
-	
-	
+	private boolean poolPreparedStatements = false;
+	private int maxPoolPreparedStatementPerConnectionSize = 20;
 	
 	public String getAlias() {
 		return alias;
@@ -186,5 +187,23 @@ public class DatasourceConfigBean extends BaseBean {
 	}
 	public void setSlaveIpPort(List<String> slaveIpPort) {
 		this.slaveIpPort = slaveIpPort;
+	}
+	public int getMinIdle() {
+		return minIdle;
+	}
+	public void setMinIdle(int minIdle) {
+		this.minIdle = minIdle;
+	}
+	public boolean isPoolPreparedStatements() {
+		return poolPreparedStatements;
+	}
+	public void setPoolPreparedStatements(boolean poolPreparedStatements) {
+		this.poolPreparedStatements = poolPreparedStatements;
+	}
+	public int getMaxPoolPreparedStatementPerConnectionSize() {
+		return maxPoolPreparedStatementPerConnectionSize;
+	}
+	public void setMaxPoolPreparedStatementPerConnectionSize(int maxPoolPreparedStatementPerConnectionSize) {
+		this.maxPoolPreparedStatementPerConnectionSize = maxPoolPreparedStatementPerConnectionSize;
 	}
 }
