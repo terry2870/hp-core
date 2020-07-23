@@ -196,6 +196,30 @@
 	}
 
 	/**
+	 * 获取header
+	 * @param {*} jq 
+	 */
+	function _getHeader(jq) {
+		return jq.find(">div.card-header");
+	}
+
+	/**
+	 * 获取body
+	 * @param {*} jq 
+	 */
+	function _getBody(jq) {
+		return jq.find(">div.card-body");
+	}
+
+	/**
+	 * 获取footer
+	 * @param {*} jq 
+	 */
+	function _getFooter(jq) {
+		return jq.find(">div.card-footer");
+	}
+
+	/**
 	 * 销毁
 	 * @param {*} jq 
 	 */
@@ -234,6 +258,34 @@
 			return this.each(function() {
 				_destroy(jq);
 			});
+		},
+		/**
+		 * 设置或获取body
+		 * @param {*} value 
+		 */
+		body : function(value) {
+			let self = this;
+			if (value === undefined) {
+				return _getBody(self);
+			} else {
+				return self.each(function() {
+					_getBody(self).empty().append(value);
+				});
+			}
+		},
+		/**
+		 * 设置或获取footer
+		 * @param {*} value 
+		 */
+		footer : function(value) {
+			let self = this;
+			if (value === undefined) {
+				return _getFooter(self);
+			} else {
+				return self.each(function() {
+					_getFooter(self).empty().append(value);
+				});
+			}
 		}
 	};
 	

@@ -132,5 +132,8 @@ a{text-decoration:none;}
 }
 
 .center-content {
-	margin: 20px;
+    margin: 20px;
+    float: left;
+    width: calc(100% - 260px);
+    min-height: calc(100% - 120px);
 }

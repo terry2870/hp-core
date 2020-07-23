@@ -79,10 +79,12 @@
 				jq.find("ul").removeAttr('style');
 				jq.addClass('lsm-mini');
 				jq.stop().animate({width : 60}, 200);
+				$(".center-content").css("width", "calc(100% - 100px)");
 			} else {
 				jq.removeClass('lsm-mini');
 				_getMenuContainer(jq).find("ul ul").hide();
 				jq.stop().animate({width: 220}, 200);
+				$(".center-content").css("width", "calc(100% - 260px)");
 			}
 		});
 
