@@ -50,10 +50,10 @@
 			html : footer
 		} : null;
 		jq.card($.extend({}, opt, {
-			width : opt.width | "100%",
-			height : opt.height | "100%",
-			top : opt.top | 0,
-			left : opt.left | 0,
+			width : opt.width ? opt.width : "100%",
+			height : opt.height ? opt.height : "100%",
+			top : opt.top ? opt.top : 0,
+			left : opt.left ? opt.left : 0,
 			header : header,
 			body : {
 				html : body
@@ -165,13 +165,37 @@
 		//生成行
 		if (opt.url) {
 			//从远端获取数据生成
-			_getTableDataContentFromRemote(jq, opt);
+			_getTableDataContentFromRemote(jq, opt, {}, function(data) {
+				let totalData = _getTotalAndData(data);
+				_createPagination(jq, opt, totalData.total);
+			});
 		} else {
 			//从本地数据生成
 			_createTableFromData(jq, opt.data);
+			let totalData = _getTotalAndData(data);
+			_createPagination(jq, opt, totalData.total);
 		}
 	}
 
+	/**
+	 * 获取总条数和rows
+	 * @param {*} data
+	 */
+	function _getTotalAndData(data) {
+		let total = 0;
+		let rows = [];
+		if ($.type(data) === "object") {
+			total = data.total;
+			rows = data.rows;
+		} else {
+			total = data ? data.length : 0;
+		}
+		return {
+			rows : rows,
+			total : total
+		};
+	}
+	
 	/**
 	 * 全选
 	 * @param {*} jq 
@@ -199,8 +223,9 @@
 		if (opt.pagination !== true) {
 			return null;
 		}
-
+		
 		let page = _getPagination(jq);
+		page.empty();
 		page.pagination({
 			total : total ? total : opt.total,
 			pageSize : opt.pageSize,
@@ -214,7 +239,7 @@
 	}
 	
 	/**
- * 获取某一行
+ 	 * 获取某一行
 	 * @param {*} jq 
 	 * @param {*} index 
 	 */
@@ -226,16 +251,26 @@
 	 * 从远端获取数据生成table
 	 * @param {*} jq 
 	 * @param {*} opt 
-	 * @param {*} otherParams 
+	 * @param {*} pageParams 
 	 * @param {*} callback 
 	 */
-	function _getTableDataContentFromRemote(jq, opt, otherParams, callback) {
+	function _getTableDataContentFromRemote(jq, opt, pageParams, callback) {
 		if (!opt.url) {
 			return;
 		}
-		debugger
-		let lastQueryParam = $.extend({}, opt.queryParams, jq.data(LAST_QUERY_PARAM), otherParams);
-		$.post(opt.url, $.extend({}, opt.queryParams, otherParams), function(data) {
+		
+		if (!pageParams) {
+			pageParams = {};
+		}
+		
+		let lastQueryParam = $.extend({}, opt.queryParams, jq.data(LAST_QUERY_PARAM), {
+			page : pageParams.currentPage ? pageParams.currentPage : opt.currentPage,
+			rows : pageParams.pageSize ? pageParams.pageSize : opt.pageSize,
+			sort : pageParams.sortName ? pageParams.sortName : opt.sortName,
+			order : pageParams.sortOrder ? pageParams.sortOrder : opt.sortOrder
+		});
+		jq.data(LAST_QUERY_PARAM, lastQueryParam)
+		$.post(opt.url, lastQueryParam, function(data) {
 			if (!data) {
 				return;
 			}
@@ -244,7 +279,7 @@
 			}
 
 			_createTableFromData(jq, data);
-
+			
 			if (callback) {
 				callback(data);
 			}
@@ -299,7 +334,7 @@
 		}
 
 		//生成分页
-		_createPagination(jq, opt, total);
+		//_createPagination(jq, opt, total);
 	}
 
 	/**
@@ -428,6 +463,17 @@
 				arr.push($(rows[i]).data(ROW_DATA_NAME));
 			}
 			return arr;
+		},
+		/**
+		 * 从远端从新加载数据
+		 * @param {*} param 
+		 */
+		load : function(param) {
+			let self = this;
+			return this.each(function() {
+				let opt = jq.data(pluginName);
+				_getTableDataContentFromRemote(self, opt, param);
+			});
 		}
 	};
 	
@@ -456,6 +502,9 @@
 		singleSelect : false,			//是否只能单选
 		pageSize : 10,					//分页时，每页条数
 		pagination : false,				//是否分页
+		currentPage : 1,				//当前页数
+		sortName : "",					//排序字段
+		sortOrder : "ASC",				//排序方式(ASC，DESC)
 		data : null,					//如果不用url，则可以直接传入data
 		singleSelect : false,			//是否单选
 		idField : null,					//表示id值的字段
@@ -484,20 +533,7 @@
 		 */
 		rowStyler : function(rowData, rowIndex) {
 			return null;
-		},
-		/**
-		 * 表格中是否存在表头单元格合并的情况
-		 */
-		mergeHeads : false,
-		/**
-		 * 需要合并单元格的列名 合并行
-		 */
-		mergeRowsField : "",
-
-		/**
-		 * 当前页码
-		 */
-		currentPage : ""
+		}
 	});
 
 	/**

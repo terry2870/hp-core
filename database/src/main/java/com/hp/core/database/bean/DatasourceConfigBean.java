@@ -53,7 +53,7 @@ public class DatasourceConfigBean extends BaseBean {
 	//对应的dao
 	private List<String> daos;
 	
-	private int minIdle = 8;
+	private int minIdle = 0;
 	private int maxTotal = 50;
 	private int maxIdle = 5;
 	private int initialSize = 5;

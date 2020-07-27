@@ -29,7 +29,21 @@
 	 * @param {*} jq 
 	 */
 	function _create(jq, opt) {
-		let ul = $("<ul>").addClass("pagination justify-content-end").appendTo(jq);
+		let div = $("<div>").appendTo(jq);
+		let divLeft = $("<div>").appendTo(div);
+		divLeft.css({
+			float : "left",
+			width : "auto",
+			height : "35px",
+			"padding-top" : "0.75rem",
+			"padding-bottom" : "0.75rem"
+		});
+		divLeft.text("当前第【"+ opt.currentPage +"】；共【"+ opt.total +"】页");
+		let divRight = $("<div>").appendTo(div);
+		divRight.css({
+			float : "right"
+		});
+		let ul = $("<ul>").addClass("pagination justify-content-end").appendTo(divRight);
 		
 		//第一页
 		_createItem(jq, opt.firstPageText, opt.currentPage == 1, 1);
