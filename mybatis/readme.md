@@ -116,7 +116,7 @@ datasources:
     @ImportResource(locations = {"classpath\*:META-INF/spring/spring-\*.xml"})        
 会加载jar包中所有匹配的xml文件          
 在项目的配置文件中增加拦截你的dao的配置corn表达式       
-    hp.core.database.interceptor.expression=(execution(\* com.hp.webtest.dal.\*.\*(..)))      
+    hp.core.database.interceptor.expression=(execution(\* com.hp.webtest.dal.\*.\*(..)))  这里改成你所存放dao的package就可以了     
 这个是拦截你的dao文件，进行读写分离自动路由的 
 
 
