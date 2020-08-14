@@ -11,7 +11,7 @@
 		let self = this;
 		if (typeof (options) == "string") {
 			let method = $.fn[pluginName].methods[options];
-			if (method){
+			if (method) {
 				return method.call(this, param);
 			}
 		}

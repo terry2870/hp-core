@@ -38,7 +38,7 @@
 			"padding-top" : "0.75rem",
 			"padding-bottom" : "0.75rem"
 		});
-		divLeft.text("当前第【"+ opt.currentPage +"】；共【"+ opt.total +"】页");
+		divLeft.text("当前第【"+ opt.currentPage +"】页；共【"+ opt.total +"】页");
 		let divRight = $("<div>").appendTo(div);
 		divRight.css({
 			float : "right"

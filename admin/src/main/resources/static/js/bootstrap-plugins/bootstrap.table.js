@@ -165,7 +165,12 @@
 		//生成行
 		if (opt.url) {
 			//从远端获取数据生成
-			_getTableDataContentFromRemote(jq, opt, {}, function(data) {
+			_getTableDataContentFromRemote(jq, opt, {}, {
+				currentPage : 1,
+				pageSize : opt.pageSize,
+				sortName : opt.sortName,
+				sortOrder : opt.sortOrder
+			}, function(data) {
 				let totalData = _getTotalAndData(data);
 				_createPagination(jq, opt, totalData.total);
 			});
@@ -231,46 +236,50 @@
 			pageSize : opt.pageSize,
 			currentPage : currentPage ? currentPage : 1,
 			onSelectPage : function(currentPage, pageSize) {
-				_getTableDataContentFromRemote(jq, opt, {
+				let lastQueryParam = jq.data(LAST_QUERY_PARAM);
+				_getTableDataContentFromRemote(jq, opt, lastQueryParam, {
 					currentPage : currentPage
 				});
 			}
 		});
-	}
-	
-	/**
- 	 * 获取某一行
-	 * @param {*} jq 
-	 * @param {*} index 
-	 */
-	function _getRow(jq, index) {
-		return _getAllRows(jq)[index];
 	}
 
 	/**
 	 * 从远端获取数据生成table
 	 * @param {*} jq 
 	 * @param {*} opt 
+	 * @param {*} otherParam 
 	 * @param {*} pageParams 
 	 * @param {*} callback 
 	 */
-	function _getTableDataContentFromRemote(jq, opt, pageParams, callback) {
+	function _getTableDataContentFromRemote(jq, opt, otherParam, pageParams, callback) {
 		if (!opt.url) {
 			return;
+		}
+		
+		if (opt.onBeforeLoad) {
+			let onBeforeLoadResult = opt.onBeforeLoad();
+			if (onBeforeLoadResult === false) {
+				//不在加载
+				return;
+			}
 		}
 		
 		if (!pageParams) {
 			pageParams = {};
 		}
 		
-		let lastQueryParam = $.extend({}, opt.queryParams, jq.data(LAST_QUERY_PARAM), {
+		let lastQueryParam = $.extend({}, otherParam, pageParams);
+		jq.data(LAST_QUERY_PARAM, lastQueryParam);
+		
+		let params = $.extend({}, opt.queryParams, lastQueryParam, {
 			page : pageParams.currentPage ? pageParams.currentPage : opt.currentPage,
 			rows : pageParams.pageSize ? pageParams.pageSize : opt.pageSize,
 			sort : pageParams.sortName ? pageParams.sortName : opt.sortName,
 			order : pageParams.sortOrder ? pageParams.sortOrder : opt.sortOrder
 		});
-		jq.data(LAST_QUERY_PARAM, lastQueryParam)
-		$.post(opt.url, lastQueryParam, function(data) {
+		
+		$.post(opt.url, params, function(data) {
 			if (!data) {
 				return;
 			}
@@ -279,6 +288,10 @@
 			}
 
 			_createTableFromData(jq, data);
+			
+			if (opt.onLoadSuccess) {
+				opt.onLoadSuccess(data);
+			}
 			
 			if (callback) {
 				callback(data);
@@ -311,7 +324,31 @@
 		tbody.empty();
 		for (let i = 0; i < dataList.length; i++) {
 			let row = dataList[i];
+			if (opt.formatterRow) {
+				let formatterRowResult = opt.formatterRow(i, row);
+				if (formatterRowResult) {
+					tbody.append(formatterRowResult);
+					continue;
+				}
+			}
 			let tr = $("<tr>").data(ROW_DATA_NAME, row).attr(ROW_INDEX_NAME, i).appendTo(tbody);
+
+			if (opt.rowStyler) {
+				let rowStylerResult = opt.rowStyler(i, row);
+				if (rowStylerResult) {
+					if ($.type(rowStylerResult) === "object") {
+						tr.css(rowStylerResult);
+					} else if ($.type(rowStylerResult) === "string") {
+						tr.addClass(rowStylerResult);
+					}
+				}
+			}
+
+			if (opt.onClickRow) {
+				tr.click(function() {
+					opt.onClickRow.call(tr.get(0), i, row);
+				});
+			}
 			for (let j = 0; j < opt.columns.length; j++) {
 				let column = opt.columns[j];
 				let td = $("<td>").appendTo(tr);
@@ -325,7 +362,7 @@
 						cursor : "pointer"
 					});
 					chk.click(function() {
-						_ckickChk(jq, this.checked, $(this).parent().parent().attr(ROW_INDEX_NAME));
+						_ckickChk(jq, this);
 					});
 				} else {
 					td.append(_getColumnData(column, row[column.field], row, i));
@@ -355,11 +392,19 @@
 	/**
 	 * 点击复选框
 	 * @param {*} jq 
-	 * @param {*} checked 
-	 * @param {*} rowIndex 
+	 * @param {*} target 
 	 */
-	function _ckickChk(jq, checked, rowIndex) {
+	function _ckickChk(jq, target) {
 		let opt = jq.data(pluginName);
+		let checked = $(target).get(0).checked;
+		let row = $(target).parent().parent();
+		let rowIndex = row.attr(ROW_INDEX_NAME);
+		let rowData = row.data(ROW_DATA_NAME);
+		//阻止冒泡
+		if (event) {
+			event.stopPropagation();
+		}
+		
 		if (checked) {
 			//选中
 			if (opt.singleSelect === true) {
@@ -380,6 +425,9 @@
 					_getTHead(jq).find("input[role='"+ CHECK_ALL_ROLE_NAME +"']").prop("checked", true);
 				}
 			}
+			if (opt.onCheck) {
+				opt.onCheck.call(target, rowIndex, rowData);
+			}
 		} else {
 			//取消选中
 			if (opt.singleSelect === true) {
@@ -389,6 +437,9 @@
 				//可以多选
 				//把上面的全选按钮也取消
 				_getTHead(jq).find("input[role='"+ CHECK_ALL_ROLE_NAME +"']").prop("checked", false);
+			}
+			if (opt.onUnCheck) {
+				opt.onUnCheck.call(target, rowIndex, rowData);
 			}
 		}
 	}
@@ -426,11 +477,71 @@
 	}
 
 	/**
+	 * 获取一行
+	 * @param {*} jq
+	 * @param {*} index 
+	 */
+	function _getRow(jq, index) {
+		let rows = _getAllRows(jq);
+		if (!rows || rows.length == 0) {
+			return null;
+		}
+		return rows[index];
+	}
+
+	/**
+	 * 获取所有行的数据
+	 * @param {*} jq 
+	 */
+	function _getAllData(jq) {
+		let rows = _getAllRows(jq);
+		if (!rows || rows.length == 0) {
+			return [];
+		}
+
+		let arr = [];
+		for (let i = 0; i < rows.length; i++) {
+			arr.push($(rows[i]).data(ROW_DATA_NAME));
+		}
+		return arr;
+	}
+
+	/**
+	 * 获取一行数据
+	 * @param {*} jq 
+	 * @param {*} index 
+	 */
+	function _getData(jq, index) {
+		let rows = _getAllData(jq);
+		if (!rows || rows.length == 0) {
+			return null;
+		}
+		return rows[index];
+	}
+
+	/**
 	 * 获取所有选中的行
 	 * @param {*} jq 
 	 */
 	function _getCheckedRows(jq) {
 		return _getAllRows(jq).has("input[role='"+ CHECK_BOX_ROLE_NAME +"']:checked");
+	}
+
+	/**
+	 * 获取所有选中行的数据
+	 * @param {*} jq 
+	 */
+	function _getCheckData(jq) {
+		let rows = _getCheckedRows(this);
+		if (!rows || rows.length == 0) {
+			return [];
+		}
+
+		let arr = [];
+		for (let i = 0; i < rows.length; i++) {
+			arr.push($(rows[i]).data(ROW_DATA_NAME));
+		}
+		return arr;
 	}
 
 	/**
@@ -441,8 +552,50 @@
 		return jq.find(">.card-footer>nav");
 	}
 
+	/**
+	 * 从远端加载数据
+	 * @param {*} jq 
+	 * @param {*} param 
+	 */
+	function _load(jq, param) {
+		let opt = jq.data(pluginName);
+		_getTableDataContentFromRemote(jq, opt, param, {
+			currentPage : 1
+		}, function(data) {
+			//分页重新加载
+			let totalData = _getTotalAndData(data);
+			_createPagination(jq, opt, totalData.total);
+		});
+	}
+
 	//方法
 	$.fn[pluginName].methods = {
+		/**
+		 * 获取表格中的行
+		 */
+		getRows : function() {
+			return _getAllRows(this);
+		},
+		/**
+		 * 获取一行
+		 * @param {*} index 
+		 */
+		getRow : function(index) {
+			return _getRow(this, index);
+		},
+		/**
+		 * 获取所有行的数据
+		 */
+		getAllData : function() {
+			return _getAllData(this);
+		},
+		/**
+		 * 获取指定的行数据
+		 * @param {}} index 
+		 */
+		getData : function(index) {
+			return _getData(this, index);
+		},
 		/**
 		 * 获取选中的行
 		 */
@@ -453,16 +606,27 @@
 		 * 获取选中的data
 		 */
 		getCheckData : function() {
-			let rows = _getCheckedRows(this);
-			if (!rows || rows.length == 0) {
-				return [];
-			}
-
-			let arr = [];
-			for (let i = 0; i < rows.length; i++) {
-				arr.push($(rows[i]).data(ROW_DATA_NAME));
-			}
-			return arr;
+			return _getCheckData(this);
+		},
+		/**
+		 * 选中一行
+		 * @param {*} index 
+		 */
+		checkRow : function(index) {
+			let row = _getRow(this, index);
+			let chk = $(row).find("input[role='"+ CHECK_BOX_ROLE_NAME +"']");
+			chk.prop("checked", true);
+			_ckickChk(this, chk);
+		},
+		/**
+		 * 取消选中一行
+		 * @param {*} index 
+		 */
+		unCheckRow : function(index) {
+			let row = _getRow(this, index);
+			let chk = $(row).find("input[role='"+ CHECK_BOX_ROLE_NAME +"']");
+			chk.prop("checked", false);
+			_ckickChk(this, chk);
 		},
 		/**
 		 * 从远端从新加载数据
@@ -471,15 +635,41 @@
 		load : function(param) {
 			let self = this;
 			return this.each(function() {
-				let opt = jq.data(pluginName);
-				_getTableDataContentFromRemote(self, opt, param);
+				_load(self, param);
 			});
 		}
 	};
 	
 	//事件
 	$.fn[pluginName].events = {
-		
+		/**
+		 * 当从远端加载数据之前
+		 * 如果返回false，则阻止从远端加载
+		 */
+		onBeforeLoad : function() {},
+		/**
+		 * 当加载成功时
+		 * @param {*} data
+		 */
+		onLoadSuccess : function(data) {},
+		/**
+		 * 当选中复选框时
+		 * @param {*} rowIndex 
+		 * @param {*} rowData 
+		 */
+		onCheck : function(rowIndex, rowData) {},
+		/**
+		 * 当取消选中复选框时
+		 * @param {*} rowIndex 
+		 * @param {*} rowData 
+		 */
+		onUnCheck : function(rowIndex, rowData) {},
+		/**
+		 * 当点击一行时
+		 * @param {*} rowIndex 
+		 * @param {*} rowData 
+		 */
+		onClickRow : function(rowIndex, rowData) {}
 	};
 	
 	//属性
@@ -508,32 +698,20 @@
 		data : null,					//如果不用url，则可以直接传入data
 		singleSelect : false,			//是否单选
 		idField : null,					//表示id值的字段
-
-
-
-		button : "",                     //表格上方按钮
-		
-		
-		
-		
-		
 		/**
 		 * 对行进行格式化
+		 * @param {*} rowIndex 
+		 * @param {*} rowData 
 		 */
-		formatterRow : function(rowData, rowIndex) {
-			
-		},
-		
+		formatterRow : function(rowIndex, rowData) {},
 		/**
 		 * 对行样式进行处理
 		 * 如果返回值是对象，则应用在css属性里面
 		 * 如果返回值是string，则应用在class里面
-		 * @param rowData
 		 * @param rowIndex
+		 * @param rowData
 		 */
-		rowStyler : function(rowData, rowIndex) {
-			return null;
-		}
+		rowStyler : function(rowIndex, rowData) {}
 	});
 
 	/**

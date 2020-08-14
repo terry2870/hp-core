@@ -54,7 +54,7 @@ public class SendMailServiceImpl implements ISendMailService {
 
 		MimeMessage message = javaMailSender.createMimeMessage();
 		try {
-			MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
+			MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");
 			// 邮件发送人
 			messageHelper.setFrom(request.getFrom());
 			// 邮件接收人

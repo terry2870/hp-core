@@ -137,3 +137,11 @@ a{text-decoration:none;}
     width: calc(100% - 260px);
     min-height: calc(100% - 120px);
 }
+
+.center-content .content-row {
+	margin-bottom: 10px;
+}
+
+.center-content .content-row form input,button{
+	margin-right: 10px;
+}
