@@ -41,7 +41,7 @@ public class TestTable extends BaseBean {
 8、所有新增，修改，删除一律路由到master数据库，查询是随机取主从。    
 9、database.yml 里面的  daos配置项，表示这个dao下的所有数据库操作都路由到它指定的database上面      
 10、如果有mybatis的 mapper文件，默认放在 classpath:META-INF/spring/mybatis-config.xml 目录下，如果有不一样，请在配置文件里面设置       
- - hp.core.mybatis.config:classpath:META-INF/spring/mybatis-config.xml
+ - hp.core.mybatis.config:classpath=META-INF/spring/mybatis-config.xml
 
 
 ###### 2. DAO类
@@ -113,10 +113,10 @@ datasources:
 
 ###### 5. springboot启动类配置
 启动类增加注解    
-    @ImportResource(locations = {"classpath*:META-INF/spring/spring-*.xml"})      
-会加载jar包中所有匹配的xml文件       
-在项目的配置文件中增加拦截你的dao的配置corn表达式    
-    hp.core.database.interceptor.expression=(execution(* com.hp.webtest.dal.*.*(..)))
+    @ImportResource(locations = {"classpath\*:META-INF/spring/spring-\*.xml"})        
+会加载jar包中所有匹配的xml文件          
+在项目的配置文件中增加拦截你的dao的配置corn表达式       
+    hp.core.database.interceptor.expression=(execution(\* com.hp.webtest.dal.\*.\*(..)))  这里改成你所存放dao的package就可以了     
 这个是拦截你的dao文件，进行读写分离自动路由的 
 
 
