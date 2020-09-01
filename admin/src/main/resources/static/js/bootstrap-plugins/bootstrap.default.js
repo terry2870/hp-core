@@ -1,3 +1,6 @@
+let NAME_SPACE = "http://www.w3.org/2000/svg";
+let XLINKNS = "http://www.w3.org/1999/xlink";
+
 /**
  * bootstrap的一些扩展工具
 */
@@ -14,6 +17,37 @@ jQuery.bootstrapClass = {
 	LINK : "link"
 };
 
+/**
+ * 创建svg标签
+ * @param {*} tagName 
+ */
+function createSVG(tagName) {
+	return document.createElementNS(NAME_SPACE, tagName);
+}
+
+/**
+ * 创建svg的图标
+ * @param {*} icon 
+ * @param {*} contextPath 
+ * @param {*} property 
+ */
+function createSVGIcon(svgIcon, contextPath, property) {
+	if (!svgIcon) {
+		svgIcon = "gear";
+	}
+
+	let icon = createSVG("svg");
+	if (property) {
+		for (key in property) {
+			icon.setAttribute(key, property[key]);
+		}
+	}
+
+	let iconUse = createSVG("use");
+	iconUse.setAttributeNS(XLINKNS, "href", contextPath +"/css/bootstrap-icons.svg#"+ svgIcon);
+	icon.appendChild(iconUse);
+	return icon;
+}
 
 jQuery.message = {
 	/**

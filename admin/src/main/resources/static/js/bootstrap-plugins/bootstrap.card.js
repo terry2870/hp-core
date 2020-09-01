@@ -240,6 +240,12 @@
 
 	//方法
 	$.fn[pluginName].methods = {
+		show : function(effect) {
+			let jq = this;
+			return this.each(function() {
+				_open(jq, effect);
+			});
+		},
 		/**
 		 * 关闭
 		 * @param {*} effect 

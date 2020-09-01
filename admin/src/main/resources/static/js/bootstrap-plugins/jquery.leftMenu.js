@@ -27,10 +27,10 @@
 	 * 创建
 	 */
 	function _create(jq, opt) {
-		jq.addClass("left-side-menu");
+		jq.addClass("nav-main");
 
 		//生成伸缩条
-		_createMenuTop(jq);
+		_createMenuTop(jq, opt);
 
 		//生成导航菜单
 		if (opt.ajaxParam && opt.ajaxParam.url) {
@@ -56,52 +56,33 @@
 				opt.onLoadSuccess.call(jq, opt.dataList);
 			}
 		}
-		
-		_init(jq);
 	}
 
 	/**
 	 * 生成菜单顶部伸缩条
 	 * @param {} jq 
+	 * @param {} opt
 	 */
-	function _createMenuTop(jq) {
-		let label = $("<label>").append($("<input>").attr({
-			type : "checkbox",
-			checked : "checked"
-		}));
-
-		let svg = _createSVG("svg");
-
-		svg.click(function() {
-			let checkbox = svg.prev("input[type='checkbox']");
-			if (checkbox.prop("checked") == true) {
-				jq.find(".lsm-sidebar-item.lsm-sidebar-show").removeClass('lsm-sidebar-show');
-				jq.find("ul").removeAttr('style');
-				jq.addClass('lsm-mini');
-				jq.stop().animate({width : 60}, 200);
-				$(".center-content").css("width", "calc(100% - 100px)");
+	function _createMenuTop(jq, opt) {
+		let navTop = $("<div>").addClass("nav-top").appendTo(jq);
+		let miniDiv = $("<div id='mini'>").appendTo(navTop);
+		let nimiImg = $("<img>").attr("src", opt.contextPath + "/image/mini.png").appendTo(miniDiv);
+		nimiImg.click(function() {
+			if (jq.hasClass("nav-mini")) {
+				$(".nav-main.nav-mini .scroll-bar-warp").off("mouseover mouseout");
+				jq.removeClass("nav-mini")
+				_revert(jq);
 			} else {
-				jq.removeClass('lsm-mini');
-				_getMenuContainer(jq).find("ul ul").hide();
-				jq.stop().animate({width: 220}, 200);
-				$(".center-content").css("width", "calc(100% - 260px)");
+				jq.addClass("nav-mini");
+				_mini(jq);
+				$(".nav-main.nav-mini .scroll-bar-warp").on("mouseover", function() {
+					_revert(jq);
+				});
+				$(".nav-main.nav-mini .scroll-bar-warp").on("mouseout", function() {
+					_mini(jq);
+				});
 			}
 		});
-
-		svg.attr({
-			viewBox : "0 0 100 100",
-			xmlns : "http://www.w3.org/2000/svg"
-		});
-		svg.append(_createSVG("circle").attr({
-			cx : 50,
-			cy : 50,
-			r : 30
-		}));
-		svg.append(_createSVG("path").addClass("line--1").attr("d", "M0 40h62c18 0 18-20-17 5L31 55"));
-		svg.append(_createSVG("path").addClass("line--2").attr("d", "M0 50h80"));
-		svg.append(_createSVG("path").addClass("line--3").attr("d", "M0 60h62c18 0 18 20-17-5L31 45"));
-		label.append(svg);
-		jq.append($("<div>").addClass("lsm-expand-btn").append($("<div>").addClass("lsm-mini-btn").append(label)));
 	}
 
 	/**
@@ -110,23 +91,21 @@
 	 * @param {*} opt 
 	 */
 	function _createLeftMenu(jq, opt) {
-		let container = $("<div>").addClass("lsm-container").appendTo(jq);
-		let scroll = $("<div>").addClass("lsm-scroll").appendTo(container);
-		let sidebar = $("<div>").addClass("lsm-sidebar").appendTo(scroll);
+		let scrollBarWarp = $("<div>").addClass("scroll-bar-warp").appendTo(jq);
 		let ul = _createUL(jq, opt, opt.rootPid);
-		sidebar.append(ul);
+		scrollBarWarp.append(ul);
 
 		//虚拟的滚动条
 		_initScroll(jq);
 
 		//默认展开
 		if (opt.expandId !== undefined && opt.expandId !== null) {
-			_getMenuContainer(jq).find("li.lsm-sidebar-item[menuid="+ opt.expandId +"]>a").click();
+			//_getMenuContainer(jq).find("li.lsm-sidebar-item[menuid="+ opt.expandId +"]>a").click();
 		}
 	}
 
 	/**
-	 * 生成子节点(递归)
+	 * 生成子节点
 	 * @param {*} jq 
 	 * @param {*} opt 
 	 * @param {*} pid 
@@ -140,7 +119,7 @@
 		if (!childNode || childNode.length == 0) {
 			return null;
 		}
-		let ul = $("<ul>");
+		let ul = $("<ul>").addClass("nav-menu scroll-bar");
 
 		if (pid == opt.rootPid) {
 			ul.show();
@@ -149,66 +128,69 @@
 		}
 		for (let i = 0; i < childNode.length; i++) {
 			let node = childNode[i];
-			let li = $("<li>").attr({
+			let li = $("<li>").addClass("nav-item").attr({
 				menuid : node[opt.idField],
 				pid : node[opt.pidField]
 			}).appendTo(ul);
-			
-			let hasChild = _hasChild(opt.dataList, node[opt.idField], opt);
 
-			if (hasChild) {
-				li.addClass("lsm-sidebar-item");
+			let a = $("<a>").attr("href", "javascript:;").appendTo(li);
+			a.click(function() {
+
+				if ($(this).next().css('display') == "none") {
+					_expandMenu(jq, $(this).parent());
+				} else {
+					_collapseMenu(jq, $(this).parent());
+				}
+			});
+			//菜单图标
+			let menuIcon = createSVGIcon(node[opt.iconField], opt.contextPath, {
+				class : "nav-icon",
+				fill : "currentColor"
+			})
+			a.append(menuIcon);
+
+			//菜单名称
+			a.append($("<span>").text(node[opt.textField]));
+
+			//检查是否有子节点
+			let subChildNode = _findChild(opt.dataList, node[opt.idField], opt);
+			if (!subChildNode || subChildNode.length == 0) {
+				continue;
 			}
-			let a = $("<a>").appendTo(li);
-			let iEle = $("<i>").addClass("my-icon lsm-sidebar-icon").appendTo(a);
-			if (node[opt.iconField]) {
-				iEle.addClass(node[opt.iconField]);
-			}
-			a.append($("<span>").html(node[opt.textField]));
-			if (hasChild) {
-				a.append($("<i>").addClass("my-icon lsm-sidebar-more"));
-				a.click(function() {
-					if (jq.hasClass("lsm-mini")) {
-						return;
-					}
-					let parent = $(this).parent();
-					if (parent.hasClass("lsm-sidebar-show")) {
-						_collapseMenu(jq, parent);
-					} else {
-						_expandMenu(jq, parent);
-					}
+
+			//more icon
+			let moreIcon = createSVGIcon("chevron-right", opt.contextPath, {
+				class : "nav-more",
+				fill : "currentColor"
+			});
+			a.append(moreIcon);
+
+			let subUl = $("<ul>").appendTo(li);
+			//生成子菜单
+			$(subChildNode).each(function(index, item) {
+				let subLi = $("<li>").appendTo(subUl);
+				subLi.attr("menuid", item[opt.idField]);
+				let subA = $("<a>").attr("href", "javascript:;").appendTo(subLi);
+				subA.append($("<span>").addClass("sub-menu").text(item[opt.textField]));
+
+				subA.click(function() {
+					jq.find(".nav-menu .nav-active").removeClass("nav-active");
+					$(this).addClass("nav-active");
+					opt.onClickMenu.call(jq, item, index);
 				});
-			} else {
-				a.click(function() {
-					opt.onClickMenu(node, i);
-				});
+
+				if (opt.selectedId && opt.selectedId == item[opt.idField]) {
+					subA.addClass("nav-active");
+				}
+			});
+			
+			if (opt.expandId && node[opt.idField] == opt.expandId) {
+				//展开
+				_expandMenu(jq, li);
 			}
-			if (opt.selectedId !== undefined && opt.selectedId !== null && opt.selectedId == node[opt.idField]) {
-				a.addClass("active");
-			}
-			li.append(_createUL(jq, opt, node[opt.idField]));
 		}
 
 		return ul;
-	}
-
-	/**
-	 * 是否有子节点
-	 * @param {*} dataList 
-	 * @param {*} id 
-	 * @param {*} opt 
-	 */
-	function _hasChild(dataList, id, opt) {
-		if (!opt.dataList || opt.dataList.length == 0) {
-			return false;
-		}
-
-		for (let i = 0; i < opt.dataList.length; i++) {
-			if (dataList[i][opt.pidField] == id) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -232,19 +214,11 @@
 	}
 
 	/**
-	 * 创建svg标签
-	 * @param {*} tagName 
-	 */
-	function _createSVG(tagName) {
-		return $(document.createElementNS(NAME_SPACE, tagName));
-	}
-
-	/**
 	 * 获取滚动条div
 	 * @param {*} jq 
 	 */
 	function _getScroll(jq) {
-		return jq.find("div.lsm-scroll");
+		return jq.find("ul.scroll-bar");
 	}
 
 	/**
@@ -275,74 +249,57 @@
 	/**
 	 * 展开菜单
 	 * @param {*} jq 
-	 * @param {*} item 
+	 * @param {*} item (li 对象)
 	 */
 	function _expandMenu(jq, item) {
-		_initScroll(jq);
-		item.siblings("li.lsm-sidebar-item").children('ul').slideUp(200);
-		item.find('ul').slideDown(200);
-		item.addClass('lsm-sidebar-show').siblings('li').removeClass('lsm-sidebar-show');
+		item.parent().find('ul').slideUp(300);
+		item.find('ul').slideDown(300);
+		item.addClass('nav-show').siblings('li').removeClass('nav-show');
 	}
 
 	/**
-	 * 折叠菜单
+	 * 收起菜单
 	 * @param {*} jq 
-	 * @param {*} item 
+	 * @param {*} item  (li 对象)
 	 */
 	function _collapseMenu(jq, item) {
-		_initScroll(jq);
-		item.siblings("li.lsm-sidebar-item").children('ul').slideUp(200);
-		item.find('ul').slideUp(200);
-		item.removeClass('lsm-sidebar-show');
+		item.find('ul').slideUp(300);
+		item.removeClass("nav-show");
 	}
 
 	/**
-	 * 初始化
+	 * 收起所有
+	 * @param {*} jq 
 	 */
-	function _init(jq) {
-		//lsm-mini
-		
-		$(document).on('mouseover','.lsm-mini .lsm-container ul:first>li',function(){
-			$(".lsm-popup.third").hide();
-			$(".lsm-popup.second").length == 0 && ($(".lsm-container").append("<div class='second lsm-popup lsm-sidebar'><div></div></div>"));
-			$(".lsm-popup.second>div").html($(this).html());
-			$(".lsm-popup.second").show();
-			$(".lsm-popup.third").hide();
-			var top = $(this).offset().top;
-			var d = $(window).height() - $(".lsm-popup.second>div").height();
-			if(d - top <= 0 ){
-				top  = d >= 0 ?  d - 8 : 0;
-			}
-			$(".lsm-popup.second").stop().animate({"top":top}, 100);
-		});
+	function _collapseAll(jq) {
+		jq.find('ul.nav-menu li.nav-item ul').slideUp(300);
+	}
+
+	/**
+	 * 设置为mini
+	 * @param {*} jq 
+	 */
+	function _mini(jq) {
+		jq.find(".nav-item>a span").hide();
+		jq.find(".nav-more use").hide();
+		_setWidth(jq, "60px");
+	}
 	
-		$(document).on('mouseover','.second.lsm-popup.lsm-sidebar > div > ul > li',function(){
-			if(!$(this).hasClass("lsm-sidebar-item")){
-				$(".lsm-popup.third").hide();
-				return;
-			}
-			$(".lsm-popup.third").length == 0 && ($(".lsm-container").append("<div class='third lsm-popup lsm-sidebar'><div></div></div>"));
-			$(".lsm-popup.third>div").html($(this).html());
-			$(".lsm-popup.third").show();
-			var top = $(this).offset().top;
-			var d = $(window).height() - $(".lsm-popup.third").height();
-			if(d - top <= 0 ){
-				top  = d >= 0 ?  d - 8 : 0;
-			}
-			$(".lsm-popup.third").stop().animate({"top":top}, 100);
-		});
+	/**
+	 * 还原
+	 * @param {*} jq 
+	 */
+	function _revert(jq) {
+		jq.find(".nav-item>a span").show();
+		jq.find(".nav-more use").show();
+		_setWidth(jq, "220px");
+	}
 	
-		$(document).on('mouseleave','.lsm-mini .lsm-container ul:first, .lsm-mini .slimScrollBar,.second.lsm-popup ,.third.lsm-popup',function(){
-			$(".lsm-popup.second").hide();
-			$(".lsm-popup.third").hide();
-		});
 	
-		$(document).on('mouseover','.lsm-mini .slimScrollBar,.second.lsm-popup',function(){
-			$(".lsm-popup.second").show();
-		});
-		$(document).on('mouseover','.third.lsm-popup',function(){
-			$(".lsm-popup.second").show();
-			$(".lsm-popup.third").show();
+	function _setWidth(jq, width) {
+		jq.css({
+			width : width,
+			"max-width" : width
 		});
 	}
 	
@@ -386,6 +343,7 @@
 		dataList : [],
 		loadFilter : function(data) {
 			return data;
-		}
+		},
+		contextPath : ""
 	});
 })(jQuery);

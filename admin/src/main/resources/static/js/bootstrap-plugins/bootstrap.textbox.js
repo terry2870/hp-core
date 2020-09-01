@@ -35,9 +35,11 @@
 		
 		if (opt.width) {
 			warp.css("width", opt.width);
+			jq.css("width", opt.width);
 		}
 		if (opt.height) {
 			warp.css("height", opt.height);
+			jq.css("height", opt.height);
 		}
 		if (opt.placeholder) {
 			jq.attr("placeholder", opt.placeholder);
@@ -53,17 +55,22 @@
 		if (opt.icons && opt.icons.length > 0) {
 			let addonDiv = $("<div>").addClass("float-right");
 			for (let i = 0; i < opt.icons.length; i++) {
-				let addon = $("<a>").addClass("textbox-addon").appendTo(addonDiv);
-				addon.css({
-					background: "url(../png/"+ opt.icons[i].icon +".png) no-repeat center center"
-				});
-				if (i > 0) {
-					addon.css({
-						"margin-left" : "5px"
-					});
-				}
+				let svg = _createSVG("svg");
+				let use = _createSVG("use");
+				use.setAttributeNS(XLINKNS, "href", opt.contextPath +"/css/bootstrap-icons.svg#"+ opt.icons[i].icon);
+				svg.appendChild(use);
+
+				let $svg = $(svg);
+				$svg.addClass("textbox-addon");
+				$svg.attr("fill", "currentColor");
+
+				addonDiv.append(svg);
+				//svg.append("<use xlink:href='"+ opt.contextPath +"/css/bootstrap-icons.svg#"+ opt.icons[i].icon +"' />");
+				/*
+				let addon = $("<img>").addClass("textbox-addon").appendTo(addonDiv);
+				addon.attr("src", opt.contextPath + "/svg/"+ opt.icons[i].icon +".svg");*/
 				if (opt.icons[i].onClick) {
-					addon.click(function() {
+					$svg.click(function() {
 						opt.icons[i].onClick.call(this);
 					});
 				}
@@ -74,6 +81,14 @@
 		jq.validatebox(opt);
 	}
 	
+	/**
+	 * 创建svg标签
+	 * @param {*} tagName 
+	 */
+	function _createSVG(tagName) {
+		return document.createElementNS(NAME_SPACE, tagName);
+	}
+
 	//方法
 	$.fn[pluginName].methods = $.extend({}, $.fn.validatebox.methods, {
 		/**
@@ -106,7 +121,8 @@
 		editable : true,				//文本框是否可以编辑
 		readonly : false,				//文本框是否只读
 		disabled : false,				//文本框是否禁用
-		icons : []						//文本框显示图标()
+		icons : [],						//文本框显示图标()
+		contextPath : ""				//contextPath(icon的时候使用)
 	});
 
 	/**

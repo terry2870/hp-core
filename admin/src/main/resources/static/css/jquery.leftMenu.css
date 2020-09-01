@@ -1,0 +1,164 @@
+@charset "utf-8";
+.top-banner {
+	background-color: #367FA9;
+	height: 50px;
+	line-height: 50px;
+	font-size: 24px;
+	font-family: 'Microsoft Yahei', 'Times New Roman', Times, serif;
+	color: whitesmoke;
+}
+
+.top-banner .title {
+	width: 220px;
+	max-width: 220px;
+}
+
+.main {
+	width: 100%;
+	/* height: calc(100% - 50px); */
+	height: calc(100% - 50px);
+	max-height: calc(100% - 50px);
+	position: fixed;
+}
+
+.main .nav-main {
+	width: 220px;
+	height: 100%;
+	max-width: 220px;
+	background-color: #263238;
+	padding: 0px;
+	display: block;
+	font: 14px "微软雅黑","宋体","Arial Narrow",HELVETICA;
+	-webkit-text-size-adjust :100%;
+	transition: all 0.5s;
+}
+
+.main .nav-main .nav-top {
+	width: 100%;
+	height: 61px;
+}
+.nav-main .nav-top #mini {
+	border-bottom : 1px solid rgba(255,255,255,.1);
+}
+.nav-main .nav-top #mini img {
+	cursor: pointer;
+	opacity: 0.8;
+}
+
+.nav-main .scroll-bar-warp {
+	height: calc(100% - 61px);
+}
+
+.nav-main .nav-top #mini img:hover {
+	opacity: 1;
+}
+
+.nav-main ul {
+	margin: 0;
+	padding: 0;
+}
+
+.nav-main li {
+	list-style: none
+} 
+.nav-main .nav-top #mini img {
+	cursor: pointer;
+	opacity: 0.8;
+}
+
+.nav-main .nav-top #mini img:hover {
+	opacity: 1;
+}
+
+.nav-main a {
+	display: block;
+	overflow: hidden;
+	padding-left: 20px;
+	line-height: 46px;
+	max-height: 46px;
+	color: #ABB1B7;
+	transition: all .3s;
+	text-decoration: none;
+}
+
+.nav-main a span {
+	margin-left: 30px;
+}
+
+.nav-main a span.sub-menu {
+	margin-left: 40px;
+}
+
+.nav-item {
+	position: relative;
+}
+
+.nav-item.nav-show {
+	border-bottom: none;
+}
+
+.nav-item ul {
+	display: none;
+	background: rgba(0, 0, 0, .1);
+}
+
+.nav-item.nav-show ul {
+	display: block;
+}
+
+.nav-item>a:before {
+	content: "";
+	position: absolute;
+	left: 0px;
+	width: 2px;
+	height: 46px;
+	background: #34A0CE;
+	opacity: 0;
+	transition: all .3s;
+}
+
+.nav-main .nav-icon {
+	font-size: 20px;
+	position: absolute;
+	margin-left: -1px;
+}
+
+/*---------------------*/
+.nav-more {
+	float: right;
+	margin-right: 20px;
+	font-size: 12px;
+	transition: transform .3s;
+}
+
+.nav-show .nav-more {
+	transform: rotate(90deg);
+}
+
+.nav-show, .nav-item>a:hover {
+	color: #FFF;
+	background: rgba(0, 0, 0, .1);
+}
+
+.nav-show>a:before, .nav-item>a:hover:before {
+	opacity: 1;
+}
+
+.nav-item li:hover a {
+	color: #FFF;
+	background: rgba(0, 0, 0, .1);
+}
+
+.nav-item svg {
+	width: 20px;
+	height: 46px;
+}
+
+.nav-main .nav-item:hover {
+	background: rgba(255, 255, 255, .1);
+}
+
+.nav-main .nav-item .nav-active {
+	color: #FFF;
+	background: rgba(0, 0, 0, .1);
+}

@@ -1,1 +1,4 @@
-<div class ="top"  style="width: 100%;height: 80px;background-color: #397bc5"></div>
+<div class="row top-banner">
+	<div class="col title">后台管理系统</div>
+	<div class="col">2</div>
+</div>
