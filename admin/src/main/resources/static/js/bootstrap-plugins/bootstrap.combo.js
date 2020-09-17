@@ -8,6 +8,7 @@
  */
 (function($) {
 	let pluginName = "combo";
+	let SELECT_DATA = "selectdata";
 	let COMBO_RANDOM_VALUE = "COMBO_RANDOM_VALUE";
 	$.fn[pluginName] = function(options, param) {
 		let self = this;
@@ -47,7 +48,8 @@
 			_showPanel(jq);
 		});
 		$(document).click(function(e) {
-			if (e.target != jq.get(0) && e.target != panel.get(0) && e.target != panel.find(e.target).get(0)) {
+			let ele = $(e.target);
+			if (!ele.is(jq) && !ele.is(jq.parent().find("*")) && !ele.is(panel) && !ele.is(panel.find("*"))) {
 				_hidePanel(jq);
 			}
 		});
@@ -148,8 +150,29 @@
 		return rand;
 	}
 
+	/**
+	 * 获取值
+	 * @param {*} jq 
+	 */
+	function _getValues(jq) {
+		let datas = jq.data(SELECT_DATA);
+		if (!datas || datas.length == 0) {
+			return [];
+		}
+		return datas;
+	}
+
+	/**
+	 * 选中值
+	 * @param {*} jq 
+	 * @param {*} values 
+	 */
+	function _selectValues(jq, values) {
+		jq.data(SELECT_DATA, values);
+	}
+
 	//方法
-	$.fn[pluginName].methods = {
+	$.fn[pluginName].methods = $.extend({}, $.fn.textbox.methods, {
 		/**
 		 * 获取panel
 		 */
@@ -173,17 +196,22 @@
 			return self.each(function() {
 				_showPanel(self);
 			});
-		}
+		},
 		/**
-		 * 隐藏或显示panel
+		 * 设置或者获取值
+		 * @param {*} values 
 		 */
-		/*togglePanel : function() {
-			var self = $(this);
-			return self.each(function() {
-				_togglePanel(self);
-			});
-		}*/
-	};
+		values : function(values) {
+			let self = this;
+			if (values === undefined) {
+				return _getValues(self);
+			} else {
+				return $(this).each(function() {
+					_selectValues(self, values);
+				});
+			}
+		}
+	});
 	
 	//事件
 	$.fn[pluginName].events = {
@@ -207,6 +235,7 @@
 	
 	//属性
 	$.fn[pluginName].defaults = $.extend({}, $.fn[pluginName].events, {
+		multiple : false,								//是否可以多选
 		panelSelector : undefined,						//panel对象的选择器
 		panelHeight : "auto", 							//下拉框高度
 		panelWidth : undefined							//下拉框宽度

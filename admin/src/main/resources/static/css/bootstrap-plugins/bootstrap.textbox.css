@@ -1,5 +1,7 @@
 .textbox {
 	position: relative;
+	float : left;
+	margin-right: 10px;
 }
 .textbox div {
 	top : 0px;

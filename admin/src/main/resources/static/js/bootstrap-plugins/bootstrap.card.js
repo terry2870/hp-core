@@ -48,6 +48,9 @@
 			jq.css("top", opt.top);
 		}
 		
+		//保存div原来的内容
+		jq.data("originalContent", jq.html());
+		jq.empty();
 
 		//创建header
 		_createHeader(jq, opt);
@@ -65,10 +68,12 @@
 	 * @param {*} opt 
 	 */
 	function _createHeader(jq, opt) {
-		if (!opt.header) {
+		if (!opt.header && !opt.title) {
 			return;
 		}
-		let header = $("<div>").addClass("card-header").appendTo(jq);
+		let header = $("<div>").css({
+			padding: "5px 10px 5px 10px"
+		}).addClass("card-header").appendTo(jq);
 		if (opt.cardStyle) {
 			header.addClass("bg-" + opt.cardStyle);
 		}
@@ -83,19 +88,29 @@
 				_close(jq, "slide");
 			});
 		}
+		if (opt.title) {
+			opt.header = {
+				html : opt.title
+			};
+		}
 		_createContent(jq, header, opt.header);
 	}
 
 	/**
-	 * 创建header头部
+	 * 创建body
 	 * @param {*} jq 
 	 * @param {*} opt 
 	 */
 	function _createBody(jq, opt) {
-		if (!opt.body) {
-			return;
+		let body = $("<div>").css({
+			padding: "5px 10px 5px 10px"
+		}).addClass("card-body").appendTo(jq);
+		let originalContent = jq.data("originalContent");
+		if (originalContent) {
+			opt.body = {
+				html : originalContent
+			};
 		}
-		let body = $("<div>").addClass("card-body").appendTo(jq);
 		_createContent(jq, body, opt.body);
 	}
 
@@ -324,6 +339,7 @@
 	
 	//属性
 	$.fn[pluginName].defaults = $.extend({}, $.fn[pluginName].events, {
+		title : "",
 		left : null,
 		top : null,
 		width : "200",					//宽

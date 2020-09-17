@@ -8,6 +8,10 @@
 	color: whitesmoke;
 }
 
+.top-banner .user {
+	text-align: right;
+}
+
 .top-banner .title {
 	width: 220px;
 	max-width: 220px;

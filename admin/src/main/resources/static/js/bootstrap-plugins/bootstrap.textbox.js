@@ -50,7 +50,10 @@
 		if (opt.type) {
 			jq.attr("type", opt.type);
 		}
-		jq.prop("readonly", opt.editable === false || opt.readonly === true);
+		if (opt.editable === false || opt.readonly === true) {
+			jq.prop("readonly", true);
+			jq.css("background-color", "white");
+		}
 		jq.prop("disabled", opt.disabled);
 		if (opt.icons && opt.icons.length > 0) {
 			let addonDiv = $("<div>").addClass("float-right");

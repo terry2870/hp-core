@@ -85,7 +85,7 @@
 			opt.onBeforeValidate.call(jq, textValue);
 		}
 		
-		let validateResult = _getValidateResult(jq, opt, textValue);
+		let validateResult = _getValidateResult(jq, textValue);
 		if (validateResult.result !== true) {
 			_showError(jq, validateResult.message);
 		} else {
@@ -103,10 +103,10 @@
 	/**
 	 * 获取验证结果
 	 * @param {*} jq 
-	 * @param {*} opt
 	 * @param {*} textValue 
 	 */
-	function _getValidateResult(jq, opt, textValue) {
+	function _getValidateResult(jq, textValue) {
+		let opt = jq.data(pluginName);
 		let result = undefined;
 		let message = "";
 		if (jq.attr(enableValidation) == "false") {
@@ -237,6 +237,21 @@
 			return this.each(function() {
 				$(self).attr(enableValidation, "false");
 			});
+		},
+		/**
+		 * 验证
+		 */
+		validate : function() {
+			let self = this;
+			return this.each(function() {
+				_validate(self);
+			});
+		},
+		/**
+		 * 获取验证结果
+		 */
+		getValidateResult : function() {
+			return _getValidateResult($(this), $(this).val()).result;
 		}
 	};
 	

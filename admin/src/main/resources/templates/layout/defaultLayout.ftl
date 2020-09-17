@@ -6,6 +6,8 @@
 <title>页面首页</title>
 <link href="${request.contextPath}/css/bootstrap.min.css" rel="stylesheet" >
 <link href="${request.contextPath}/css/jquery.leftMenu.css" rel="stylesheet" >
+<link href="${request.contextPath}/css/main-body.css" rel="stylesheet" >
+<link rel="stylesheet" type="text/css" href="${request.contextPath}/css/bootstrap-plugins/bootstrap.textbox.css">
 <script type="text/javascript" src="${request.contextPath}/js/jquery-3.5.1.min.js"></script>
 </head>
 <body>
@@ -22,10 +24,21 @@
 		</div>
 	</div>
 	<#include "layout/footer.ftlh" />
-	<script type="text/javascript" src="${request.contextPath}/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="${request.contextPath}/js/bootstrap-plugins/bootstrap.default.js"></script>
+	<script type="text/javascript" src="${request.contextPath}/js/bootstrap-plugins/bootstrap.breadcrumb.js"></script>
+	<script type="text/javascript" src="${request.contextPath}/js/bootstrap-plugins/bootstrap.breadcrumb.js"></script>
+	<script type="text/javascript" src="${request.contextPath}/js/bootstrap-plugins/bootstrap.card.js"></script>
+	<script type="text/javascript" src="${request.contextPath}/js/bootstrap-plugins/bootstrap.validatebox.js"></script>
+	<script type="text/javascript" src="${request.contextPath}/js/bootstrap-plugins/bootstrap.textbox.js"></script>
+	<script type="text/javascript" src="${request.contextPath}/js/bootstrap-plugins/bootstrap.combo.js"></script>
+	<script type="text/javascript" src="${request.contextPath}/js/bootstrap-plugins/bootstrap.combobox.js"></script>
+	
+	
 	<script type="text/javascript" src="${request.contextPath}/js/jquery.slimscroll.min.js"></script>
-	<script type="text/javascript" src="${request.contextPath}/js/bootstrap-plugins/jquery.leftMenu.js"></script>
+	<script type="text/javascript" src="${request.contextPath}/js/jquery.leftMenu.js"></script>
+	<script type="text/javascript" src="${request.contextPath}/js/popper.min.js"></script>
+	<script type="text/javascript" src="${request.contextPath}/js/bootstrap.min.js"></script>
+	
 </body>
 </html>
 </#macro>
