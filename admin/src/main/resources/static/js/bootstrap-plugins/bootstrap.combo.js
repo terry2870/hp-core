@@ -16,6 +16,8 @@
 			let method = $.fn[pluginName].methods[options];
 			if (method){
 				return method.call(this, param);
+			} else {
+				throw new Error(pluginName + " 没有此方法。");
 			}
 		}
 
@@ -53,6 +55,8 @@
 				_hidePanel(jq);
 			}
 		});
+
+		$.tools.markSuccess(jq, pluginName);
 	}
 
 	/**
@@ -171,6 +175,15 @@
 		jq.data(SELECT_DATA, values);
 	}
 
+	/**
+	 * 清空
+	 * @param {*} jq 
+	 */
+	function _clear(jq) {
+		jq.textbox("clear");
+		jq.data(SELECT_DATA, null);
+	}
+
 	//方法
 	$.fn[pluginName].methods = $.extend({}, $.fn.textbox.methods, {
 		/**
@@ -210,6 +223,15 @@
 					_selectValues(self, values);
 				});
 			}
+		},
+		/**
+		 * 清空
+		 */
+		clear : function() {
+			let self = this;
+			return $(this).each(function() {
+				_clear(self);
+			});
 		}
 	});
 	

@@ -18,6 +18,8 @@
 			let method = $.fn[pluginName].methods[options];
 			if (method){
 				return method.call(this, param);
+			} else {
+				throw new Error(pluginName + " 没有此方法。");
 			}
 		}
 		return this.each(function() {
@@ -173,12 +175,14 @@
 			}, function(data) {
 				let totalData = _getTotalAndData(data);
 				_createPagination(jq, opt, totalData.total);
+				$.tools.markSuccess(jq, pluginName);
 			});
 		} else {
 			//从本地数据生成
 			_createTableFromData(jq, opt.data);
 			let totalData = _getTotalAndData(data);
 			_createPagination(jq, opt, totalData.total);
+			$.tools.markSuccess(jq, pluginName);
 		}
 	}
 

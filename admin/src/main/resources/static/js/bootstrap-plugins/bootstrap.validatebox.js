@@ -14,6 +14,8 @@
 			let method = $.fn[pluginName].methods[options];
 			if (method){
 				return method.call(this, param);
+			} else {
+				throw new Error(pluginName + " 没有此方法。");
 			}
 		}
 		return this.each(function() {
@@ -43,6 +45,10 @@
 		jq.keyup(function() {
 			_validate(jq);
 		});
+
+		jq.attr(pluginName, "1");
+
+		$.tools.markSuccess(jq, pluginName);
 	}
 
 	/**
@@ -98,6 +104,7 @@
 		}
 
 		_addEvent(jq);
+		return validateResult.result;
 	}
 
 	/**
@@ -242,10 +249,7 @@
 		 * 验证
 		 */
 		validate : function() {
-			let self = this;
-			return this.each(function() {
-				_validate(self);
-			});
+			return _validate(this);
 		},
 		/**
 		 * 获取验证结果

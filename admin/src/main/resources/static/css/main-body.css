@@ -1,3 +1,24 @@
 .main-body {
 	padding: 10px 15px 10px 15px; 
 }
+
+.messager-icon {
+	float: left;
+	width: 32px;
+	height: 32px;
+	margin: 0 10px 10px 0;
+	background: url(../image/messager_icons.png) no-repeat scroll ;
+}
+
+.messager-question {
+	background-position: -32px 0px;
+}
+.messager-info {
+	background-position: 0px 0px;
+}
+.messager-error {
+	background-position: -64px 0px;
+}
+.messager-warning {
+	background-position: -96px 0px;
+}

@@ -1,5 +1,6 @@
 let NAME_SPACE = "http://www.w3.org/2000/svg";
 let XLINKNS = "http://www.w3.org/1999/xlink";
+let PLUGIN_NAME = "plugin-name";
 
 /**
  * bootstrap的一些扩展工具
@@ -15,6 +16,35 @@ jQuery.bootstrapClass = {
 	WARNING : "warning",
 	DANGER : "danger",
 	LINK : "link"
+};
+
+jQuery.tools = {
+	/**
+	 * 标记成功
+	 * @param {*} jq 
+	 * @param {*} pluginName 
+	 */
+	markSuccess : function(jq, pluginName) {
+		jq.loadSuccess();
+		jq.attr(PLUGIN_NAME, pluginName);
+	},
+	/**
+	 * 通用的LoadFilter
+	 * @param {*} data 
+	 */
+	defaultLoadFilter : function(data) {
+		if ($.type(data) == "array") {
+			return data;
+		}
+		if (!data) {
+			return [];
+		}
+		if (data.code) {
+			return data.data || [];
+		} else {
+			return data || [];
+		}
+	}
 };
 
 /**

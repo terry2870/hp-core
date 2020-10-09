@@ -13,6 +13,8 @@
 			let method = $.fn[pluginName].methods[options];
 			if (method){
 				return method.call(this, param);
+			} else {
+				throw new Error(pluginName + " 没有此方法。");
 			}
 		}
 		return this.each(function() {
@@ -111,7 +113,7 @@
 				html : originalContent
 			};
 		}
-		_createContent(jq, body, opt.body);
+		_createContent(jq, body, opt.body, true);
 	}
 
 	/**
@@ -132,8 +134,9 @@
 	 * @param {*} jq 
 	 * @param {*} target 
 	 * @param {*} params 
+	 * @param {*} isBody 
 	 */
-	function _createContent(jq, target, params) {
+	function _createContent(jq, target, params, isBody) {
 		let opt = jq.data(pluginName);
 		if (!params) {
 			return;
@@ -149,18 +152,22 @@
 			target.addClass(params.className);
 		}
 
-		if (params.url) {
+		if (params.url && isBody === true) {
 			//从远端获取数据
-			$.post(params.url, params.data, function(loadData) {
-				target.params(loadData);
+			$.post(params.url, params.queryParams, function(loadData) {
+				target.append(loadData);
 				if (target.hasClass("card-body")) {
 					opt.onLoadSuccess.call(jq, loadData);
 				}
-			}, "json");
+			}).then(function() {
+				$.tools.markSuccess(jq, pluginName);
+			});
 		} else if (params.html) {
 			target.append(params.html);
+			$.tools.markSuccess(jq, pluginName);
 		} else if (params.selector) {
 			target.append(params.selector);
+			$.tools.markSuccess(jq, pluginName);
 		}
 	}
 
@@ -354,12 +361,12 @@
 
 	/**
 	 * 其中 header,body, footer包含属性
-	 * 	style
-	 *  className
-	 *  url
-	 * 	data
-	 *  html
-	 *  selector
+	 * 	style			样式
+	 *  className		class
+	 *  url				远端请求url
+	 * 	queryParams		请求url同时发送的数据
+	 *  html			内容
+	 *  selector		一个选择器
 	 * 
 	 * 
 	 * 

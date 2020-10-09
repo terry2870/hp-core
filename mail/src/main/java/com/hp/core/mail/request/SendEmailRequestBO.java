@@ -3,6 +3,8 @@
  */
 package com.hp.core.mail.request;
 
+import com.alibaba.fastjson.JSON;
+
 /**
  * @author huangping Apr 24, 2020
  */
@@ -50,5 +52,10 @@ public class SendEmailRequestBO {
 	}
 	public void setHtml(boolean html) {
 		this.html = html;
+	}
+	
+	@Override
+	public String toString() {
+		return JSON.toJSONString(this);
 	}
 }

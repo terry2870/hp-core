@@ -10,12 +10,15 @@
 	let pluginName = "combobox";
 	let LIST_DATA = "listdata";
 	let SELECT_DATA = "selectdata";
+	let SEARCH_TEXT_ROLE = "searchtext";
 	$.fn[pluginName] = function(options, param) {
 		let self = this;
 		if (typeof (options) == "string") {
 			let method = $.fn[pluginName].methods[options];
 			if (method) {
 				return method.call(this, param);
+			} else {
+				throw new Error(pluginName + " 没有此方法。");
 			}
 		}
 		return this.each(function() {
@@ -31,6 +34,7 @@
 	 * @param {*} opt 
 	 */
 	function _create(jq, opt) {
+		jq.attr(PLUGIN_NAME, pluginName);
 		if (opt.className) {
 			jq.addClass(opt.className);
 		}
@@ -75,6 +79,33 @@
 	 */
 	function _createCombobox(jq, opt) {
 		let panelSelector = $("<ul>").addClass("list-group");
+		let searchLi = $("<li>").css({
+			padding : ".4rem 0.7rem"
+		}).addClass("list-group-item list-group-item-action").appendTo(panelSelector);
+		let searchText = $("<input>").attr("role", SEARCH_TEXT_ROLE).addClass("form-control").appendTo(searchLi);
+		
+		searchText.keyup(function() {
+			let val = this.value;
+			let panelBody = jq.combo("getPanel").card("body");
+			let allLis = panelBody.find("li");
+			if (val == "") {
+				//当输入内容为空时，则显示所有
+				allLis.show();
+				return;
+			}
+			
+			for (let i = 1; i < allLis.length; i++) {
+				let liText = $(allLis[i]).data(LIST_DATA)[opt.textField];
+				if (liText.toString().indexOf(val) >= 0) {
+					$(allLis[i]).show();
+				} else {
+					$(allLis[i]).hide();
+				}
+			}
+			$(allLis).each(function(index, item) {
+				
+			});
+		});
 		$(opt.dataList).each(function(index, item) {
 			let li = $("<li>").data(LIST_DATA, item).addClass("list-group-item list-group-item-action").html(item[opt.textField]).appendTo(panelSelector);
 			li.css({
@@ -87,8 +118,14 @@
 		});
 		let currOnAfterShowPanel = opt.onAfterShowPanel;
 		jq.combo($.extend({}, opt, {
+			readonly : true,
 			panelSelector : panelSelector,
 			icons : [{
+				icon : "x",
+				onClick : function() {
+					_clear(jq);
+				}
+			}, {
 				icon : "caret-down",
 				onClick : function() {
 					jq.combo("showPanel");
@@ -100,9 +137,11 @@
 			}
 		}));
 
+		/*
 		let panelBody = jq.combo("getPanel").card("body");
 		let allLis = panelBody.find("li");
 		//可以搜索
+		
 		jq.keyup(function() {
 			let val = this.value;
 			if (val == "") {
@@ -119,11 +158,26 @@
 					$(item).hide();
 				}
 			});
-		});
+
+			//输入框中值转换为对象
+			let valueArr = _toComboboxDataObjectFromField(opt, val.split(opt.separator), opt.textField);
+			if (!valueArr || valueArr.length == 0) {
+				jq.combo("getPanel").card("body").find("li.active").removeClass("active");
+			} else {
+				_selectValues(jq, valueArr);
+			}
+		});*/
+
+		//设置默认值
+		if (opt.value !== undefined && opt.value !== null) {
+			_selectValues(jq, opt.value);
+		}
 
 		if (opt.onLoadSuccess) {
 			opt.onLoadSuccess.call(jq, opt.dataList);
 		}
+
+		$.tools.markSuccess(jq, pluginName);
 	}
 
 	/**
@@ -134,13 +188,15 @@
 	function _clickItem(jq, target) {
 		target = $(target);
 		let opt = jq.data(pluginName);
-		let panelBody = jq.combo("getPanel").card("body");
+		let panel = jq.combo("getPanel");
+		let panelBody = panel.card("body");
 		let val = null;
 		if (opt.multiple === false) {
 			//不允许多选
 			panelBody.find("li.active").removeClass("active");
 			target.addClass("active");
 			val = target.data(LIST_DATA);
+			panel.card("close");
 			if (opt.onSelect) {
 				opt.onSelect.call(jq, val[opt.valueField], val);
 			}
@@ -200,37 +256,26 @@
 	 * @param {*} jq 
 	 */
 	function _getValues(jq) {
+		//输入框中的值
 		let textValue = _getSelectDatas(jq);
 		if (!textValue) {
 			return [];
 		}
 		let opt = jq.data(pluginName);
-		let textArr = textValue.split(opt.textField);
+		let textArr = textValue.split(opt.separator);
+
+		//下拉框中所有的值
 		let allRowData = _getAllData(jq);
-		let arr = [];
-		$(textArr).each(function(index, item) {
-			let checkText = _checkText(opt, allRowData, item);
-			if (checkText !== false) {
-				arr.push(checkText);
-			}
-		});
+
+		//转换成实际的对象
+		let arr = _toComboboxDataObjectFromField(opt, textArr, opt.textField);
 		return arr;
 	}
 
-	function _checkText(opt, arr, text) {
-		if (!text) {
-			return false;
-		}
-		let val = _toObject(opt, text);
-		for (let i = 0; i < arr.length; i++) {
-			let v2 = _toObject(opt, arr[i]);
-			if (v2[opt.textField] == val[opt.textField]) {
-				return v2[opt.valueField];
-			}
-		}
-		return false;
-	}
-
+	/**
+	 * 获取下拉框所有的值
+	 * @param {*} jq 
+	 */
 	function _getAllData(jq) {
 		let opt = jq.data(pluginName);
 		return opt.dataList;
@@ -251,58 +296,102 @@
 		}
 
 		let opt = jq.data(pluginName);
+		let values2 = null;
 		if (opt.multiple === false) {
-			values = values[0];
+			values2 = [values];
+		} else {
+			values2 = values;
 		}
 		//把输入的values转成对象形式
 		let newValue = [];
-		$(values).each(function(index, item) {
-			newValue.push(_toObject(opt, item));
+		$(values2).each(function(index, item) {
+			let obj = _toComboboxDataObjectFromField(opt, item, opt.valueField);
+			if (obj != null) {
+				newValue.push(obj);
+			}
 		});
 
 		let lis = panelBody.find("li");
-		
+		//遍历，把存在的选项，高亮
 		$(lis).each(function(index, item) {
-			let d = $(item).data(LIST_DATA);
-			if (_checkExist(opt, newValue, d)) {
+			let itemData = $(item).data(LIST_DATA);
+			let checkData = _getByField(newValue, itemData, opt.valueField);
+			if (checkData != null) {
 				$(item).addClass("active");
 			}
 		});
 
 		if (opt.onSelect && newValue.length == 1) {
-			opt.onSelect.call(jq, newValue[opt.valueField], newValue);
+			opt.onSelect.call(jq, newValue[0][opt.valueField], newValue[0]);
 		}
 		_displayTextAndValue(jq, newValue);
 	}
 
-	function _toObject(opt, value) {
+	/**
+	 * 变为combobox的数据格式
+	 * @param {*} opt 
+	 * @param {*} value 
+	 */
+	function _toComboboxDataObjectFromField(opt, value, field) {
 		if ($.type(value) == "object") {
 			return value;
+		} else if ($.type(value) == "array") {
+			if (value.length == 0) {
+				return [];
+			}
+			let newArr = [];
+			for (let i = 0; i < value.length; i++) {
+				let o = _toComboboxDataObjectFromField(opt, value[i], field);
+				if (o != null) {
+					newArr.push(o);
+				}
+			}
+			return newArr;
+		} else {
+			//获取所有的数据，遍历
+			for (let i = 0; i < opt.dataList.length; i++) {
+				let obj = _getByField(opt.dataList, value, field);
+				if (obj != null) {
+					return obj;
+				}
+			}
+			return null;
 		}
-		return {
-			[opt.valueField] : value,
-			[opt.textField] : value
-		};
 	}
 
 	/**
-	 * 检查值是否存在数组中
-	 * @param {*} opt 
+	 * 查询该值是否在数据中
 	 * @param {*} arr 
 	 * @param {*} value 
+	 * @param {*} field 
 	 */
-	function _checkExist(opt, arr, value) {
-		if (!value) {
-			return false;
+	function _getByField(arr, value, field) {
+		if (arr.length == 0 || value === undefined || value == null) {
+			return null;
 		}
-		let val = _toObject(opt, value);
+		let val = value;
+		if ($.type(value) == "object") {
+			val = value[field];
+		}
 		for (let i = 0; i < arr.length; i++) {
-			let v2 = _toObject(opt, arr[i]);
-			if (v2[opt.valueField] == val[opt.valueField]) {
-				return true;
+			if (val === "") {
+				if (arr[i][field] === "") {
+					return arr[i];
+				}
+			} else if (val == arr[i][field]) {
+				return arr[i];
 			}
 		}
-		return false;
+		return null;
+	}
+
+	/**
+	 * 清空
+	 * @param {*} jq 
+	 */
+	function _clear(jq) {
+		jq.combo("clear");
+		jq.combo("getPanel").card("body").find("li.active").removeClass("active");
 	}
 
 	//方法
@@ -310,7 +399,16 @@
 		values : function(values) {
 			let self = this;
 			if (values === undefined) {
-				return _getValues(self);
+				let val = _getValues(self);
+				if (val == null) {
+					return null;
+				}
+				let arr = [];
+				let opt = self.data(pluginName);
+				$(val).each(function(index, item) {
+					arr.push(item[opt.valueField]);
+				});
+				return arr;
 			} else {
 				return $(this).each(function() {
 					_selectValues(self, values);
@@ -324,12 +422,29 @@
 				if (!getValue || getValue.length == 0) {
 					return "";
 				}
-				return getValue[0];
+				let opt = self.data(pluginName);
+				return getValue[0][opt.valueField];
 			} else {
 				return $(this).each(function() {
 					_selectValues(self, [value]);
 				});
 			}
+		},
+		/**
+		 * 清空
+		 */
+		clear : function() {
+			let self = this;
+			return $(this).each(function() {
+				_clear(self);
+			});
+		},
+		/**
+		 * 获取自己
+		 */
+		get : function() {
+			return $(this).each(function() {
+			});
 		}
 	});
 	

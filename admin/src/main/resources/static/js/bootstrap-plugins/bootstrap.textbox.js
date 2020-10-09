@@ -14,6 +14,8 @@
 			let method = $.fn[pluginName].methods[options];
 			if (method) {
 				return method.call(this, param);
+			} else {
+				throw new Error(pluginName + " 没有此方法。");
 			}
 		}
 		return this.each(function() {
@@ -82,8 +84,18 @@
 		}
 		jq.addClass("float-left");
 		jq.validatebox(opt);
+
+		$.tools.markSuccess(jq, pluginName);
 	}
 	
+	/**
+	 * 清空
+	 * @param {*} jq 
+	 */
+	function _clear(jq) {
+		jq.val("");
+	}
+
 	/**
 	 * 创建svg标签
 	 * @param {*} tagName 
@@ -106,6 +118,15 @@
 					$(this).val(value);
 				});
 			}
+		},
+		/**
+		 * 清空
+		 */
+		clear : function() {
+			let self = this;
+			return $(this).each(function() {
+				_clear(self);
+			});
 		}
 	});
 	

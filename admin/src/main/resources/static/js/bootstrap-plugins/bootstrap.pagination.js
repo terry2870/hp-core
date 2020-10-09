@@ -14,6 +14,8 @@
 			let method = $.fn[pluginName].methods[options];
 			if (method){
 				return method.call(this, param);
+			} else {
+				throw new Error(pluginName + " 没有此方法。");
 			}
 		}
 		return this.each(function() {
@@ -90,6 +92,8 @@
 
 		//最后一页
 		_createItem(jq, opt.lasrPageText, opt.currentPage == opt.totalPage, opt.totalPage);
+
+		$.tools.markSuccess(jq, pluginName);
 	}
 
 	/**

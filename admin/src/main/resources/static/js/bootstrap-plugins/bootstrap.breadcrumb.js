@@ -13,6 +13,8 @@
 			let method = $.fn[pluginName].methods[options];
 			if (method){
 				return method.call(this, param);
+			} else {
+				throw new Error(pluginName + " 没有此方法。");
 			}
 		}
 		return this.each(function() {
@@ -41,6 +43,7 @@
 			}
 			a.html(item[opt.textField]);
 		});
+		$.tools.markSuccess(jq, pluginName);
 	}
 
 	//方法
