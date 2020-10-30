@@ -26,7 +26,7 @@ public interface JdbcBaseSelectDAOImpl<MODEL, PK> extends IBaseSelectDAO<MODEL, 
 	@Override
 	public default PK selectCount(List<SQLWhere> whereList) {
 		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
-		SQLBuilders builders = SQLBuilders.emptyBuilder()
+		SQLBuilders builders = SQLBuilders.create()
 				.withWhere(whereList)
 				.withSelect("COUNT(1)")
 				;
@@ -74,7 +74,7 @@ public interface JdbcBaseSelectDAOImpl<MODEL, PK> extends IBaseSelectDAO<MODEL, 
 	@Override
 	public default MODEL selectByPrimaryKey(PK id) {
 		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
-		SQLBuilders builders = SQLBuilders.emptyBuilder()
+		SQLBuilders builders = SQLBuilders.create()
 				.withWhere(SQLWhere.builder()
 						.eq(entity.getPrimaryKeyColumnName(), id)
 						.build()

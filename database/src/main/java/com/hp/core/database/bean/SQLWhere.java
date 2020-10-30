@@ -59,18 +59,18 @@ public class SQLWhere extends BaseBean {
 		return new SQLWhere(field, value, operator);
 	}
 	
-	public static Builder builder() {
-		return new Builder();
+	public static SQLWhereBuilder builder() {
+		return new SQLWhereBuilder();
 	}
 	
-	public static class Builder extends BaseBean {
+	public static class SQLWhereBuilder extends BaseBean {
 
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 2688761243553292048L;
 		
-		private Builder() {}
+		private SQLWhereBuilder() {}
 		
 		private List<SQLWhere> where = new ArrayList<>();
 		
@@ -80,7 +80,7 @@ public class SQLWhere extends BaseBean {
 		 * @param value
 		 * @return
 		 */
-		public Builder eq(String field, Object value) {
+		public SQLWhereBuilder eq(String field, Object value) {
 			where.add(SQLWhere.of(field, value, QueryTypeEnum.EQUALS));
 			return this;
 		}
@@ -91,7 +91,7 @@ public class SQLWhere extends BaseBean {
 		 * @param value
 		 * @return
 		 */
-		public Builder not_eq(String field, Object value) {
+		public SQLWhereBuilder not_eq(String field, Object value) {
 			where.add(SQLWhere.of(field, value, QueryTypeEnum.NOT_EQUALS));
 			return this;
 		}
@@ -102,7 +102,7 @@ public class SQLWhere extends BaseBean {
 		 * @param value
 		 * @return
 		 */
-		public Builder prefix(String field, Object value) {
+		public SQLWhereBuilder prefix(String field, Object value) {
 			where.add(SQLWhere.of(field, value, QueryTypeEnum.PREFIX));
 			return this;
 		}
@@ -113,7 +113,7 @@ public class SQLWhere extends BaseBean {
 		 * @param value
 		 * @return
 		 */
-		public Builder suffix(String field, Object value) {
+		public SQLWhereBuilder suffix(String field, Object value) {
 			where.add(SQLWhere.of(field, value, QueryTypeEnum.SUFFIX));
 			return this;
 		}
@@ -124,7 +124,7 @@ public class SQLWhere extends BaseBean {
 		 * @param value
 		 * @return
 		 */
-		public Builder like(String field, Object value) {
+		public SQLWhereBuilder like(String field, Object value) {
 			where.add(SQLWhere.of(field, value, QueryTypeEnum.LIKE));
 			return this;
 		}
@@ -135,7 +135,7 @@ public class SQLWhere extends BaseBean {
 		 * @param value
 		 * @return
 		 */
-		public Builder in(String field, Object value) {
+		public SQLWhereBuilder in(String field, Object value) {
 			if (value == null) {
 				return this;
 			}
@@ -157,7 +157,7 @@ public class SQLWhere extends BaseBean {
 		 * @param value
 		 * @return
 		 */
-		public Builder not_in(String field, Object value) {
+		public SQLWhereBuilder not_in(String field, Object value) {
 			if (value == null) {
 				return this;
 			}
@@ -179,7 +179,7 @@ public class SQLWhere extends BaseBean {
 		 * @param value
 		 * @return
 		 */
-		public Builder gt(String field, Object value) {
+		public SQLWhereBuilder gt(String field, Object value) {
 			where.add(SQLWhere.of(field, value, QueryTypeEnum.GT));
 			return this;
 		}
@@ -190,7 +190,7 @@ public class SQLWhere extends BaseBean {
 		 * @param value
 		 * @return
 		 */
-		public Builder gte(String field, Object value) {
+		public SQLWhereBuilder gte(String field, Object value) {
 			where.add(SQLWhere.of(field, value, QueryTypeEnum.GTE));
 			return this;
 		}
@@ -201,7 +201,7 @@ public class SQLWhere extends BaseBean {
 		 * @param value
 		 * @return
 		 */
-		public Builder lt(String field, Object value) {
+		public SQLWhereBuilder lt(String field, Object value) {
 			where.add(SQLWhere.of(field, value, QueryTypeEnum.LT));
 			return this;
 		}
@@ -212,7 +212,7 @@ public class SQLWhere extends BaseBean {
 		 * @param value
 		 * @return
 		 */
-		public Builder lte(String field, Object value) {
+		public SQLWhereBuilder lte(String field, Object value) {
 			where.add(SQLWhere.of(field, value, QueryTypeEnum.LTE));
 			return this;
 		}

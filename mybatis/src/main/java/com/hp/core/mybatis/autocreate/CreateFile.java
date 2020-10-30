@@ -49,17 +49,21 @@ public class CreateFile {
 	//controller锁在module名称
 	public static String CONTROLLER_MAVEN_MODULE = "";
 	
-	public static final String BASE_BEAN_PACKAGE = "com.hp.core.common.beans.BaseBean";
-	public static final String BASE_REQUEST_BO_PACKAGE = "com.hp.core.common.beans.BaseRequestBO";
-	public static final String BASE_RESPONSE_BO_PACKAGE = "com.hp.core.common.beans.BaseResponseBO";
-	public static final String BASE_MAPPER_PACKAGE = "com.hp.core.mybatis.mapper.BaseMapper";
-	public static final String RESPONSE_PACKAGE = "com.hp.core.common.beans.Response";
-	public static final String BASE_PAGE_REQUEST_PACKAGE = "com.hp.core.database.bean.PageRequest";
-	public static final String BASE_PAGE_RESPONSE_PACKAGE = "com.hp.core.common.beans.page.PageResponse";
-	public static final String BASE_PAGE_MODEL_PACKAGE = "com.hp.core.database.bean.PageModel";
-	public static final String FREEMARKER_UTIL_PACKAGE = "com.hp.core.freemarker.utils.FreeMarkerUtil";
-	public static final String SQLBUILDER_PACKAGE = "com.hp.core.database.bean.SQLBuilder";
-	public static final String SQLBUILDERS_PACKAGE = "com.hp.core.database.bean.SQLBuilders";
+	private static final String BASE_PACKAGE_PARENT = "com.hp.core.";
+	
+	public static final String BASE_BEAN_PACKAGE = BASE_PACKAGE_PARENT + "common.beans.BaseBean";
+	public static final String BASE_REQUEST_BO_PACKAGE = BASE_PACKAGE_PARENT + "common.beans.BaseRequestBO";
+	public static final String BASE_RESPONSE_BO_PACKAGE = BASE_PACKAGE_PARENT + "common.beans.BaseResponseBO";
+	public static final String BASE_MAPPER_PACKAGE = BASE_PACKAGE_PARENT + "mybatis.mapper.BaseMapper";
+	public static final String RESPONSE_PACKAGE = BASE_PACKAGE_PARENT + "common.beans.Response";
+	public static final String BASE_PAGE_REQUEST_PACKAGE = BASE_PACKAGE_PARENT + "database.bean.PageRequest";
+	public static final String BASE_PAGE_RESPONSE_PACKAGE = BASE_PACKAGE_PARENT + "common.beans.page.PageResponse";
+	public static final String BASE_PAGE_MODEL_PACKAGE = BASE_PACKAGE_PARENT + "database.bean.PageModel";
+	public static final String FREEMARKER_UTIL_PACKAGE = BASE_PACKAGE_PARENT + "freemarker.utils.FreeMarkerUtil";
+	public static final String SQLBUILDER_PACKAGE = BASE_PACKAGE_PARENT + "database.bean.SQLBuilder";
+	public static final String SQLWHERE_PACKAGE = BASE_PACKAGE_PARENT + "database.bean.SQLWhere";
+	public static final String SQL_WHERE_BUILDER_PACKAGE = BASE_PACKAGE_PARENT + "database.bean.SQLWhere.SQLWhereBuilder";
+	public static final String SQLBUILDERS_PACKAGE = BASE_PACKAGE_PARENT + "database.bean.SQLBuilders";
 	public static final String DAL_DIR_NAME = "dal";
 	public static final String COMMON_DIR_NAME = "common";
 	public static final String MODEL_DIR_NAME = "model";

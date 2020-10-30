@@ -3,6 +3,9 @@
  */
 package com.hp.core.mail.request;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.fastjson.JSON;
 
 /**
@@ -16,6 +19,8 @@ public class SendEmailRequestBO {
 	private String subject;
 	private String text;
 	private boolean html;
+	
+	private List<MailFileBO> mailFileList;
 	
 	public String getFrom() {
 		return from;
@@ -58,4 +63,18 @@ public class SendEmailRequestBO {
 	public String toString() {
 		return JSON.toJSONString(this);
 	}
+	
+	public List<MailFileBO> getMailFileList() {
+		return mailFileList;
+	}
+	public void setMailFileList(List<MailFileBO> mailFileList) {
+		this.mailFileList = mailFileList;
+	}
+	public void addMailFile(MailFileBO mailFile) {
+		if (this.mailFileList == null) {
+			this.mailFileList = new ArrayList<>();
+		}
+		this.mailFileList.add(mailFile);
+	}
+	
 }

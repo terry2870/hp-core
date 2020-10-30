@@ -64,6 +64,8 @@ public class CreateService {
 		map.put("pageResponsePackage", CreateFile.BASE_PAGE_RESPONSE_PACKAGE);
 		map.put("SQLBuilderPackage", CreateFile.SQLBUILDER_PACKAGE);
 		map.put("SQLBuildersPackage", CreateFile.SQLBUILDERS_PACKAGE);
+		map.put("SQLWherePackage", CreateFile.SQLWHERE_PACKAGE);
+		map.put("SQLWhereBuilderPackage", CreateFile.SQL_WHERE_BUILDER_PACKAGE);
 		FreeMarkerUtil.createFile("autocreate/serviceimpl.ftl", filePath + "/" + fileName, map);
 	}
 }

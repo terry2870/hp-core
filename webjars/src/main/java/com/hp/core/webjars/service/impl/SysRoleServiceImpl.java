@@ -79,7 +79,7 @@ public class SysRoleServiceImpl implements ISysRoleService {
 		resp.setPageSize(pageRequest.getRows());
 		resp.setTotal(total);
 
-		SQLBuilders builders = SQLBuilders.emptyBuilder()
+		SQLBuilders builders = SQLBuilders.create()
 				.withWhere(whereList)
 				.withPage(page)
 				;
@@ -126,7 +126,7 @@ public class SysRoleServiceImpl implements ISysRoleService {
 	 * @param request
 	 */
 	public void saveSysRoleCheck(SysRoleRequestBO request) {
-		SysRole role = sysRoleDAO.selectOne(SQLBuilders.emptyBuilder()
+		SysRole role = sysRoleDAO.selectOne(SQLBuilders.create()
 				.withWhere(SQLWhere.builder()
 						.eq("role_name", request.getRoleName())
 						.build()

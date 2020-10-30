@@ -39,7 +39,7 @@ public class BaseSelectProvider {
 		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
 		@SuppressWarnings("unchecked")
 		List<SQLWhere> whereList = (List<SQLWhere>) target.get(SQLProviderConstant.SQL_WHERE_ALIAS);
-		SQLBuilders builders = SQLBuilders.emptyBuilder()
+		SQLBuilders builders = SQLBuilders.create()
 				.withSqlWherePrefix(SQLProviderConstant.SQL_WHERE_ALIAS)
 				.withSelect("COUNT(1)")
 				.withWhere(whereList);
@@ -82,7 +82,7 @@ public class BaseSelectProvider {
 	public static String selectMaxId(Map<String, Object> target) {
 		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
 		List<SQLWhere> whereList = getSpecialSQLWheres(target);
-		SQLBuilders builders = SQLBuilders.emptyBuilder()
+		SQLBuilders builders = SQLBuilders.create()
 				.withSqlWherePrefix(SQLProviderConstant.SQL_WHERE_ALIAS)
 				.withSelect("MAX("+ entity.getPrimaryKeyColumnName() +")")
 				.withWhere(whereList);
@@ -98,7 +98,7 @@ public class BaseSelectProvider {
 	public static String selectMinId(Map<String, Object> target) {
 		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
 		List<SQLWhere> whereList = getSpecialSQLWheres(target);
-		SQLBuilders builders = SQLBuilders.emptyBuilder()
+		SQLBuilders builders = SQLBuilders.create()
 				.withSqlWherePrefix(SQLProviderConstant.SQL_WHERE_ALIAS)
 				.withSelect("MIN("+ entity.getPrimaryKeyColumnName() +")")
 				.withWhere(whereList);
@@ -146,7 +146,7 @@ public class BaseSelectProvider {
 	 */
 	public static String selectByPrimaryKey(Map<String, Object> target) {
 		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
-		SQLBuilders builders = SQLBuilders.emptyBuilder();
+		SQLBuilders builders = SQLBuilders.create();
 		String sql = getSQL(builders, entity, entity.getPrimaryKeyColumnName() + "=#{id}");
 		log.debug("selectByPrimaryKey get sql \r\nsql={} \r\ntarget={}  \r\nentity={}", sql, target, entity);
 		return sql.toString();
@@ -159,7 +159,7 @@ public class BaseSelectProvider {
 	 */
 	public static String selectByPrimaryKeys(Map<String, Object> target) {
 		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
-		SQLBuilders builders = SQLBuilders.emptyBuilder();
+		SQLBuilders builders = SQLBuilders.create();
 		
 		StringBuilder inSQL = new StringBuilder();
 		inSQL.append(entity.getPrimaryKeyColumnName())
@@ -306,7 +306,7 @@ public class BaseSelectProvider {
 	private static SQLBuilders getSpecialSQLBuilders(Map<String, Object> target) {
 		SQLBuilders[] builders = (SQLBuilders[])target.get(SQLProviderConstant.SQL_BUILDS_ALIAS);
 		if (builders == null || builders.length == 0) {
-			return SQLBuilders.emptyBuilder();
+			return SQLBuilders.create();
 		} else {
 			return builders[0];
 		}

@@ -32,7 +32,7 @@ public class SQLBuilders extends BaseBean {
 
 	private SQLBuilders() {}
 	
-	public static SQLBuilders emptyBuilder() {
+	public static SQLBuilders create() {
 		return new SQLBuilders();
 	}
 	

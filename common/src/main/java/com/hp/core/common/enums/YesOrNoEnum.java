@@ -57,7 +57,7 @@ public enum YesOrNoEnum {
 		JSONObject json = null;
 		for (YesOrNoEnum e : values()) {
 			json = new JSONObject();
-			json.put("value", e.getValue());
+			json.put("value", e.getValue().toString());
 			json.put("text", e.getText());
 			arr.add(json);
 		}

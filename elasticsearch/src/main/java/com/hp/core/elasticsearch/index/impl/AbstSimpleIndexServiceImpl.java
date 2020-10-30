@@ -209,7 +209,7 @@ public abstract class AbstSimpleIndexServiceImpl<DB_MODEL, ES_MODEL> implements 
 	 * @return
 	 */
 	protected SQLBuilders getSQLBuilders() {
-		return SQLBuilders.emptyBuilder();
+		return SQLBuilders.create();
 	}
 	
 	/**

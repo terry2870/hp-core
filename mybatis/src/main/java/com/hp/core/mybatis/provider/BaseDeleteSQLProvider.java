@@ -112,7 +112,7 @@ public class BaseDeleteSQLProvider {
 		@SuppressWarnings("unchecked")
 		List<SQLWhere> whereList = (List<SQLWhere>) target.get(SQLProviderConstant.SQL_WHERE_ALIAS);
 		
-		SQLBuilders builders = SQLBuilders.emptyBuilder()
+		SQLBuilders builders = SQLBuilders.create()
 				.withSqlWherePrefix(SQLProviderConstant.SQL_WHERE_ALIAS)
 				.withWhere(whereList);
 		

@@ -17,7 +17,8 @@ import ${responseModelPackage}.${modelName}ResponseBO;
 import ${servicePackage}.I${modelName}Service;
 import ${pageModelPackage};
 import ${pageRequestPackage};
-import ${SQLBuilderPackage};
+import ${SQLWherePackage};
+import ${SQLWhereBuilderPackage};
 import ${SQLBuildersPackage};
 import ${pageResponsePackage};
 
@@ -53,10 +54,14 @@ public class ${modelName}ServiceImpl implements I${modelName}Service {
 		log.info("query${modelName}PageList with request={}", request);
 		PageModel page = pageRequest.toPageModel();
 
-		SQLBuilder[] builder = new SQLBuilders()
-				.build();
+		SQLWhereBuilder builder = SQLWhere.builder();
+		
+		// TODO 这里添加查询条件
+		
+		List<SQLWhere> whereList = builder.build();
+		
 		// 查询总数
-		int total = ${modelNameFirstLow}DAO.selectCount(builder);
+		int total = ${modelNameFirstLow}DAO.selectCount(whereList);
 		if (total == 0) {
 			log.warn("query${modelName}PageList error. with total=0. with request={}", request);
 			return null;
@@ -66,8 +71,12 @@ public class ${modelName}ServiceImpl implements I${modelName}Service {
 		resp.setPageSize(pageRequest.getRows());
 		resp.setTotal(total);
 
+		SQLBuilders builders = SQLBuilders.create()
+				.withWhere(whereList)
+				.withPage(page)
+				;
 		// 查询列表
-		List<${modelName}> list = ${modelNameFirstLow}DAO.selectPageList(builder, page);
+		List<${modelName}> list = ${modelNameFirstLow}DAO.selectList(builders);
 		if (CollectionUtils.isEmpty(list)) {
 			log.warn("query${modelName}PageList error. with list is empty. with request={}", request);
 			return resp;

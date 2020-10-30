@@ -95,7 +95,7 @@ public class SysUserServiceImpl implements ISysUserService {
 		resp.setPageSize(pageRequest.getRows());
 		resp.setTotal(total);
 
-		SQLBuilders builders = SQLBuilders.emptyBuilder()
+		SQLBuilders builders = SQLBuilders.create()
 				.withWhere(whereList)
 				.withPage(page)
 				;
@@ -194,7 +194,7 @@ public class SysUserServiceImpl implements ISysUserService {
 	 */
 	private void saveSysUserCheck(SysUserRequestBO request) {
 		//检查登录名
-		SQLBuilders builders = SQLBuilders.emptyBuilder()
+		SQLBuilders builders = SQLBuilders.create()
 				.withWhere(SQLWhere.builder()
 						.like("login_name", request.getLoginName())
 						.build()
@@ -217,7 +217,7 @@ public class SysUserServiceImpl implements ISysUserService {
 		}
 		
 		//检查用户名
-		builders = SQLBuilders.emptyBuilder()
+		builders = SQLBuilders.create()
 				.withWhere(SQLWhere.builder()
 						.like("user_name", request.getUserName())
 						.build()
