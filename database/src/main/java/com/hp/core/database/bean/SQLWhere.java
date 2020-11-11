@@ -59,6 +59,10 @@ public class SQLWhere extends BaseBean {
 		return new SQLWhere(field, value, operator);
 	}
 	
+	/**
+	 * 构造器
+	 * @return
+	 */
 	public static SQLWhereBuilder builder() {
 		return new SQLWhereBuilder();
 	}

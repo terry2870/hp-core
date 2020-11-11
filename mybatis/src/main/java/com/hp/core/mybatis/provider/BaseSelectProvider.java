@@ -10,10 +10,12 @@ import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.jdbc.SQL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
+import com.hp.core.common.exceptions.CommonException;
 import com.hp.core.database.bean.DynamicEntityBean;
 import com.hp.core.database.bean.OrderBy;
 import com.hp.core.database.bean.PageModel;
@@ -30,6 +32,19 @@ import com.hp.core.mybatis.constant.SQLProviderConstant;
 public class BaseSelectProvider {
 
 	private static Logger log = LoggerFactory.getLogger(BaseSelectProvider.class);
+	
+	/**
+	 * 根据传入的sql，查询
+	 * @param target
+	 * @return
+	 */
+	public static String selectBySQL(Map<String, Object> target) {
+		SQL sql = (SQL) target.get(SQLProviderConstant.SQL_ALIAS);
+		if (sql == null) {
+			throw new CommonException(500, "sql is null");
+		}
+		return sql.toString();
+	}
 	
 	/**
 	 * 查询总数

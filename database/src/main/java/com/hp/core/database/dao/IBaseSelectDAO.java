@@ -27,16 +27,16 @@ public interface IBaseSelectDAO<MODEL, PK> {
 	
 	/**
 	 * 根据传入的sqlbuild，查询
-	 * @param builder
+	 * @param sqlBuilders
 	 */
-	public List<MODEL> selectList(SQLBuilders builders);
+	public List<MODEL> selectList(SQLBuilders sqlBuilders);
 	
 	/**
 	 * 根据传入的builders，查询一个
-	 * @param builders
+	 * @param sqlBuilders
 	 * @return
 	 */
-	public MODEL selectOne(SQLBuilders builders);
+	public MODEL selectOne(SQLBuilders sqlBuilders);
 	
 	/**
 	 * 查询最大的id
@@ -56,18 +56,18 @@ public interface IBaseSelectDAO<MODEL, PK> {
 	 * 根据id范围查询
 	 * @param minId
 	 * @param maxId
-	 * @param builders
+	 * @param sqlBuilders
 	 * @return
 	 */
-	public List<MODEL> selectListByRange(PK minId, PK maxId, SQLBuilders... builders);
+	public List<MODEL> selectListByRange(PK minId, PK maxId, SQLBuilders... sqlBuilders);
 	
 	/**
 	 * 根据条件，查询大于某一个id值的数据
 	 * @param largeThanId
-	 * @param builders
+	 * @param sqlBuilders
 	 * @return
 	 */
-	public List<MODEL> selectListByLargeThanId(PK largeThanId, SQLBuilders... builders);
+	public List<MODEL> selectListByLargeThanId(PK largeThanId, SQLBuilders... sqlBuilders);
 	
 	/**
 	 * 根据主键查询
@@ -94,19 +94,19 @@ public interface IBaseSelectDAO<MODEL, PK> {
 	 * 查询列表
 	 * （返回指定的一个类型字段的list）
 	 * @param <T>
-	 * @param builders
+	 * @param sqlBuilders
 	 * @param clazz
 	 * @return
 	 */
-	public <T> List<T> selectListForTargetClass(SQLBuilders builders, Class<T> clazz);
+	public <T> List<T> selectListForTargetClass(SQLBuilders sqlBuilders, Class<T> clazz);
 	
 	/**
 	 * 根据传入的sqlbuild，查询一个
 	 * （返回指定的一个类型字段的对象）
-	 * @param builder
+	 * @param sqlBuilders
 	 * @param clazz
 	 * @return
 	 */
-	public <T> T selectOneForTargetClass(SQLBuilders builders, Class<T> clazz);
+	public <T> T selectOneForTargetClass(SQLBuilders sqlBuilders, Class<T> clazz);
 
 }

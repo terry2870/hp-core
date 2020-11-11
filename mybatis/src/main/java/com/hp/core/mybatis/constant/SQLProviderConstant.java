@@ -35,4 +35,6 @@ public class SQLProviderConstant {
 	
 	public static final String MIN_ID_ALIAS = "minId";
 	public static final String MAX_ID_ALIAS = "maxId";
+	
+	public static final String SQL_ALIAS = "sql_alias";
 }
