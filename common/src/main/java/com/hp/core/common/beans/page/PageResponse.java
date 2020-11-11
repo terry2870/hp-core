@@ -133,4 +133,11 @@ public class PageResponse<T> extends BaseBean {
 		}
 		this.rows.add(t);
 	}
+	
+	public void addFooter(T t) {
+		if (this.footer == null) {
+			this.footer = new ArrayList<>();
+		}
+		this.footer.add(t);
+	}
 }
