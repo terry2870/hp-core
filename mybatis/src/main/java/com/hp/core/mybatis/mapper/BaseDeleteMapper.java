@@ -39,11 +39,11 @@ public interface BaseDeleteMapper<MODEL, PK> extends IBaseDeleteDAO<MODEL, PK> {
 	
 	/**
 	 * 根据传入的参数，删除
-	 * @param target
+	 * @param param
 	 * @return
 	 */
 	@DeleteProvider(type = BaseDeleteSQLProvider.class, method = "deleteByParams")
-	public Integer deleteByParams(@Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) MODEL target);
+	public Integer deleteByParams(@Param(SQLProviderConstant.PARAM_OBJECT_ALIAS) MODEL param);
 	
 	/**
 	 * 根据传入的条件删除

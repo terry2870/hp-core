@@ -12,7 +12,7 @@ public class SQLProviderConstant {
 	/**
 	 * 传递的参数对象
 	 */
-	public static final String TARGET_OBJECT_ALIAS = "target";
+	public static final String PARAM_OBJECT_ALIAS = "param";
 	
 	/**
 	 * sql构造器

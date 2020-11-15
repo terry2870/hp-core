@@ -26,13 +26,33 @@ import com.hp.core.mybatis.provider.BaseSelectProvider;
 public interface BaseSelectMapper<MODEL, PK> extends IBaseSelectDAO<MODEL, PK> {
 
 	/**
-	 * 根据传入的sql，查询
+	 * 根据传入的sql，查询list
 	 * @param sql
-	 * @param target
+	 * @param param
 	 * @return
 	 */
 	@SelectProvider(type = BaseSelectProvider.class, method = "selectBySQL")
-	public List<MODEL> selectBySQL(@Param(SQLProviderConstant.SQL_ALIAS) SQL sql, @Param(SQLProviderConstant.TARGET_OBJECT_ALIAS) Object target);
+	public List<MODEL> selectListBySQL(@Param(SQLProviderConstant.SQL_ALIAS) SQL sql, @Param(SQLProviderConstant.PARAM_OBJECT_ALIAS) Object param);
+	
+	/**
+	 * 根据传入的sql，查询一个
+	 * @param sql
+	 * @param param
+	 * @return
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectBySQL")
+	public MODEL selectOneBySQL(@Param(SQLProviderConstant.SQL_ALIAS) SQL sql, @Param(SQLProviderConstant.PARAM_OBJECT_ALIAS) Object param);
+	
+	/**
+	 * 根据传入的sql，查询指定的对象
+	 * @param <T>
+	 * @param sql
+	 * @param param
+	 * @param clazz
+	 * @return
+	 */
+	@SelectProvider(type = BaseSelectProvider.class, method = "selectBySQL")
+	public <T> T selectAnyBySQL(@Param(SQLProviderConstant.SQL_ALIAS) SQL sql, @Param(SQLProviderConstant.PARAM_OBJECT_ALIAS) Object param, Class<T> clazz);
 	
 	/**
 	 * 查询总数

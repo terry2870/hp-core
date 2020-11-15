@@ -83,7 +83,7 @@ public class BaseDeleteSQLProvider {
 				.append(entity.getTableName())
 				.append(" WHERE 1=1");
 		
-		StringBuilder where = getDeleteSQLByParams(params.get(SQLProviderConstant.TARGET_OBJECT_ALIAS), entity);
+		StringBuilder where = getDeleteSQLByParams(params.get(SQLProviderConstant.PARAM_OBJECT_ALIAS), entity);
 		if (where == null || where.length() == 0) {
 			log.error("deleteByParams error. with where sql is empty. not allow. with \r\nparams={}, \r\nentity={}", params, entity);
 			throw new ProviderSQLException("deleteByParams error. with where sql is empty");
@@ -145,7 +145,7 @@ public class BaseDeleteSQLProvider {
 				sql.append(" AND ")
 					.append(column.getColumnName())
 					.append(" = #{")
-					.append(SQLProviderConstant.TARGET_OBJECT_ALIAS)
+					.append(SQLProviderConstant.PARAM_OBJECT_ALIAS)
 					.append(".")
 					.append(column.getFieldName())
 					.append("}");
