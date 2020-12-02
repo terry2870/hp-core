@@ -26,7 +26,7 @@ public enum StatusEnum {
 		for (StatusEnum e : values()) {
 			json = new JSONObject();
 			json.put("value", e.getValue());
-			json.put("text", e.getText());
+			json.put("text", e.getText().toString());
 			arr.add(json);
 		}
 		return arr;
