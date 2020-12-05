@@ -3,7 +3,7 @@
  */
 package com.hp.core.mybatis.provider;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -30,15 +30,17 @@ public class MybatisSQLBuilderHelper {
 	 * @return
 	 */
 	public static String getSQLBySQLBuild(SQLBuilders builders) {
-		List<SQLWhere> whereList = builders.getWhereList();
+		Collection<SQLWhere> whereList = builders.getWhereList();
 		if (CollectionUtils.isEmpty(whereList)) {
 			return StringUtils.EMPTY;
 		}
 		
 		StringBuilder sb = new StringBuilder();
 		try {
-			for (int i = 0; i < whereList.size(); i++) {
-				sb.append(getSQL(whereList.get(i), i, StringUtils.isEmpty(builders.getSqlWherePrefix()) ? SQL_WHERE_VALUE_PREFIX : builders.getSqlWherePrefix()));
+			int i = 0;
+			for (SQLWhere where : whereList) {
+				sb.append(getSQL(where, i, StringUtils.isEmpty(builders.getSqlWherePrefix()) ? SQL_WHERE_VALUE_PREFIX : builders.getSqlWherePrefix()));
+				i++;
 			}
 		} catch (Exception e) {
 			log.error("get setSQLBySQLBuilds sql error. with whereList is {}", whereList, e);

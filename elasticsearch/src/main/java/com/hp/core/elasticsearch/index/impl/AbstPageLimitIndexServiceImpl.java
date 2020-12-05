@@ -3,6 +3,7 @@
  */
 package com.hp.core.elasticsearch.index.impl;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -30,7 +31,7 @@ public abstract class AbstPageLimitIndexServiceImpl<T, E> extends AbstSimpleInde
 	 * @param whereList
 	 * @return
 	 */
-	protected int getTotal(List<SQLWhere> whereList) {
+	protected int getTotal(Collection<SQLWhere> whereList) {
 		return baseMapper.selectCount(whereList);
 	}
 	
@@ -48,7 +49,7 @@ public abstract class AbstPageLimitIndexServiceImpl<T, E> extends AbstSimpleInde
 	@Override
 	public void insertIntoES(IndexInfo indexInfo, IndexCoordinates newIndexCoordinates) {
 		SQLBuilders builders = getSQLBuilders();
-		List<SQLWhere> whereList = (builders == null || CollectionUtils.isEmpty(builders.getWhereList())) ? null : builders.getWhereList();
+		Collection<SQLWhere> whereList = (builders == null || CollectionUtils.isEmpty(builders.getWhereList())) ? null : builders.getWhereList();
 		int total = getTotal(whereList);
 		if (total == 0) {
 			return;

@@ -3,6 +3,7 @@
  */
 package com.hp.core.database.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.hp.core.database.bean.SQLBuilders;
@@ -23,7 +24,7 @@ public interface IBaseSelectDAO<MODEL, PK> {
 	 * @param whereList
 	 * @return
 	 */
-	public PK selectCount(List<SQLWhere> whereList);
+	public PK selectCount(Collection<SQLWhere> whereList);
 	
 	/**
 	 * 根据传入的sqlbuild，查询
@@ -81,14 +82,14 @@ public interface IBaseSelectDAO<MODEL, PK> {
 	 * @param primaryKeyIdList
 	 * @return
 	 */
-	public List<MODEL> selectByPrimaryKeys(List<PK> primaryKeyIdList);
+	public List<MODEL> selectByPrimaryKeys(Collection<PK> primaryKeyIdList);
 	
 	/**
 	 * 根据主键，批量查询（并且按照list里面id顺序排序）
 	 * @param primaryKeyIdList
 	 * @return
 	 */
-	public List<MODEL> selectByPrimaryKeysWithInSort(List<PK> primaryKeyIdList);
+	public List<MODEL> selectByPrimaryKeysWithInSort(Collection<PK> primaryKeyIdList);
 	
 	/**
 	 * 查询列表

@@ -3,6 +3,7 @@
  */
 package com.hp.core.mybatis.mapper;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -60,7 +61,7 @@ public interface BaseSelectMapper<MODEL, PK> extends IBaseSelectDAO<MODEL, PK> {
 	 * @return
 	 */
 	@SelectProvider(type = BaseSelectProvider.class, method = "selectCount")
-	public PK selectCount(@Param(SQLProviderConstant.SQL_WHERE_ALIAS) List<SQLWhere> whereList);
+	public PK selectCount(@Param(SQLProviderConstant.SQL_WHERE_ALIAS) Collection<SQLWhere> whereList);
 	
 	/**
 	 * 根据传入的sqlbuild，查询
@@ -126,7 +127,7 @@ public interface BaseSelectMapper<MODEL, PK> extends IBaseSelectDAO<MODEL, PK> {
 	 * @return
 	 */
 	@SelectProvider(type = BaseSelectProvider.class, method = "selectByPrimaryKeys")
-	public List<MODEL> selectByPrimaryKeys(List<PK> primaryKeyIdList);
+	public List<MODEL> selectByPrimaryKeys(Collection<PK> primaryKeyIdList);
 	
 	/**
 	 * 根据主键，批量查询（并且按照list里面id顺序排序）
@@ -134,7 +135,7 @@ public interface BaseSelectMapper<MODEL, PK> extends IBaseSelectDAO<MODEL, PK> {
 	 * @return
 	 */
 	@SelectProvider(type = BaseSelectProvider.class, method = "selectByPrimaryKeysWithInSort")
-	public List<MODEL> selectByPrimaryKeysWithInSort(List<PK> primaryKeyIdList);
+	public List<MODEL> selectByPrimaryKeysWithInSort(Collection<PK> primaryKeyIdList);
 	
 	/**
 	 * 查询列表

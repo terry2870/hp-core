@@ -3,11 +3,11 @@
  */
 package com.hp.core.jdbc.daoimpl;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.hp.core.database.bean.DynamicEntityBean;
 import com.hp.core.database.bean.SQLBuilders;
@@ -24,7 +24,7 @@ import com.hp.core.jdbc.model.JdbcSQLResponseBO;
 public interface JdbcBaseSelectDAOImpl<MODEL, PK> extends IBaseSelectDAO<MODEL, PK>, JdbcTemplateService {
 	
 	@Override
-	public default PK selectCount(List<SQLWhere> whereList) {
+	public default PK selectCount(Collection<SQLWhere> whereList) {
 		DynamicEntityBean entity = BaseSQLAOPFactory.getEntity();
 		SQLBuilders builders = SQLBuilders.create()
 				.withWhere(whereList)
@@ -86,13 +86,13 @@ public interface JdbcBaseSelectDAOImpl<MODEL, PK> extends IBaseSelectDAO<MODEL, 
 	}
 
 	@Override
-	public default List<MODEL> selectByPrimaryKeys(List<PK> primaryKeyIdList) {
+	public default List<MODEL> selectByPrimaryKeys(Collection<PK> primaryKeyIdList) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public default List<MODEL> selectByPrimaryKeysWithInSort(List<PK> primaryKeyIdList) {
+	public default List<MODEL> selectByPrimaryKeysWithInSort(Collection<PK> primaryKeyIdList) {
 		// TODO Auto-generated method stub
 		return null;
 	}

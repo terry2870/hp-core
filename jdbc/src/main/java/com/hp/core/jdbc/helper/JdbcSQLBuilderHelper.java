@@ -4,6 +4,7 @@
 package com.hp.core.jdbc.helper;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -131,7 +132,7 @@ public class JdbcSQLBuilderHelper {
 	 * @return
 	 */
 	private static JdbcSQLResponseBO getWhereSQLBySQLBuild(SQLBuilders builders) {
-		List<SQLWhere> whereList = builders.getWhereList();
+		Collection<SQLWhere> whereList = builders.getWhereList();
 		if (CollectionUtils.isEmpty(whereList)) {
 			return null;
 		}

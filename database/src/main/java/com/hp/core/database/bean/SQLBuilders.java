@@ -4,6 +4,7 @@
 package com.hp.core.database.bean;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -25,7 +26,7 @@ public class SQLBuilders extends BaseBean {
 	private static final long serialVersionUID = -6812948703549369091L;
 	
 	private List<String> selectList = null;
-	private List<SQLWhere> whereList = null;
+	private Collection<SQLWhere> whereList = null;
 	private PageModel page = null;
 	private List<OrderBy> orderbyList = null;
 	private String sqlWherePrefix;
@@ -59,7 +60,7 @@ public class SQLBuilders extends BaseBean {
 	 * @param whereList
 	 * @return
 	 */
-	public SQLBuilders withWhere(List<SQLWhere> whereList) {
+	public SQLBuilders withWhere(Collection<SQLWhere> whereList) {
 		this.whereList = whereList;
 		return this;
 	}
@@ -111,7 +112,7 @@ public class SQLBuilders extends BaseBean {
 		return orderbyList;
 	}
 
-	public List<SQLWhere> getWhereList() {
+	public Collection<SQLWhere> getWhereList() {
 		return whereList;
 	}
 
