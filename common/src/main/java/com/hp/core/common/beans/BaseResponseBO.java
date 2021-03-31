@@ -3,8 +3,6 @@
  */
 package com.hp.core.common.beans;
 
-import com.hp.core.common.beans.BaseBean;
-
 /**
  * @author huangping
  * 2016年8月23日 下午11:37:53
