@@ -18,7 +18,7 @@
 		<commons-text.version>1.6</commons-text.version>
 		<guava.version>29.0-jre</guava.version>
 		<aopalliance.version>1.0</aopalliance.version>
-		<mybatis.version>3.5.4</mybatis.version>
+		<mybatis.version>3.5.6</mybatis.version>
 		<mybatis.spring.version>2.0.4</mybatis.spring.version>
 		<commons-io.version>2.6</commons-io.version>
 		<protostuff.version>1.1.6</protostuff.version>
