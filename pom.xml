@@ -20,7 +20,7 @@
 		<aopalliance.version>1.0</aopalliance.version>
 		<mybatis.version>3.5.4</mybatis.version>
 		<mybatis.spring.version>2.0.4</mybatis.spring.version>
-		<commons-io.version>2.6</commons-io.version>
+		<commons-io.version>2.7</commons-io.version>
 		<protostuff.version>1.1.6</protostuff.version>
 		<zookeeper.version>3.6.1</zookeeper.version>
 		<curator.framework.version>4.3.0</curator.framework.version>
